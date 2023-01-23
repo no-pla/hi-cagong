@@ -1,6 +1,6 @@
 import React from "react";
-import CafeInfo from "./Detailthings/CafeInfo";
-import Review from "./Detailthings/Review";
+import CafeInfo from "./DetailThings/CafeInfo";
+import Review from "./DetailThings/Review";
 
 export const Detail = () => {
   return (

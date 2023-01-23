@@ -15,7 +15,6 @@ function CafeInfo() {
             flexDirection: "inherit",
             alignItems: "center",
           }}
-          src="CafeInfo.png"
         />
       </CafeImg>
       <div
