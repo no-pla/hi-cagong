@@ -3,7 +3,7 @@ import { dbService } from "./firebase";
 
 export const getReviews = async () => {
   let data;
-  const q = query(collection(dbService, "review"), orderBy("creatAt", "desc"));
+  const q = query(collection(dbService, "review"), orderBy("createAt", "desc"));
   const docs = await getDocs(q);
 
   docs.forEach((doc) => {

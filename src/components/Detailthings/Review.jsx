@@ -5,34 +5,87 @@ import { getReviews } from "../../api";
 
 function Review() {
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-  console.log(isLoading);
   if (isLoading) return;
-  console.log(reviewData);
 
   return (
     <AllReview>
+      {/* 모든 리뷰에 관한 것들  */}
       <ReviewTitle>
+        {/* 리뷰와 리뷰등록 버튼 */}
         <ReviewCount>
+          {/* 리뷰 라는 글 */}
           리뷰
-          <ReviewCountNum>(5)</ReviewCountNum>
+          <ReviewCountNum>
+            {/* 리뷰 갯수 */}
+            (5)
+          </ReviewCountNum>
         </ReviewCount>
         <ReviewBtn> 리뷰 등록</ReviewBtn>
       </ReviewTitle>
       <ReviewContents>
+        {/* crud 될 리뷰들 */}
         <UserIdTitleBtn>
+          {/* profile, createAt, userId, title, edit, delete btn */}
           <UserID>
+            {/* profileImg, createAt, userNickname */}
             <UserImg>image</UserImg>
+            {/* profileImg */}
             <div
               style={{
                 display: "grid",
                 marginLeft: 10,
               }}
             >
-              <ReviewDate>2023-01-21</ReviewDate>
+              {/* createAt,userNickname */}
+              <ReviewDate>{reviewData.createAt}</ReviewDate>
+              {/* createAt */}
               <UserNickName>mr. 카공</UserNickName>
+              {/* userNickname */}
             </div>
           </UserID>
         </UserIdTitleBtn>
+        <Recommend>추천 명당</Recommend>
+        <RecommendContents>
+          추천하는 이 카페의 나만의 명당은!?
+        </RecommendContents>
+        <NiceSpot>
+          {/* spotImaage, reason, location\ */}
+          <SpotImg>
+            <img src={`${reviewData.image}`} />
+          </SpotImg>
+          <ReasonLocation>
+            {/* reason,location */}
+            <ReasonMap>
+              {/* 명당추천 */}
+              <Reason>명당 추천 이유</Reason>
+              <ReasonContents>{reviewData.reason}</ReasonContents>
+            </ReasonMap>
+            <LocationMap>
+              {/* 명당위치 */}
+              <Location>명당위치</Location>
+              <LocationContents>{reviewData.location}</LocationContents>
+            </LocationMap>
+          </ReasonLocation>
+        </NiceSpot>
+        <GoodBad>
+          {/* good,bad,rate,menu */}
+          <Good>
+            <GoodTitle>장점</GoodTitle>
+            <GoodContents>{reviewData.good}</GoodContents>
+          </Good>
+          <Bad>
+            <BadTitle>단점</BadTitle>
+            <BadContents>{reviewData.bad}</BadContents>
+          </Bad>
+          <RateMenu>
+            {/* rate, menu */}
+            <Rate>평점 {reviewData.rate}</Rate>
+            <Menu>
+              <MenuTitle>추천메뉴</MenuTitle>
+              <MenuContents>{reviewData.menu}</MenuContents>
+            </Menu>
+          </RateMenu>
+        </GoodBad>
       </ReviewContents>
     </AllReview>
   );
@@ -131,4 +184,125 @@ const UserNickName = styled.div`
   color: gray;
   display: contents;
   border: solid 1px tomato;
+`;
+
+const Recommend = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const RecommendContents = styled.div`
+  font-size: 15px;
+  margin-left: 10px;
+  font-weight: 200;
+`;
+
+const NiceSpot = styled.section`
+  width: 100%;
+  height: 40%;
+  display: inline-block;
+  border: solid 1px tomato;
+`;
+
+const SpotImg = styled.div`
+  width: 100px;
+  height: 100%;
+  background-color: tomato;
+`;
+
+const ReasonLocation = styled.div`
+  display: flex;
+`;
+
+const ReasonMap = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Reason = styled.div`
+  font-size: 18px;
+  padding-bottom: 5px;
+  font-weight: 300;
+`;
+const ReasonContents = styled.div`
+  font-size: 12px;
+  font-weight: 200;
+`;
+
+const LocationMap = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Location = styled.div`
+  font-size: 18px;
+  font-weight: 300;
+  padding-bottom: 5px;
+`;
+
+const LocationContents = styled.div`
+  font-size: 12px;
+  font-weight: 200;
+`;
+
+const GoodBad = styled.div`
+  display: inline-block;
+  width: 100%;
+  height: 200px;
+`;
+
+const Good = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  height: 150px;
+`;
+
+const GoodTitle = styled.div`
+  font-size: 18px;
+  font-weight: 300;
+`;
+
+const GoodContents = styled.div`
+  font-size: 12px;
+  font-weight: 200;
+`;
+
+const Bad = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  height: 150px;
+`;
+
+const BadTitle = styled.div`
+  font-size: 18px;
+  font-weight: 300;
+`;
+
+const BadContents = styled.div`
+  font-size: 12px;
+  font-weight: 200;
+`;
+
+const RateMenu = styled.div`
+  display: flex;
+`;
+
+const Rate = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 300;
+`;
+const Menu = styled.div`
+  display: flex;
+`;
+const MenuTitle = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 300;
+`;
+const MenuContents = styled.div`
+  font-size: 12px;
+  font-weight: 200;
 `;
