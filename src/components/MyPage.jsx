@@ -56,7 +56,7 @@ const UserProfileChangeButton = styled.button`
 
 const UserProfilChangeMenu = styled.div`
   position: absolute;
-  right: -28%;
+  right: -24%;
   top: 10%;
   text-align: left;
   font-size: 12px;
@@ -116,6 +116,7 @@ const ReviewTitle = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-bottom: 4px;
 `;
 
 const StoreGoodPoint = styled.div`
@@ -145,8 +146,8 @@ const DeleteButton = styled.button`
   color: red;
   background-color: transparent;
   position: absolute;
-  bottom: -36px;
-  right: 5px;
+  bottom: -28px;
+  right: 12px;
   cursor: pointer;
 `;
 
