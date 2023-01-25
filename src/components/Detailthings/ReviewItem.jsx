@@ -174,7 +174,7 @@ export const ReviewItem = ({ reviewData }) => {
             )}
           </Good>
           <Bad>
-            <BadTitle>단점</BadTitle>
+            <BadTitle>단점.</BadTitle>
             {toggle ? (
               <input
                 type="text"
