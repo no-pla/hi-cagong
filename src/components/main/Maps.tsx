@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
-export const Mapsprac = () => {
+export const Maps = () => {
   const [info, setInfo] = useState<any>();
   const [markers, setMarkers] = useState<any>([]);
   const [map, setMap] = useState<any>();
@@ -15,7 +15,7 @@ export const Mapsprac = () => {
   useEffect(() => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
-    // kakao.maps.event.addListener(map, 'idle', function () {});
+
     ps.categorySearch('CE7', (data, status, _pagination) => {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -53,7 +53,7 @@ export const Mapsprac = () => {
         }}
         style={{
           width: '100%',
-          height: '100vh',
+          height: '100%',
         }}
         level={3}
         onCreate={setMap}
@@ -96,6 +96,13 @@ export const Mapsprac = () => {
 
 const MapWrapp = styled.div`
   width: 60%;
+  height: 100vh;
+
+  @media (max-width: 1100px) {
+    order: 1;
+    width: 100%;
+    height: 50vh;
+  }
 `;
 
 const MapInfor = styled.div`

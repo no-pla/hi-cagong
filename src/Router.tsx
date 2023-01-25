@@ -6,7 +6,7 @@ import { SignUp } from './components/Auth/SignUp';
 import { Detail } from './components/Detail';
 import { Home } from './components/Home';
 import { MyPage } from './components/MyPage';
-import { Nav } from './components/Nav';
+import { Nav } from './components/main/Nav';
 
 export const Router = () => {
   return (
@@ -29,5 +29,5 @@ const ContentWrap = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 `;

@@ -1,13 +1,10 @@
 import styled from 'styled-components';
-import { IntroItem } from './main/IntroItem';
-import { Mapsprac } from './main/Mapsprac';
-import { Nav } from './Nav';
+import LandingPage from './main/LandingPage';
 
 export const Home = () => {
   return (
     <MainContent>
-      <IntroItem />
-      <Mapsprac />
+      <LandingPage />
     </MainContent>
   );
 };
@@ -16,4 +13,9 @@ const MainContent = styled.div`
   display: flex;
   justify-content: space-between;
   width: calc(100% - 160px);
+  overflow: hidden;
+
+  @media (max-width: 1100px) {
+    flex-direction: column;
+  }
 `;
