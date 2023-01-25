@@ -6,17 +6,23 @@ import {
   useQueryClient,
 } from "react-query";
 import styled from "styled-components";
-import { addReview, deleteReview, getReviews } from "../../api";
+import { addReview, getReviews } from "../../api";
 import AddReview from "./AddReview";
+import CreateReview from "./CreateReview";
 import { ReviewItem } from "./ReviewItem";
 
-function Review() {
+function Review({ review, setReview }) {
+  // firebase에서 review 데이터들을 가져오는 것
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
+  // useQueryClient 사용
   const queryClient = useQueryClient();
 
+  // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
+
+  // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
     const reviewData = {
       bad: "냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요",
@@ -35,11 +41,16 @@ function Review() {
       userNickname: "코쟁이",
     };
 
+    // revieData를 가져오면 화면에 query로 바로 표시하는 것
     createMutate(reviewData, {
       onSuccess: () => {
         queryClient.invalidateQueries("reviewdata");
       },
     });
+
+    // setReview((prev) => {
+    //   return [...prev, reviewData];
+    // });
   };
 
   if (isLoading) return;
@@ -59,6 +70,11 @@ function Review() {
         {/* 모든 리뷰에 관한 것들  */}
 
         {/* <AddReview reviewData={reviewData} /> */}
+
+        {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
+        {/* <CreateReview reviewData={reviewData} /> */}
+
+        {/* ReviewItem들 : 등록되어있는 리뷰들 */}
         <ReviewItem reviewData={reviewData}></ReviewItem>
       </AllReview>
     </div>

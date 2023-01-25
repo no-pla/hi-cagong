@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { deleteReview } from "../../api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { onSnapshot } from "firebase/firestore";
 
 export const ReviewItem = ({ reviewData }) => {
   const [toggle, setToggle] = useState(false);
@@ -15,8 +16,6 @@ export const ReviewItem = ({ reviewData }) => {
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
 
-  console.log(reviewTitle, reason, location, good, bad, rate, menu);
-
   const onEditSubmit = () => {
     const data = {
       reason: reason,
@@ -29,10 +28,10 @@ export const ReviewItem = ({ reviewData }) => {
       // id: reviewData?.id,
       userNickname: userNickname,
     };
+    //input창에 입력 된 value값들을 data로 표시 중
     console.log(data);
   };
-
-  console.log(reviewData?.id);
+  // console.log(reviewData?.id);
   const queryClient = useQueryClient();
 
   const { isLoading: deleteLoading, mutate: deleteMutate } =
@@ -76,7 +75,14 @@ export const ReviewItem = ({ reviewData }) => {
             (5)
           </ReviewCountNum>
         </ReviewCount>
-        <ReviewBtn> 리뷰 등록</ReviewBtn>
+        <ReviewBtn
+          onClick={() => {
+            setToggle(!toggle);
+          }}
+        >
+          {" "}
+          리뷰 등록
+        </ReviewBtn>
       </ReviewTitles>
       <ReviewContents>
         {/* crud 될 리뷰들 */}
@@ -95,11 +101,7 @@ export const ReviewItem = ({ reviewData }) => {
               {/* createAt,userNickname */}
               <ReviewDate>{reviewData?.createAt}</ReviewDate>
               {/* createAt */}
-              {toggle ? (
-                <div></div>
-              ) : (
-                <UserNickName>{reviewData?.userNickname} ,</UserNickName>
-              )}
+              <UserNickName>{reviewData?.userNickname} ,</UserNickName>
               {/* userNickname */}
             </div>
           </UserID>
@@ -185,10 +187,13 @@ export const ReviewItem = ({ reviewData }) => {
           <RateMenu>
             {/* rate, menu */}
             {toggle ? (
-              <input
-                type="text"
-                onChange={(event) => setRate(event.target.value)}
-              />
+              <div>
+                평점
+                <input
+                  type="text"
+                  onChange={(event) => setRate(event.target.value)}
+                />
+              </div>
             ) : (
               <Rate>평점 {reviewData?.rate}</Rate>
             )}
