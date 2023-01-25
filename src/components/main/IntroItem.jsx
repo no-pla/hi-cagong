@@ -1,7 +1,19 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const IntroItem = ({ placeItem }) => {
   console.log('{ placeItem }', placeItem);
+
+  const placeId = placeItem?.map((item) => item.content.id);
+
+  console.log(placeId);
+
+  const navigate = useNavigate();
+  const goToDetail = (id) => {
+    const idNumber = placeId.find((num) => num === id);
+    navigate(`/${idNumber}`);
+  };
+
   return (
     <IntronItemWrap>
       <IntronItemTitle>
@@ -20,7 +32,10 @@ export const IntroItem = ({ placeItem }) => {
             (item) =>
               //카테고리가 카페 인것만 나올 수 있도록
               item.content.category_group_code === 'CE7' && (
-                <Item>
+                <Item
+                  key={item.content.id}
+                  onClick={() => goToDetail(item.content.id)}
+                >
                   <div className="img-wrap">
                     <img
                       src="https://t1.daumcdn.net/cfile/tistory/998BF13D5ACD603C20"
@@ -49,16 +64,15 @@ const IntronItemWrap = styled.div`
   width: 100%;
   flex-direction: column;
   padding: 4em;
-
   overflow-y: scroll;
 
   @media (max-width: 1100px) {
-    height: 60vh;
+    height: 100%;
     order: 2;
     width: calc(100% - 16px);
     box-sizing: border-box;
     margin: 0 auto;
-    overflow-y: auto;
+    height: 60vh;
   }
 `;
 

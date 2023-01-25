@@ -31,15 +31,17 @@ function LandingPage() {
     const ps = new kakao.maps.services.Places();
 
     ps.keywordSearch(Place, placesSearchCB);
+    console.log('placesSearchCB', placesSearchCB());
 
     function placesSearchCB(data, status, pagination) {
       if (status === kakao.maps.services.Status.OK) {
         let bounds = new kakao.maps.LatLngBounds();
 
-        let placeItem = [];
+        const placeItem = [];
 
         for (let i = 0; i < data.length; i++) {
           data[i].category_group_code === 'CE7' && displayMarker(data[i]);
+
           placeItem.push({
             position: {
               lat: data[i].y,
@@ -49,6 +51,7 @@ function LandingPage() {
           });
           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
         }
+
         setePlaceItem(placeItem);
         map.setBounds(bounds);
       }
@@ -61,7 +64,6 @@ function LandingPage() {
       });
 
       // 마커에 클릭이벤트를 등록합니다
-
       kakao.maps.event.addListener(marker, 'click', function () {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         infowindow.setContent(
@@ -86,7 +88,7 @@ function LandingPage() {
           </p>
           <InputBox>
             <input
-              placeholder="구 + 카페 를 검색해주세요. (예: 성동구 카페)"
+              placeholder="지역 + 카페 를 검색해주세요. (예: 성동구 카페)"
               onChange={onChange}
               value={InputText}
             />
@@ -104,7 +106,6 @@ export default LandingPage;
 const SearchWrap = styled.div`
   width: 100%;
   position: relative;
-
   height: 100vh;
 
   @media (max-width: 1100px) {
