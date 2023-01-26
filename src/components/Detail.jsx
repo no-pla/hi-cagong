@@ -3,12 +3,16 @@ import { DetailContent } from "./DetailContent";
 import Review from "./Detailthings/Review";
 
 export const Detail = () => {
-  const [review, setReview] = useState();
-
   return (
-    <>
+    <div
+      style={{
+        display: "grid",
+        position: "absolute",
+        left: "25%",
+      }}
+    >
       <DetailContent />
-      <Review review={review} setReview={setReview} />
-    </>
+      <Review />
+    </div>
   );
 };
