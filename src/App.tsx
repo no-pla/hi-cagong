@@ -1,10 +1,8 @@
-
-import React from "react";
-import { QueryClientProvider, QueryClient } from "react-query";
-import { createGlobalStyle } from "styled-components";
-import { Reset } from "styled-reset";
-import { Router } from "./Router";
-
+import React from 'react';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { createGlobalStyle } from 'styled-components';
+import { Reset } from 'styled-reset';
+import { Router } from './Router';
 
 function App() {
   const queryClient = new QueryClient();

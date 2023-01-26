@@ -1,6 +1,5 @@
-import { IntroItem } from './IntroItem';
+const MapContainer = ({ placeItem }) => {
 
-const MapContainer = () => {
   return (
     <>
       <div
@@ -10,7 +9,6 @@ const MapContainer = () => {
           height: '100%',
         }}
       />
-      <IntroItem />
     </>
   );
 };

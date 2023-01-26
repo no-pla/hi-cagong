@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IntroItem } from './IntroItem';
 import MapContainer from './MapContainer';
-// import { getMaps } from '../../redux/module/kakaoMap';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { getMaps } from '../../redux/module/kakaoMap';
 const { kakao } = window;
 
 function LandingPage() {
+  const dispatch = useDispatch();
+  const getMaps = useSelector((state) => state.getMaps);
+
+  console.log(getMaps);
+
   const [InputText, setInputText] = useState('');
   const [Place, setPlace] = useState('');
   const [placeItem, setePlaceItem] = useState([]);
@@ -34,49 +39,48 @@ function LandingPage() {
 
     ps.keywordSearch(Place, placesSearchCB);
 
-    function placesSearchCB(data, status, pagination) {
-      if (status === kakao.maps.services.Status.OK) {
-        let bounds = new kakao.maps.LatLngBounds();
+    // function placesSearchCB(data, status, pagination) {
+    //   if (status === kakao.maps.services.Status.OK) {
+    //     let bounds = new kakao.maps.LatLngBounds();
 
-        const placeItem = [];
+    //     const placeItem = [];
 
-        for (let i = 0; i < data.length; i++) {
-          data[i].category_group_code === 'CE7' && displayMarker(data[i]);
+    //     for (let i = 0; i < data.length; i++) {
+    //       data[i].category_group_code === 'CE7' && displayMarker(data[i]);
 
-          placeItem.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i],
-          });
+    //       placeItem.push({
+    //         position: {
+    //           lat: data[i].y,
+    //           lng: data[i].x,
+    //         },
+    //         content: data[i],
+    //       });
+    //       bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+    //     }
 
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-        }
+    //     setePlaceItem(placeItem);
+    //     map.setBounds(bounds);
+    //   }
+    // }
 
-        setePlaceItem(placeItem);
-        map.setBounds(bounds);
-      }
-    }
+    // function displayMarker(place) {
+    //   let marker = new kakao.maps.Marker({
+    //     map: map,
+    //     position: new kakao.maps.LatLng(place.y, place.x),
+    //   });
 
-    function displayMarker(place) {
-      let marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(place.y, place.x),
-      });
-
-      // 마커에 클릭이벤트를 등록합니다
-      kakao.maps.event.addListener(marker, 'click', function () {
-        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-        infowindow.setContent(
-          `<div class="overlaybox">
-            <a style="text-decoration:none; color:#000; display:block;" href=${place.place_url} target="blank">${place.place_name}</a>
-            <span class="title">${place.phone}</span>
-          </div>`
-        );
-        infowindow.open(map, marker);
-      });
-    }
+    //   // 마커에 클릭이벤트를 등록합니다
+    //   kakao.maps.event.addListener(marker, 'click', function () {
+    //     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+    //     infowindow.setContent(
+    //       `<div class="overlaybox">
+    //         <a style="text-decoration:none; color:#000; display:block;" href=${place.place_url} target="blank">${place.place_name}</a>
+    //         <span class="title">${place.phone}</span>
+    //       </div>`
+    //     );
+    //     infowindow.open(map, marker);
+    //   });
+    // }
   }, [Place]);
 
   return (
