@@ -60,7 +60,7 @@ export const ModalSignUp = () => {
 
                 <NickNameBoximage>
                   <NickNameimage>
-                    <img src="/img/noimage.png"></img>
+                    <img src="/img/noimage.png" />
                   </NickNameimage>
                   <NickNameTiTleTextBox>
                     <NickNameTiTle>닉네임</NickNameTiTle>
