@@ -24,17 +24,6 @@ function Review() {
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
 
-  const [toggle, setToggle] = useState(false);
-  const [reason, setReason] = useState("");
-  // location good bad rate menu
-  const [location, setLocation] = useState("");
-  const [good, setGood] = useState("");
-  const [bad, setBad] = useState("");
-  const [rate, setRate] = useState(null);
-  const [menu, setMenu] = useState("");
-  const [reviewTitle, setReviewTitle] = useState("");
-  const [userNickname, setUserNickname] = useState("");
-
   // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
     const reviewData = {
@@ -57,7 +46,7 @@ function Review() {
     // revieData를 가져오면 화면에 query로 바로 표시하는 것
     createMutate(reviewData, {
       onSuccess: () => {
-        queryClient.invalidateQueries("reviewdata");
+        queryClient.invalidateQueries("reviewData");
       },
     });
 
@@ -90,14 +79,12 @@ function Review() {
       >
         {/* 모든 리뷰에 관한 것들  */}
 
+        {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
         <AddReview
           reviewData={reviewData}
           setReviews={setReviews}
           reviews={reviews}
         />
-
-        {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
-        {/* <CreateReview reviewData={reviewData} /> */}
 
         {/* ReviewItem들 : 등록되어있는 리뷰들 */}
         <ReviewItem reviewData={reviewData}></ReviewItem>

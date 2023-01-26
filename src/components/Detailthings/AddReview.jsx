@@ -22,9 +22,15 @@ export default function AddReview({ reviewData }) {
   //   },
   // });
 
+  // review 작성 value 감지
+  // 완료 버튼 클릭 시 value 값 저장 및 newreview로 표시
+  // 실시간 review DB 감지
+
+  // add 관련
+
+  // review 관련
   const [toggle, setToggle] = useState(false);
   const [reason, setReason] = useState("");
-  // location good bad rate menu
   const [location, setLocation] = useState("");
   const [good, setGood] = useState("");
   const [bad, setBad] = useState("");
@@ -33,51 +39,68 @@ export default function AddReview({ reviewData }) {
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
 
+  // createAt 현재 시간
+  const myDate = new Date();
+
   const addReview = async () => {
     await addDoc(collection(dbService, "review"), {
-      uid: UserID,
-      createAt: myDate,
-      reason: reason,
-      location: location,
-      good: good,
       bad: bad,
-      rate: rate,
+      createAt: myDate,
+      good: good,
+      location: location,
       menu: menu,
+      rate: rate,
+      reason: reason,
       reviewTitle: reviewTitle,
+      uid: UserID,
       // id: reviewData?.id,
+      //image:image
       userNickname: userNickname,
     });
   };
 
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
+  const data = {
+    bad: bad,
+    createAt: myDate,
+    good: good,
+    location: location,
+    menu: menu,
+    rate: rate,
+    reason: reason,
+    reviewTitle: reviewTitle,
+    uid: UserID,
+    // id: reviewData?.id,
+    //image:image
+    userNickname: userNickname,
+  };
 
-  if (createLoading) return;
+  const onAddSubmit = async (e) => {
+    e.preventDefault(e);
 
-  const myDate = new Date();
-
-  // console.log("test입니다", data);
-
-  const onAddSubmit = () => {
-    // console.log(reviews);
-
-    const data = {
-      createAt: myDate,
-      reason: reason,
-      location: location,
-      good: good,
+    await addDoc(collection(dbService, "review"), {
       bad: bad,
-      rate: rate,
+      createAt: myDate,
+      good: good,
+      location: location,
       menu: menu,
+      rate: rate,
+      reason: reason,
       reviewTitle: reviewTitle,
+      uid: UserID,
       // id: reviewData?.id,
+      //image:image
       userNickname: userNickname,
-    };
+    });
+
     //input창에 입력 된 value값들을 data로 표시 중
-    // console.log(data);
+    console.log(data);
+
+    // data를 가져오면 화면에 query로 바로 표시하는 것
     createMutate(data, {
       onSuccess: () => {
-        queryClient.invalidateQueries("data");
+        queryClient.invalidateQueries("reviewdata");
       },
     });
   };
