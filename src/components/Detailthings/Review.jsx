@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   QueryClient,
   useMutation,
@@ -8,12 +8,14 @@ import {
 import styled from "styled-components";
 import { addReview, getReviews } from "../../api";
 import AddReview from "./AddReview";
-import CreateReview from "./CreateReview";
+
 import { ReviewItem } from "./ReviewItem";
 
-function Review({ review, setReview }) {
+function Review() {
   // firebase에서 review 데이터들을 가져오는 것
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
+
+  const [reviews, setReviews] = useState(reviewData);
 
   // useQueryClient 사용
   const queryClient = useQueryClient();
@@ -22,11 +24,22 @@ function Review({ review, setReview }) {
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
 
+  const [toggle, setToggle] = useState(false);
+  const [reason, setReason] = useState("");
+  // location good bad rate menu
+  const [location, setLocation] = useState("");
+  const [good, setGood] = useState("");
+  const [bad, setBad] = useState("");
+  const [rate, setRate] = useState(null);
+  const [menu, setMenu] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [userNickname, setUserNickname] = useState("");
+
   // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
     const reviewData = {
       bad: "냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요",
-      createAt: "2022-32-32",
+      createAt: Date.now(),
       good: "집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다",
       location:
         "화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다",
@@ -35,7 +48,7 @@ function Review({ review, setReview }) {
       reason:
         "조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요",
       reviewTitle: "제목이에요 여긴",
-      uid: "김태훈",
+      uid: "임재영",
       image:
         "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
       userNickname: "코쟁이",
@@ -56,7 +69,11 @@ function Review({ review, setReview }) {
   if (isLoading) return;
 
   return (
-    <div>
+    <div
+      style={{
+        display: "grid",
+      }}
+    >
       <button
         onClick={addCreateReview}
         style={{
@@ -66,10 +83,18 @@ function Review({ review, setReview }) {
         {" "}
         create 버튼
       </button>
-      <AllReview>
+      <AllReview
+        style={{
+          display: "grid",
+        }}
+      >
         {/* 모든 리뷰에 관한 것들  */}
 
-        {/* <AddReview reviewData={reviewData} /> */}
+        <AddReview
+          reviewData={reviewData}
+          setReviews={setReviews}
+          reviews={reviews}
+        />
 
         {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
         {/* <CreateReview reviewData={reviewData} /> */}

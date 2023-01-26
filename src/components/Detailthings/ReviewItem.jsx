@@ -16,22 +16,6 @@ export const ReviewItem = ({ reviewData }) => {
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
 
-  const onEditSubmit = () => {
-    const data = {
-      reason: reason,
-      location: location,
-      good: good,
-      bad: bad,
-      rate: rate,
-      menu: menu,
-      reviewTitle: reviewTitle,
-      // id: reviewData?.id,
-      userNickname: userNickname,
-    };
-    //input창에 입력 된 value값들을 data로 표시 중
-    console.log(data);
-  };
-  // console.log(reviewData?.id);
   const queryClient = useQueryClient();
 
   const { isLoading: deleteLoading, mutate: deleteMutate } =
@@ -55,35 +39,8 @@ export const ReviewItem = ({ reviewData }) => {
   return (
     <ReviewItems>
       <button onClick={onDeleteReview}> delete 버튼</button>
-      <button onClick={onEditSubmit}> edit 완료 버튼</button>
-      <button
-        onClick={() => {
-          setToggle(!toggle);
-        }}
-      >
-        {" "}
-        toggle 버튼
-      </button>
       {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
-      <ReviewTitles>
-        {/* 리뷰와 리뷰등록 버튼 */}
-        <ReviewCount>
-          {/* 리뷰 라는 글 */}
-          리뷰
-          <ReviewCountNum>
-            {/* 리뷰 갯수 */}
-            (5)
-          </ReviewCountNum>
-        </ReviewCount>
-        <ReviewBtn
-          onClick={() => {
-            setToggle(!toggle);
-          }}
-        >
-          {" "}
-          리뷰 등록
-        </ReviewBtn>
-      </ReviewTitles>
+
       <ReviewContents>
         {/* crud 될 리뷰들 */}
         <UserIdTitleBtn>
@@ -105,14 +62,7 @@ export const ReviewItem = ({ reviewData }) => {
               {/* userNickname */}
             </div>
           </UserID>
-          {toggle ? (
-            <input
-              type="text"
-              onChange={(event) => setReviewTitle(event.target.value)}
-            />
-          ) : (
-            <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-          )}
+          <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
           <EditDeleteBtn>
             <EditBtn>수정</EditBtn>
             <DeleteBtn>삭제</DeleteBtn>
@@ -131,35 +81,20 @@ export const ReviewItem = ({ reviewData }) => {
         </div>
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
-          {toggle ? (
-            <SpotImg />
-          ) : (
-            <SpotImg>
-              <img src={`${reviewData?.image}`} width="100%" height="100%" />
-            </SpotImg>
-          )}
+          <SpotImg>
+            <img src={`${reviewData?.image}`} width="100%" height="100%" />
+          </SpotImg>
           <ReasonLocation>
             {/* reason,location */}
             <ReasonMap>
               {/* 명당추천 */}
               <Reason>명당 추천 이유</Reason>
-              {toggle ? (
-                <input
-                  onChange={(event) => setReason(event.target.value)}
-                  type="text"
-                />
-              ) : (
-                <ReasonContents>{reviewData?.reason}</ReasonContents>
-              )}
+              <ReasonContents>{reviewData?.reason}</ReasonContents>
             </ReasonMap>
             <LocationMap>
               {/* 명당위치 */}
               <Location>명당위치</Location>
-              {toggle ? (
-                <input onChange={(event) => setLocation(event.target.value)} />
-              ) : (
-                <LocationContents>{reviewData?.location}</LocationContents>
-              )}
+              <LocationContents>{reviewData?.location}</LocationContents>
             </LocationMap>
           </ReasonLocation>
         </NiceSpot>
@@ -167,46 +102,18 @@ export const ReviewItem = ({ reviewData }) => {
           {/* good,bad,rate,menu */}
           <Good>
             <GoodTitle>장점</GoodTitle>
-            {toggle ? (
-              <input onChange={(event) => setGood(event.target.value)} />
-            ) : (
-              <GoodContents>{reviewData?.good}</GoodContents>
-            )}
+            <GoodContents>{reviewData?.good}</GoodContents>
           </Good>
           <Bad>
             <BadTitle>단점</BadTitle>
-            {toggle ? (
-              <input
-                type="text"
-                onChange={(event) => setBad(event.target.value)}
-              />
-            ) : (
-              <BadContents>{reviewData?.bad}</BadContents>
-            )}
+            <BadContents>{reviewData?.bad}</BadContents>
           </Bad>
           <RateMenu>
             {/* rate, menu */}
-            {toggle ? (
-              <div>
-                평점
-                <input
-                  type="text"
-                  onChange={(event) => setRate(event.target.value)}
-                />
-              </div>
-            ) : (
-              <Rate>평점 {reviewData?.rate}</Rate>
-            )}
+            <Rate>평점 {reviewData?.rate}</Rate>
             <Menu>
               <MenuTitle>추천메뉴</MenuTitle>
-              {toggle ? (
-                <input
-                  type="text"
-                  onChange={(event) => setMenu(event.target.value)}
-                />
-              ) : (
-                <MenuContents>{reviewData?.menu}</MenuContents>
-              )}
+              <MenuContents>{reviewData?.menu}</MenuContents>
             </Menu>
           </RateMenu>
         </GoodBad>
@@ -216,7 +123,7 @@ export const ReviewItem = ({ reviewData }) => {
 };
 
 const ReviewItems = styled.div`
-  width: 80%;
+  width: 100%;
 `;
 
 const ReviewTitles = styled.div`
@@ -252,8 +159,8 @@ const ReviewBtn = styled.button`
 `;
 
 const ReviewContents = styled.section`
-  width: 100%;
-  height: 1fr;
+  width: 932px;
+  height: 529px;
   border: 1px solid #aeb0af;
   border-radius: 10px;
   display: grid;
@@ -434,6 +341,7 @@ const GoodTitle = styled.div`
 const GoodContents = styled.div`
   font-size: 13px;
   font-weight: 300;
+  text-align: left;
 `;
 
 const Bad = styled.div`
@@ -453,6 +361,7 @@ const BadTitle = styled.div`
 const BadContents = styled.div`
   font-size: 13px;
   font-weight: 300;
+  text-align: left;
 `;
 
 const RateMenu = styled.div`
@@ -465,6 +374,7 @@ const Rate = styled.div`
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 35px;
+  text-align: left;
 `;
 const Menu = styled.div`
   display: inline-grid;

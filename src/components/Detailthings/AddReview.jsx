@@ -1,327 +1,566 @@
-// import React from "react";
-// import styled from "styled-components";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import {
+  Mutation,
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import styled from "styled-components";
+import { addReview, getReviews } from "../../api";
+import { dbService } from "../../firebase";
 
-// function AddReview() {
-//   return (
-//     <>
-//       <button onClick={onEditSubmit}> edit 완료 버튼</button>
-//       <ReviewTitles>
-//         {/* 리뷰와 리뷰등록 버튼 */}
-//         <ReviewCount>
-//           {/* 리뷰 라는 글 */}
-//           리뷰
-//           <ReviewCountNum>
-//             {/* 리뷰 갯수 */}
-//             (5)
-//           </ReviewCountNum>
-//         </ReviewCount>
-//         <ReviewBtn> 리뷰 등록</ReviewBtn>
-//       </ReviewTitles>
-//       <ReviewContents>
-//         {/* crud 될 리뷰들 */}
-//         <UserIdTitleBtn>
-//           {/* profile, createAt, userId, title, edit, delete btn */}
-//           <UserID>
-//             {/* profileImg, createAt, userNickname */}
-//             <UserImg>image</UserImg>
-//             {/* profileImg */}
-//             <div
-//               style={{
-//                 display: "grid",
-//                 marginLeft: 10,
-//               }}
-//             >
-//               {/* createAt,userNickname */}
-//               <ReviewDate></ReviewDate>
-//               {/* createAt */}
-//               <UserNickName>mr. 카공</UserNickName>
-//               {/* userNickname */}
-//             </div>
-//           </UserID>
-//         </UserIdTitleBtn>
-//         <Recommend>추천 명당</Recommend>
-//         <RecommendContents>
-//           추천하는 이 카페의 나만의 명당은!?
-//         </RecommendContents>
-//         <NiceSpot>
-//           {/* spotImaage, reason, location\ */}
-//           <SpotImg>
-//             <img src={`${reviewData?.image}`} />
-//           </SpotImg>
-//           <ReasonLocation>
-//             {/* reason,location */}
-//             <ReasonMap>
-//               {/* 명당추천 */}
-//               <Reason>명당 추천 이유</Reason>
-//               {toggle ? (
-//                 <input
-//                   onChange={(event) => setReason(event.target.value)}
-//                   type="text"
-//                 />
-//               ) : (
-//                 <ReasonContents>{reviewData?.reason}</ReasonContents>
-//               )}
-//             </ReasonMap>
-//             <LocationMap>
-//               {/* 명당위치 */}
-//               <Location>명당위치</Location>
-//               {toggle ? (
-//                 <input onChange={(event) => setLocation(event.target.value)} />
-//               ) : (
-//                 <LocationContents>{reviewData?.location}</LocationContents>
-//               )}
-//             </LocationMap>
-//           </ReasonLocation>
-//         </NiceSpot>
-//         <GoodBad>
-//           {/* good,bad,rate,menu */}
-//           <Good>
-//             <GoodTitle>장점</GoodTitle>
-//             {toggle ? (
-//               <input onChange={(event) => setGood(event.target.value)} />
-//             ) : (
-//               <GoodContents>{reviewData?.good}</GoodContents>
-//             )}
-//           </Good>
-//           <Bad>
-//             <BadTitle>단점</BadTitle>
-//             {toggle ? (
-//               <input
-//                 type="text"
-//                 onChange={(event) => setBad(event.target.value)}
-//               />
-//             ) : (
-//               <BadContents>{reviewData?.bad}</BadContents>
-//             )}
-//           </Bad>
-//           <RateMenu>
-//             {/* rate, menu */}
-//             {toggle ? (
-//               <input
-//                 type="text"
-//                 onChange={(event) => setRate(event.target.value)}
-//               />
-//             ) : (
-//               <Rate>평점 {reviewData?.rate}</Rate>
-//             )}
-//             <Menu>
-//               <MenuTitle>추천메뉴</MenuTitle>
-//               {toggle ? (
-//                 <input
-//                   type="text"
-//                   onChange={(event) => setMenu(event.target.value)}
-//                 />
-//               ) : (
-//                 <MenuContents>{reviewData?.menu}</MenuContents>
-//               )}
-//             </Menu>
-//           </RateMenu>
-//         </GoodBad>
-//       </ReviewContents>
-//     </>
-//   );
-// }
+export default function AddReview({ reviewData }) {
+  const queryClient = useQueryClient();
 
-// const ReviewTitles = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   width: 700px;
-//   height: 30px;
-// `;
+  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
-// const ReviewCount = styled.div`
-//   display: flex;
-//   font-size: 18px;
-//   text-align: left;
-//   font-weight: 900;
-// `;
+  // createMutate(data, {
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries("data");
+  //   },
+  // });
 
-// const ReviewCountNum = styled.div`
-//   margin-left: 4px;
-//   font-size: 18px;
-//   font-weight: 300;
-// `;
+  const [toggle, setToggle] = useState(false);
+  const [reason, setReason] = useState("");
+  // location good bad rate menu
+  const [location, setLocation] = useState("");
+  const [good, setGood] = useState("");
+  const [bad, setBad] = useState("");
+  const [rate, setRate] = useState(null);
+  const [menu, setMenu] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [userNickname, setUserNickname] = useState("");
 
-// const ReviewBtn = styled.button`
-//   border-radius: 30px;
-//   background-color: #33a264;
-//   color: white;
-//   font-weight: 300;
-//   font-size: 18px;
-//   width: 100px;
-//   height: 100%;
-//   border: none;
-//   text-align: center;
-// `;
+  const addReview = async () => {
+    await addDoc(collection(dbService, "review"), {
+      uid: UserID,
+      createAt: myDate,
+      reason: reason,
+      location: location,
+      good: good,
+      bad: bad,
+      rate: rate,
+      menu: menu,
+      reviewTitle: reviewTitle,
+      // id: reviewData?.id,
+      userNickname: userNickname,
+    });
+  };
 
-// const ReviewContents = styled.section`
-//   width: 700px;
-//   height: 400px;
-//   border: 1px solid #aeb0af;
-//   border-radius: 10px;
-//   display: grid;
-//   margin-top: 10px;
-// `;
+  const { isLoading: createLoading, mutate: createMutate } =
+    useMutation(addReview);
 
-// const UserIdTitleBtn = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   width: 100%;
-//   height: 48px;
-//   background-color: tomato;
-//   margin: 10px;
-// `;
+  if (createLoading) return;
 
-// const UserID = styled.div`
-//   width: 40%;
-//   height: 100%;
-//   border: solid 1px black;
-//   display: inline-flex;
-// `;
+  const myDate = new Date();
 
-// const UserImg = styled.div`
-//   width: 48px;
-//   height: 48px;
-//   display: inline-block;
-//   justify-content: left;
-//   background-color: white;
-//   border-radius: 100px;
-// `;
+  // console.log("test입니다", data);
 
-// const ReviewDate = styled.input`
-//   font-size: 12px;
-//   font-weight: 200;
-//   color: gray;
-//   display: inline-flex;
-//   border: solid 1px tomato;
-// `;
-// const UserNickName = styled.div`
-//   font-size: 18px;
-//   font-weight: 400;
-//   color: gray;
-//   display: contents;
-//   border: solid 1px tomato;
-// `;
+  const onAddSubmit = () => {
+    // console.log(reviews);
 
-// const Recommend = styled.div`
-//   font-size: 20px;
-//   font-weight: 500;
-// `;
+    const data = {
+      createAt: myDate,
+      reason: reason,
+      location: location,
+      good: good,
+      bad: bad,
+      rate: rate,
+      menu: menu,
+      reviewTitle: reviewTitle,
+      // id: reviewData?.id,
+      userNickname: userNickname,
+    };
+    //input창에 입력 된 value값들을 data로 표시 중
+    // console.log(data);
+    createMutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("data");
+      },
+    });
+  };
 
-// const RecommendContents = styled.div`
-//   font-size: 15px;
-//   margin-left: 10px;
-//   font-weight: 200;
-// `;
+  if (createLoading) return;
 
-// const NiceSpot = styled.section`
-//   width: 100%;
-//   height: 40%;
-//   display: inline-block;
-//   border: solid 1px tomato;
-// `;
+  return (
+    <ReviewItems>
+      {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
+      <ReviewTitles>
+        {/* 리뷰와 리뷰등록 버튼 */}
+        <ReviewCount>
+          {/* 리뷰 라는 글 */}
+          리뷰
+          <ReviewCountNum>
+            {/* 리뷰 갯수 */}
+            (5)
+          </ReviewCountNum>
+        </ReviewCount>
+        <ReviewBtn
+          onClick={() => {
+            setToggle(!toggle);
+          }}
+        >
+          {" "}
+          리뷰 작성
+        </ReviewBtn>
+      </ReviewTitles>
+      <ReviewContents>
+        {/* crud 될 리뷰들 */}
+        <UserIdTitleBtn>
+          {/* profile, createAt, userId, title, edit, delete btn */}
+          <UserID>
+            {/* profileImg, createAt, userNickname */}
+            <UserImg>{/*{reviewData?.image}*/}</UserImg>
+            {/* profileImg */}
+            <div
+              style={{
+                display: "grid",
+                marginLeft: 10,
+              }}
+            >
+              {/* createAt,userNickname */}
+              <ReviewDate>{reviewData?.createAt}</ReviewDate>
+              {/* createAt */}
+              <UserNickName>{reviewData?.userNickname} ,</UserNickName>
+              {/* userNickname */}
+            </div>
+          </UserID>
 
-// const SpotImg = styled.div`
-//   width: 100px;
-//   height: 100%;
-//   background-color: tomato;
-// `;
+          <RevieTitleinput
+            value={reviewTitle}
+            placeholder="제목을 입력해 주세요."
+            type="text"
+            onChange={(event) => setReviewTitle(event.target.value)}
+          />
+        </UserIdTitleBtn>
+        <div
+          style={{
+            display: "inline-flex",
+            height: "fit-contents",
+          }}
+        >
+          <Recommend>추천 명당</Recommend>
+          <RecommendContents>
+            추천하는 이 카페의 나만의 명당은!?
+          </RecommendContents>
+        </div>
+        <GoodBad>
+          {/* good,bad,rate,menu */}
+          <Good>
+            <GoodTitle>장점</GoodTitle>
+            <GoodInput
+              value={good}
+              onChange={(event) => setGood(event.target.value)}
+              placeholder="장점을 입력해주세요. 30글자 이내"
+            />
+          </Good>
+          <Bad>
+            <BadTitle>단점</BadTitle>
+            <BadInput
+              value={bad}
+              type="text"
+              onChange={(event) => setBad(event.target.value)}
+              placeholder="단점을 입력해주세요. 30글자 이내"
+            />
+          </Bad>
+          <RateMenu>
+            {/* rate, menu */}
+            {toggle ? (
+              <div>
+                평점
+                <input
+                  type="text"
+                  onChange={(event) => setRate(event.target.value)}
+                />
+              </div>
+            ) : (
+              <Rate>평점 {reviewData?.rate}</Rate>
+            )}
+            <Menu>
+              <MenuTitle>추천메뉴</MenuTitle>
+              <MenuInput
+                value={menu}
+                placeholder="추천메뉴를 작성해주세요."
+                type="text"
+                onChange={(event) => setMenu(event.target.value)}
+              />
+            </Menu>
+          </RateMenu>
+        </GoodBad>
+        <NiceSpot>
+          {/* spotImaage, reason, location\ */}
+          <SpotImg>
+            <img
+              // value={image}
+              src={`${reviewData?.image}`}
+              style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
+            />
+          </SpotImg>
+          <ReasonLocation>
+            {/* reason,location */}
+            <ReasonMap>
+              {/* 명당추천 */}
+              <Reason>명당 추천 이유</Reason>
+              <ReasonInput
+                value={reason}
+                placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
+                onChange={(event) => setReason(event.target.value)}
+                type="text"
+              />
+            </ReasonMap>
+            <LocationMap>
+              {/* 명당위치 */}
+              <Location>명당위치</Location>
+              <LocationInput
+                value={location}
+                placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
+                onChange={(event) => setLocation(event.target.value)}
+                type="text"
+              />
+            </LocationMap>
+          </ReasonLocation>
+        </NiceSpot>
+        {/* 완료 취소 버튼 */}
+        <AddCancleBtn>
+          <AddBtn onClick={onAddSubmit}>완료</AddBtn>
+          <CancleBtn>취소</CancleBtn>
+        </AddCancleBtn>
+      </ReviewContents>
+    </ReviewItems>
+  );
+}
 
-// const ReasonLocation = styled.div`
-//   display: flex;
-// `;
+const ReviewItems = styled.div`
+  width: 100%;
+`;
 
-// const ReasonMap = styled.div`
-//   display: flex;
-//   flex-direction: row;
-// `;
+const ReviewTitles = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 30px;
+`;
 
-// const Reason = styled.div`
-//   font-size: 18px;
-//   padding-bottom: 5px;
-//   font-weight: 300;
-// `;
-// const ReasonContents = styled.div`
-//   font-size: 12px;
-//   font-weight: 200;
-// `;
+const ReviewCount = styled.div`
+  display: flex;
+  font-size: 18px;
+  text-align: left;
+  font-weight: 900;
+`;
 
-// const LocationMap = styled.div`
-//   display: flex;
-//   flex-direction: row;
-// `;
+const ReviewCountNum = styled.div`
+  margin-left: 5px;
+  font-size: 18px;
+  font-weight: 300;
+`;
 
-// const Location = styled.div`
-//   font-size: 18px;
-//   font-weight: 300;
-//   padding-bottom: 5px;
-// `;
+const ReviewBtn = styled.button`
+  border-radius: 30px;
+  background-color: #33a264;
+  color: white;
+  font-weight: 300;
+  font-size: 18px;
+  width: 100px;
+  height: 100%;
+  /* border: none; */
+  text-align: center;
+`;
 
-// const LocationContents = styled.div`
-//   font-size: 12px;
-//   font-weight: 200;
-// `;
+const ReviewContents = styled.section`
+  width: 932px;
+  height: 529px;
+  border: 1px solid #aeb0af;
+  border-radius: 10px;
+  display: grid;
+  margin-top: 10px;
+  padding: 25px;
+`;
 
-// const GoodBad = styled.div`
-//   display: inline-block;
-//   width: 100%;
-//   height: 200px;
-// `;
+const UserIdTitleBtn = styled.div`
+  display: inline-flex;
+  justify-content: space-between;
+  width: auto;
+  height: fit-content;
+`;
 
-// const Good = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   width: 300px;
-//   height: 150px;
-// `;
+const UserID = styled.div`
+  width: 20%;
+  height: 100%;
+  display: inline-flex;
+`;
 
-// const GoodTitle = styled.div`
-//   font-size: 18px;
-//   font-weight: 300;
-// `;
+const UserImg = styled.div`
+  width: 48px;
+  height: 48px;
+  display: inline-block;
+  justify-content: left;
+  background-color: tomato;
+  border-radius: 100px;
+`;
 
-// const GoodContents = styled.div`
-//   font-size: 12px;
-//   font-weight: 200;
-// `;
+const ReviewDate = styled.div`
+  font-size: 12px;
+  font-weight: 200;
+  color: gray;
+  display: inline-flex;
+`;
+const UserNickName = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  display: contents;
+`;
+//
 
-// const Bad = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   width: 300px;
-//   height: 150px;
-// `;
+const RevieTitleinput = styled.input`
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  border: solid #b9b9b9;
+  border-width: 0 0 4px 0;
+  width: 80%;
 
-// const BadTitle = styled.div`
-//   font-size: 18px;
-//   font-weight: 300;
-// `;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: bold;
+  }
+`;
 
-// const BadContents = styled.div`
-//   font-size: 12px;
-//   font-weight: 200;
-// `;
+const Recommend = styled.div`
+  display: inline-flex;
+  flex-direction: row;
+  font-size: 25px;
+  font-weight: 700;
+  align-items: flex-end;
+`;
 
-// const RateMenu = styled.div`
-//   display: flex;
-// `;
+const RecommendContents = styled.div`
+  display: inline-flex;
+  font-size: 15px;
+  margin-left: 10px;
+  font-weight: 200;
+  align-items: flex-end;
+`;
 
-// const Rate = styled.div`
-//   display: flex;
-//   font-size: 18px;
-//   font-weight: 300;
-// `;
-// const Menu = styled.div`
-//   display: flex;
-// `;
-// const MenuTitle = styled.div`
-//   display: flex;
-//   font-size: 18px;
-//   font-weight: 300;
-// `;
-// const MenuContents = styled.div`
-//   font-size: 12px;
-//   font-weight: 200;
-// `;
+const NiceSpot = styled.section`
+  width: 100%;
+  height: 200px;
+  display: inline-flex;
+  flex-direction: row;
+  margin: 13px 0px;
+`;
 
-// export default AddReview;
+const SpotImg = styled.div`
+  height: 201px;
+  width: 246px;
+  background-color: tomato;
+`;
+
+const ReasonLocation = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 20px;
+  gap: 15px;
+`;
+
+const ReasonMap = styled.div`
+  display: inline-block;
+  height: 50%;
+  width: 100%;
+`;
+
+const Reason = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  width: 100%;
+  height: 30%;
+`;
+const ReasonInput = styled.input`
+  font-size: 14px;
+  font-weight: 200;
+  display: flex;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  vertical-align: top;
+  text-align: left;
+  width: 100%;
+  height: 70%;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: 400;
+  }
+`;
+
+const LocationMap = styled.div`
+  display: inline-block;
+  height: 50%;
+  width: 100%;
+`;
+
+const Location = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  height: 30%;
+`;
+
+const LocationInput = styled.input`
+  font-size: 14px;
+  font-weight: 200;
+  display: flex;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  vertical-align: top;
+  text-align: left;
+  width: 100%;
+  height: 70%;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: 400;
+  }
+`;
+
+const GoodBad = styled.div`
+  display: inline-flex;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
+  gap: 20px;
+`;
+
+const Good = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-items: left;
+  align-content: flex-start;
+  height: 100%;
+  flex: 1;
+`;
+
+const GoodTitle = styled.div`
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  text-align: left;
+`;
+
+const GoodInput = styled.input`
+  font-size: 13px;
+  font-weight: 300;
+  text-align: left;
+  width: inherit;
+  height: 100%;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: 400;
+    font-size: 14px;
+  }
+`;
+
+const Bad = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-items: left;
+  align-content: flex-start;
+  height: 100%;
+  flex: 1;
+`;
+
+const BadTitle = styled.div`
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  text-align: left;
+`;
+
+const BadInput = styled.input`
+  font-size: 13px;
+  font-weight: 300;
+  text-align: left;
+  width: inherit;
+  height: 100%;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: 400;
+    font-size: 14px;
+  }
+`;
+
+const RateMenu = styled.div`
+  display: flex;
+  align-content: flex-start;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+`;
+
+const Rate = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: left;
+  height: 35%;
+`;
+const Menu = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  text-align: left;
+  height: 65%;
+`;
+const MenuTitle = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 10px;
+`;
+const MenuInput = styled.input`
+  font-size: 13px;
+  font-weight: 300;
+  text-align: left;
+  width: inherit;
+  height: 100%;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  ::placeholder {
+    color: #b9b9b9;
+    font-weight: 400;
+    font-size: 14px;
+  }
+`;
+
+const AddCancleBtn = styled.div`
+  display: flex;
+  justify-content: right;
+  flex-direction: row;
+`;
+const AddBtn = styled.button`
+  background-color: #33a264;
+  border-radius: 100px;
+  width: 90px;
+  height: 30px;
+  border-width: none;
+  font-size: 16px;
+  color: white;
+`;
+const CancleBtn = styled.button`
+  font-size: 16px;
+  margin-left: 15px;
+  background-color: black;
+  color: white;
+  border-radius: 100px;
+  width: 90px;
+  height: 30px;
+  border-width: none;
+`;
