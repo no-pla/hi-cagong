@@ -9,12 +9,14 @@ const config = {
 };
 
 export const useGetStoreData = () => {
-  const storeData = useLocation();
+  const getStoreData = useLocation();
+  const { state: storeData } = getStoreData;
+  const [x, y] = [storeData.storeInfo.x, storeData.storeInfo.y];
   const { data: stores, isLoading } = useQuery("cafeInfo", () => {
     return axios.get(
-      `https://dapi.kakao.com/v2/local/search/keyword.json?sort=accuracy&category_group_code=CE7&page=1&size=15&query=${storeData.state.storeName}`,
+      `https://dapi.kakao.com/v2/local/search/keyword.json?sort=accuracy&category_group_code=CE7&page=1&size=15&query=${storeData.storeInfo.place_name}`,
       config
     );
   });
-  return { stores, isLoading };
+  return { stores, isLoading, x, y };
 };

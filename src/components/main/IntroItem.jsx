@@ -7,8 +7,7 @@ export const IntroItem = ({ placeItem }) => {
   const goToDetail = (id) => {
     navigate(`/${id}`, {
       state: {
-        storeName: placeItem.find((cafe) => cafe.content.id === id).content
-          .place_name,
+        storeInfo: placeItem.find((cafe) => cafe.content.id === id).content,
       },
     });
   };
