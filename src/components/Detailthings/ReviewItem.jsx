@@ -1,126 +1,113 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { deleteReview } from "../../api";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { onSnapshot } from "firebase/firestore";
+import { useMutation, useQueryClient } from "react-query";
 
-export const ReviewItem = ({ reviewData }) => {
-  const [toggle, setToggle] = useState(false);
-  const [reason, setReason] = useState("");
-  // location good bad rate menu
-  const [location, setLocation] = useState("");
-  const [good, setGood] = useState("");
-  const [bad, setBad] = useState("");
-  const [rate, setRate] = useState(null);
-  const [menu, setMenu] = useState("");
-  const [reviewTitle, setReviewTitle] = useState("");
-  const [userNickname, setUserNickname] = useState("");
-
+export const ReviewItem = (reviews) => {
   const queryClient = useQueryClient();
-
   const { isLoading: deleteLoading, mutate: deleteMutate } =
     useMutation(deleteReview);
+
   const onDeleteReview = () => {
-    deleteMutate(reviewData.id, {
+    deleteMutate(reviews.id, {
       onSuccess: () => {
         queryClient.invalidateQueries("reviewdata");
       },
     });
   };
 
-  if (deleteLoading) return;
-
-  // const { isLoading: editLoading, mutate: editMutate } =
-  //   useMutation(editMutate);
-  // const onEditReview = () => {
-  //   editMutate;
-  // };
-
   return (
-    <ReviewItems>
-      <button onClick={onDeleteReview}> delete 버튼</button>
-      {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
+    <ReviewItemContainer>
+      {reviews.reviews.map((reviewData) => (
+        <ReviewItems>
+          <button onClick={onDeleteReview}> delete 버튼</button>
+          {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
 
-      <ReviewContents>
-        {/* crud 될 리뷰들 */}
-        <UserIdTitleBtn>
-          {/* profile, createAt, userId, title, edit, delete btn */}
-          <UserID>
-            {/* profileImg, createAt, userNickname */}
-            <UserImg>{/*{reviewData?.image}*/}</UserImg>
-            {/* profileImg */}
+          <ReviewContents>
+            {/* crud 될 리뷰들 */}
+            <UserIdTitleBtn>
+              {/* profile, createAt, userId, title, edit, delete btn */}
+              <UserID>
+                {/* profileImg, createAt, userNickname */}
+                <UserImg>{/*{reviewData?.image}*/}</UserImg>
+                {/* profileImg */}
+                <div
+                  style={{
+                    display: "grid",
+                    marginLeft: 10,
+                  }}
+                >
+                  {/* createAt,userNickname */}
+                  <ReviewDate>{reviewData?.createAt.seconds}</ReviewDate>
+                  {/* createAt */}
+                  <UserNickName>{reviewData?.userNickname} ,</UserNickName>
+                  {/* userNickname */}
+                </div>
+              </UserID>
+              <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
+              <EditDeleteBtn>
+                <EditBtn>수정</EditBtn>
+                <DeleteBtn>삭제</DeleteBtn>
+              </EditDeleteBtn>
+            </UserIdTitleBtn>
             <div
               style={{
-                display: "grid",
-                marginLeft: 10,
+                display: "inline-flex",
+                marginLeft: 25,
               }}
             >
-              {/* createAt,userNickname */}
-              <ReviewDate>{reviewData?.createAt}</ReviewDate>
-              {/* createAt */}
-              <UserNickName>{reviewData?.userNickname} ,</UserNickName>
-              {/* userNickname */}
+              <Recommend>추천 명당</Recommend>
+              <RecommendContents>
+                추천하는 이 카페의 나만의 명당은!?
+              </RecommendContents>
             </div>
-          </UserID>
-          <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-          <EditDeleteBtn>
-            <EditBtn>수정</EditBtn>
-            <DeleteBtn>삭제</DeleteBtn>
-          </EditDeleteBtn>
-        </UserIdTitleBtn>
-        <div
-          style={{
-            display: "inline-flex",
-            marginLeft: 25,
-          }}
-        >
-          <Recommend>추천 명당</Recommend>
-          <RecommendContents>
-            추천하는 이 카페의 나만의 명당은!?
-          </RecommendContents>
-        </div>
-        <NiceSpot>
-          {/* spotImaage, reason, location\ */}
-          <SpotImg>
-            <img src={`${reviewData?.image}`} width="100%" height="100%" />
-          </SpotImg>
-          <ReasonLocation>
-            {/* reason,location */}
-            <ReasonMap>
-              {/* 명당추천 */}
-              <Reason>명당 추천 이유</Reason>
-              <ReasonContents>{reviewData?.reason}</ReasonContents>
-            </ReasonMap>
-            <LocationMap>
-              {/* 명당위치 */}
-              <Location>명당위치</Location>
-              <LocationContents>{reviewData?.location}</LocationContents>
-            </LocationMap>
-          </ReasonLocation>
-        </NiceSpot>
-        <GoodBad>
-          {/* good,bad,rate,menu */}
-          <Good>
-            <GoodTitle>장점</GoodTitle>
-            <GoodContents>{reviewData?.good}</GoodContents>
-          </Good>
-          <Bad>
-            <BadTitle>단점</BadTitle>
-            <BadContents>{reviewData?.bad}</BadContents>
-          </Bad>
-          <RateMenu>
-            {/* rate, menu */}
-            <Rate>평점 {reviewData?.rate}</Rate>
-            <Menu>
-              <MenuTitle>추천메뉴</MenuTitle>
-              <MenuContents>{reviewData?.menu}</MenuContents>
-            </Menu>
-          </RateMenu>
-        </GoodBad>
-      </ReviewContents>
-    </ReviewItems>
+            <NiceSpot>
+              {/* spotImaage, reason, location\ */}
+              <SpotImg>
+                <img src={`${reviewData?.image}`} width="100%" height="100%" />
+              </SpotImg>
+              <ReasonLocation>
+                {/* reason,location */}
+                <ReasonMap>
+                  {/* 명당추천 */}
+                  <Reason>명당 추천 이유</Reason>
+                  <ReasonContents>{reviewData?.reason}</ReasonContents>
+                </ReasonMap>
+                <LocationMap>
+                  {/* 명당위치 */}
+                  <Location>명당위치</Location>
+                  <LocationContents>{reviewData?.location}</LocationContents>
+                </LocationMap>
+              </ReasonLocation>
+            </NiceSpot>
+            <GoodBad>
+              {/* good,bad,rate,menu */}
+              <Good>
+                <GoodTitle>장점</GoodTitle>
+                <GoodContents>{reviewData?.good}</GoodContents>
+              </Good>
+              <Bad>
+                <BadTitle>단점</BadTitle>
+                <BadContents>{reviewData?.bad}</BadContents>
+              </Bad>
+              <RateMenu>
+                {/* rate, menu */}
+                <Rate>평점 {reviewData?.rate}</Rate>
+                <Menu>
+                  <MenuTitle>추천메뉴</MenuTitle>
+                  <MenuContents>{reviewData?.menu}</MenuContents>
+                </Menu>
+              </RateMenu>
+            </GoodBad>
+          </ReviewContents>
+        </ReviewItems>
+      ))}
+    </ReviewItemContainer>
   );
 };
+
+const ReviewItemContainer = styled.div`
+  overflow-y: scroll;
+`;
 
 const ReviewItems = styled.div`
   width: 100%;
