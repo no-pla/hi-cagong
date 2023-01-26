@@ -3,23 +3,23 @@ import { deleteReview } from "../../api";
 import { useMutation, useQueryClient } from "react-query";
 
 export const ReviewItem = (reviews) => {
-  const queryClient = useQueryClient();
-  const { isLoading: deleteLoading, mutate: deleteMutate } =
-    useMutation(deleteReview);
+  // const queryClient = useQueryClient();
+  // const { isLoading: deleteLoading, mutate: deleteMutate } =
+  //   useMutation(deleteReview);
 
-  const onDeleteReview = () => {
-    deleteMutate(reviews.id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries("reviewdata");
-      },
-    });
-  };
+  // const onDeleteReview = () => {
+  //   deleteMutate(reviews.id, {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries("reviewdata");
+  //     },
+  //   });
+  // };
 
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
         <ReviewItems>
-          <button onClick={onDeleteReview}> delete 버튼</button>
+          {/* <button onClick={onDeleteReview}> delete 버튼</button> */}
           {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
 
           <ReviewContents>
