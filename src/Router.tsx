@@ -14,7 +14,7 @@ export const Router = () => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/:cafeId" element={<Detail />}></Route>
-          <Route path="/mypage/:id" element={<MyPage />}></Route>
+          <Route path="/mypage" element={<MyPage />}></Route>
         </Routes>
       </ContentWrap>
     </BrowserRouter>
