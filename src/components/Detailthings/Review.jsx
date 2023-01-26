@@ -11,9 +11,9 @@ import AddReview from "./AddReview";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { ReviewItem } from "./ReviewItem";
 import { dbService } from "../../firebase";
+import { useGetReviews } from "../Hooks/useGetReviews";
 
 function Review() {
-  const [myReviews, setMyReviews] = useState([]);
   // firebase에서 review 데이터들을 가져오는 것
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
@@ -26,6 +26,7 @@ function Review() {
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
 
+  const { reviews: reviewRead } = useGetReviews("uid", "임재영"); //임시값
   // cafeId와 일치하는 review들을 화면에 띄움
   // const q = query(
   //   collection(dbService, "review"),
@@ -103,7 +104,10 @@ function Review() {
         <AddReview setReviews={setReviews} reviews={reviews} />
 
         {/* ReviewItem들 : 등록되어있는 리뷰들 */}
-        <ReviewItem reviewData={reviewData} myReviews={myReviews}></ReviewItem>
+        <ReviewItem
+          reviewData={reviewData}
+          reviewRead={reviewRead}
+        ></ReviewItem>
       </AllReview>
     </div>
   );

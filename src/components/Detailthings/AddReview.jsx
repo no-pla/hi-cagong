@@ -103,14 +103,14 @@ export default function AddReview({ reviewData }) {
       bad,
       createAt: Date.now(),
       good,
-      // location,
-      // menu,
-      // rate,
-      // reason,
-      // reviewTitle,
-      // UserID,
-      // image: "test",
-      // userNickname: "코쟁이",
+      location,
+      menu,
+      rate,
+      reason,
+      reviewTitle,
+      UserID,
+      image: "test",
+      userNickname: "코쟁이",
     };
 
     // revieData를 가져오면 화면에 query로 바로 표시하는 것
@@ -120,7 +120,7 @@ export default function AddReview({ reviewData }) {
       },
     });
 
-    console.log(reviewData);
+    console.log("테스트입니다", reviewData);
     //input창에 입력 된 value값들을 data로 표시 중
 
     // data를 가져오면 화면에 query로 바로 표시하는 것
