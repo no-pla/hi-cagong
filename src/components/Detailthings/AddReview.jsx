@@ -42,22 +42,22 @@ export default function AddReview({ reviewData }) {
   // createAt 현재 시간
   const myDate = new Date();
 
-  // const addReview = async () => {
-  //   await addDoc(collection(dbService, "review"), {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: UserID,
-  //     // id: reviewData?.id,
-  //     //image:image
-  //     userNickname: userNickname,
-  //   });
-  // };
+  const addReview = async () => {
+    await addDoc(collection(dbService, "review"), {
+      bad: bad,
+      createAt: myDate,
+      good: good,
+      location: location,
+      menu: menu,
+      rate: rate,
+      reason: reason,
+      reviewTitle: reviewTitle,
+      uid: UserID,
+      // id: reviewData?.id,
+      //image:image
+      userNickname: userNickname,
+    });
+  };
 
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);

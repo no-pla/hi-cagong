@@ -27,17 +27,15 @@ function Review() {
     useMutation(addReview);
 
   // cafeId와 일치하는 review들을 화면에 띄움
-  const currentUid = "임재영"; // 임시값 추후 수정 예정
-
   const q = query(
     collection(dbService, "review"),
-    where("uid", "==", currentUid)
+    where(target, "==", targetId)
   );
 
   const getMyReviewList = async () => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      setMyReviews((prev) => [...prev, doc.data()]);
+      setReviews((prev) => [...prev, doc.data()]);
     });
   };
 
@@ -102,11 +100,7 @@ function Review() {
         {/* 모든 리뷰에 관한 것들  */}
 
         {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
-        <AddReview
-          reviewData={reviewData}
-          setReviews={setReviews}
-          reviews={reviews}
-        />
+        <AddReview setReviews={setReviews} reviews={reviews} />
 
         {/* ReviewItem들 : 등록되어있는 리뷰들 */}
         <ReviewItem reviewData={reviewData} myReviews={myReviews}></ReviewItem>
