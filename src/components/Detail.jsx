@@ -6,6 +6,7 @@ import Review from "./Detailthings/Review";
 const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const Detail = () => {
