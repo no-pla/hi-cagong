@@ -27,21 +27,21 @@ function Review() {
     useMutation(addReview);
 
   // cafeId와 일치하는 review들을 화면에 띄움
-  const q = query(
-    collection(dbService, "review"),
-    where(target, "==", targetId)
-  );
+  // const q = query(
+  //   collection(dbService, "review"),
+  //   where(target, "==", targetId)
+  // );
 
-  const getMyReviewList = async () => {
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setReviews((prev) => [...prev, doc.data()]);
-    });
-  };
+  // const getMyReviewList = async () => {
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach((doc) => {
+  //     setReviews((prev) => [...prev, doc.data()]);
+  //   });
+  // };
 
-  useEffect(() => {
-    getMyReviewList();
-  }, []);
+  // useEffect(() => {
+  //   getMyReviewList();
+  // }, []);
 
   // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
