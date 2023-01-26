@@ -1,49 +1,20 @@
-import React, { useState } from "react";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
-import { addReview, getReviews } from "../../api";
+import { useGetReviews } from "../Hooks/useGetReviews";
 import AddReview from "./AddReview";
 
 import { ReviewItem } from "./ReviewItem";
 
 function Review() {
-  // firebase에서 review 데이터들을 가져오는 것
-  const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
-  const [reviews, setReviews] = useState(reviewData);
+  const { reviews } = useGetReviews("uid", "임재영"); //임시값
 
   // useQueryClient 사용
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
-  const { isLoading: createLoading, mutate: createMutate } =
-    useMutation(addReview);
+  // // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
+  // const { isLoading: createLoading, mutate: createMutate } =
+  //   useMutation(addReview);
 
-  // cafeId와 일치하는 review들을 화면에 띄움
-  const currentUid = "임재영"; // 임시값 추후 수정 예정
-
-  const q = query(
-    collection(dbService, "review"),
-    where("uid", "==", currentUid)
-  );
-
-  const getMyReviewList = async () => {
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setMyReviews((prev) => [...prev, doc.data()]);
-    });
-  };
-
-  useEffect(() => {
-    getMyReviewList();
-  }, []);
-
-  // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
     const reviewData = {
       bad: "냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요",
@@ -61,20 +32,7 @@ function Review() {
         "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
       userNickname: "코쟁이",
     };
-
-    // revieData를 가져오면 화면에 query로 바로 표시하는 것
-    createMutate(reviewData, {
-      onSuccess: () => {
-        queryClient.invalidateQueries("reviewData");
-      },
-    });
-
-    // setReview((prev) => {
-    //   return [...prev, reviewData];
-    // });
   };
-
-  if (isLoading) return;
 
   return (
     <div
@@ -88,7 +46,6 @@ function Review() {
           display: "inline-flex",
         }}
       >
-        {" "}
         create 버튼
       </button>
       <AllReview
@@ -96,17 +53,12 @@ function Review() {
           display: "grid",
         }}
       >
-        {/* 모든 리뷰에 관한 것들  */}
-
-        {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
         <AddReview
-          reviewData={reviewData}
-          setReviews={setReviews}
-          reviews={reviews}
+        // reviewData={reviewData}
+        // setReviews={setReviews}
+        // reviews={reviews}
         />
-
-        {/* ReviewItem들 : 등록되어있는 리뷰들 */}
-        <ReviewItem reviewData={reviewData}></ReviewItem>
+        <ReviewItem reviews={reviews} />
       </AllReview>
     </div>
   );
