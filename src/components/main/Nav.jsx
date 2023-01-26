@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 export const Nav = () => {
   return (
     <NavWrap>
@@ -9,7 +9,7 @@ export const Nav = () => {
       </Logo>
       <Auth>
         <p>Login</p>
-        <p>Sing up</p>
+        <p>Sign up</p>
       </Auth>
     </NavWrap>
   );
