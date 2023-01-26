@@ -1,16 +1,6 @@
-import axios from "axios";
-import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { Roadview } from "react-kakao-maps-sdk";
 import styled from "styled-components";
-import { useGetRoadMap } from "./Hooks/useGetRoadMap";
-
-const RoadMap = styled.div`
-  width: max(330px, 30%);
-  height: 250px;
-  border-radius: 5px 5px 0px 0px;
-  border: 1px solid black;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-`;
+import { useGetStoreData } from "./Hooks/useGetStoreData";
 
 const StoreInfo = styled.div`
   margin-left: 30px;
@@ -35,6 +25,9 @@ const StoreInfoDesc = styled.div`
 const StoreName = styled.h1`
   font-size: 24px;
   color: #33a264;
+  @media (max-width: 720px) {
+    margin-top: 30px;
+  }
 `;
 
 const StoreContent = styled.div`
@@ -42,29 +35,30 @@ const StoreContent = styled.div`
   margin: 50px 0;
   align-items: center;
   justify-content: center;
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
 `;
 
-const config = {
-  headers: {
-    Authorization: "KakaoAK 9000b6993dd65d1d3b7d2f30e697ad6e",
-  },
-};
-
 export const DetailContent = () => {
-  const location = useLocation();
-
-  const { data: stores, isLoading } = useQuery("test", () => {
-    return axios.get(
-      `https://dapi.kakao.com/v2/local/search/keyword.json?sort=accuracy&category_group_code=CE7&page=1&size=15&query=${location.state.storeName}`,
-      config
-    );
-  });
-
-  useGetRoadMap(+stores?.data.documents[0].y, +stores?.data.documents[0].x); // 로드맵 불러오기
+  const { stores, isLoading, x, y } = useGetStoreData();
 
   return (
     <StoreContent>
-      <RoadMap id="roadview" />
+      <Roadview // 로드뷰를 표시할 Container
+        position={{
+          // 지도의 중심좌표
+          lat: +y,
+          lng: +x,
+          radius: 100,
+        }}
+        style={{
+          // 지도의 크기
+          width: "340px",
+          height: "240px",
+          borderRadius: "5px 5px 0px 0px",
+        }}
+      />
       {isLoading ? (
         <h1>로딩중</h1>
       ) : (
