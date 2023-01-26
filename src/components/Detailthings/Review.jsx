@@ -11,9 +11,9 @@ import AddReview from "./AddReview";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { ReviewItem } from "./ReviewItem";
 import { dbService } from "../../firebase";
-import { useGetReviews } from "../Hooks/useGetReviews";
 
 function Review() {
+  const [myReviews, setMyReviews] = useState([]);
   // firebase에서 review 데이터들을 가져오는 것
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
@@ -26,23 +26,24 @@ function Review() {
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
 
-  const { reviews: reviewRead } = useGetReviews("uid", "임재영"); //임시값
   // cafeId와 일치하는 review들을 화면에 띄움
-  // const q = query(
-  //   collection(dbService, "review"),
-  //   where(target, "==", targetId)
-  // );
+  const currentUid = "임재영"; // 임시값 추후 수정 예정
 
-  // const getMyReviewList = async () => {
-  //   const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //     setReviews((prev) => [...prev, doc.data()]);
-  //   });
-  // };
+  const q = query(
+    collection(dbService, "review"),
+    where("uid", "==", currentUid)
+  );
 
-  // useEffect(() => {
-  //   getMyReviewList();
-  // }, []);
+  const getMyReviewList = async () => {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setMyReviews((prev) => [...prev, doc.data()]);
+    });
+  };
+
+  useEffect(() => {
+    getMyReviewList();
+  }, []);
 
   // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
@@ -101,13 +102,14 @@ function Review() {
         {/* 모든 리뷰에 관한 것들  */}
 
         {/* 리뷰등록 Btn 클릭시 생기는 생성 컴포넌트 */}
-        <AddReview setReviews={setReviews} reviews={reviews} />
+        {/* <AddReview
+          reviewData={reviewData}
+          setReviews={setReviews}
+          reviews={reviews}
+        /> */}
 
         {/* ReviewItem들 : 등록되어있는 리뷰들 */}
-        <ReviewItem
-          reviewData={reviewData}
-          reviewRead={reviewRead}
-        ></ReviewItem>
+        <ReviewItem reviewData={reviewData} myReviews={myReviews}></ReviewItem>
       </AllReview>
     </div>
   );

@@ -4,7 +4,7 @@ import { deleteReview } from "../../api";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { onSnapshot } from "firebase/firestore";
 
-export const ReviewItem = ({ reviewData, reviewRead }) => {
+export const ReviewItem = ({ reviewData, myReviews }) => {
   const [toggle, setToggle] = useState(false);
   const [reason, setReason] = useState("");
   // location good bad rate menu
@@ -39,7 +39,7 @@ export const ReviewItem = ({ reviewData, reviewRead }) => {
 
   return (
     <div>
-      {reviewRead.map((reviewData) => {
+      {myReviews.map((reviewData) => {
         return (
           <ReviewItems>
             <button onClick={onDeleteReview}> delete 버튼</button>
