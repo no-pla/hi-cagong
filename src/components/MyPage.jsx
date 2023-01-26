@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { dbService } from "../firebase";
+import { useState } from "react";
+import { useGetReviews } from "./Hooks/useGetReviews";
 
 const UserProfileContainer = styled.div`
   background: #f6f6f6;
@@ -160,26 +159,9 @@ const SectionContainer = styled.div`
 `;
 
 export const MyPage = () => {
-  const [myReviews, setMyReviews] = useState([]);
   const [profileSetting, setProfileSetting] = useState(false);
 
-  const currentUid = "김태훈"; // 임시값 추후 수정 예정
-
-  const q = query(
-    collection(dbService, "review"),
-    where("uid", "==", currentUid)
-  );
-
-  const getMyReviewList = async () => {
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setMyReviews((prev) => [...prev, doc.data()]);
-    });
-  };
-
-  useEffect(() => {
-    getMyReviewList();
-  }, []);
+  const { reviews } = useGetReviews("uid", "임재영"); //임시값
 
   return (
     <>
@@ -207,8 +189,8 @@ export const MyPage = () => {
       <SectionContainer>
         <Title>내가쓴리뷰</Title>
         <ReviewList>
-          {myReviews &&
-            myReviews.map((review) => {
+          {reviews &&
+            reviews.map((review) => {
               return (
                 <Review>
                   <ReviewImg ImgSrc={review.image} alt="" />
