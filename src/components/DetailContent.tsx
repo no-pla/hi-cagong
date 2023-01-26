@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useQuery } from "react-query";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useGetRoadMap } from "./Hooks/useGetRoadMap";
 
@@ -50,10 +51,11 @@ const config = {
 };
 
 export const DetailContent = () => {
+  const location = useLocation();
+
   const { data: stores, isLoading } = useQuery("test", () => {
-    const detailStoreName = "스타벅스 서울대입구역점"; //임시값 추후 수정 예정 정확한 상점명이 들어와야 함
     return axios.get(
-      `https://dapi.kakao.com/v2/local/search/keyword.json?sort=accuracy&category_group_code=CE7&page=1&size=15&query=${detailStoreName}`,
+      `https://dapi.kakao.com/v2/local/search/keyword.json?sort=accuracy&category_group_code=CE7&page=1&size=15&query=${location.state.storeName}`,
       config
     );
   });
