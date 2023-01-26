@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   QueryClient,
   useMutation,
@@ -8,10 +8,12 @@ import {
 import styled from "styled-components";
 import { addReview, getReviews } from "../../api";
 import AddReview from "./AddReview";
-
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { ReviewItem } from "./ReviewItem";
+import { dbService } from "../../firebase";
 
 function Review() {
+  const [myReviews, setMyReviews] = useState([]);
   // firebase에서 review 데이터들을 가져오는 것
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
@@ -23,6 +25,25 @@ function Review() {
   // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
   const { isLoading: createLoading, mutate: createMutate } =
     useMutation(addReview);
+
+  // cafeId와 일치하는 review들을 화면에 띄움
+  const currentUid = "임재영"; // 임시값 추후 수정 예정
+
+  const q = query(
+    collection(dbService, "review"),
+    where("uid", "==", currentUid)
+  );
+
+  const getMyReviewList = async () => {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setMyReviews((prev) => [...prev, doc.data()]);
+    });
+  };
+
+  useEffect(() => {
+    getMyReviewList();
+  }, []);
 
   // 버튼 클릭시 revieData를 가져오는 함수
   const addCreateReview = () => {
@@ -49,6 +70,7 @@ function Review() {
         queryClient.invalidateQueries("reviewData");
       },
     });
+    console.log(reviewData);
 
     // setReview((prev) => {
     //   return [...prev, reviewData];
@@ -87,7 +109,7 @@ function Review() {
         />
 
         {/* ReviewItem들 : 등록되어있는 리뷰들 */}
-        <ReviewItem reviewData={reviewData}></ReviewItem>
+        <ReviewItem reviewData={reviewData} myReviews={myReviews}></ReviewItem>
       </AllReview>
     </div>
   );
