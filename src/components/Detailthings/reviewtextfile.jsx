@@ -1,7 +1,10 @@
 // import React, { useState } from "react";
 // import styled from "styled-components";
+// import { deleteReview } from "../../api";
+// import { QueryClient, useMutation, useQueryClient } from "react-query";
+// import { onSnapshot } from "firebase/firestore";
 
-// const CreateReview = ({ reviewData }) => {
+// export const ReviewItem = ({ reviewData }) => {
 //   const [toggle, setToggle] = useState(false);
 //   const [reason, setReason] = useState("");
 //   // location good bad rate menu
@@ -13,8 +16,74 @@
 //   const [reviewTitle, setReviewTitle] = useState("");
 //   const [userNickname, setUserNickname] = useState("");
 
+//   const onAddSubmit = () => {
+//     const data = {
+//       reason: reason,
+//       location: location,
+//       good: good,
+//       bad: bad,
+//       rate: rate,
+//       menu: menu,
+//       reviewTitle: reviewTitle,
+//       // id: reviewData?.id,
+//       userNickname: userNickname,
+//     };
+//     //input창에 입력 된 value값들을 data로 표시 중
+//     console.log(data);
+//   };
+
+//   const queryClient = useQueryClient();
+
+//   const { isLoading: deleteLoading, mutate: deleteMutate } =
+//     useMutation(deleteReview);
+//   const onDeleteReview = () => {
+//     deleteMutate(reviewData.id, {
+//       onSuccess: () => {
+//         queryClient.invalidateQueries("reviewdata");
+//       },
+//     });
+//   };
+
+//   if (deleteLoading) return;
+
+//   // const { isLoading: editLoading, mutate: editMutate } =
+//   //   useMutation(editMutate);
+//   // const onEditReview = () => {
+//   //   editMutate;
+//   // };
+
 //   return (
 //     <ReviewItems>
+//       <button onClick={onDeleteReview}> delete 버튼</button>
+//       <button onClick={onAddSubmit}> edit 완료 버튼</button>
+//       <button
+//         onClick={() => {
+//           setToggle(!toggle);
+//         }}
+//       >
+//         {" "}
+//         toggle 버튼
+//       </button>
+//       {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
+//       <ReviewTitles>
+//         {/* 리뷰와 리뷰등록 버튼 */}
+//         <ReviewCount>
+//           {/* 리뷰 라는 글 */}
+//           리뷰
+//           <ReviewCountNum>
+//             {/* 리뷰 갯수 */}
+//             (5)
+//           </ReviewCountNum>
+//         </ReviewCount>
+//         <ReviewBtn
+//           onClick={() => {
+//             setToggle(!toggle);
+//           }}
+//         >
+//           {" "}
+//           리뷰 등록
+//         </ReviewBtn>
+//       </ReviewTitles>
 //       <ReviewContents>
 //         {/* crud 될 리뷰들 */}
 //         <UserIdTitleBtn>
@@ -39,9 +108,7 @@
 //           {toggle ? (
 //             <input
 //               type="text"
-//               onChange={(event) => {
-//                 event.target.value;
-//               }}
+//               onChange={(event) => setReviewTitle(event.target.value)}
 //             />
 //           ) : (
 //             <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
@@ -120,10 +187,13 @@
 //           <RateMenu>
 //             {/* rate, menu */}
 //             {toggle ? (
-//               <input
-//                 type="text"
-//                 onChange={(event) => setRate(event.target.value)}
-//               />
+//               <div>
+//                 평점
+//                 <input
+//                   type="text"
+//                   onChange={(event) => setRate(event.target.value)}
+//                 />
+//               </div>
 //             ) : (
 //               <Rate>평점 {reviewData?.rate}</Rate>
 //             )}
@@ -145,10 +215,8 @@
 //   );
 // };
 
-// export default CreateReview();
-
 // const ReviewItems = styled.div`
-//   width: 80%;
+//   width: 100%;
 // `;
 
 // const ReviewTitles = styled.div`
@@ -184,8 +252,8 @@
 // `;
 
 // const ReviewContents = styled.section`
-//   width: 100%;
-//   height: 1fr;
+//   width: 932px;
+//   height: 529px;
 //   border: 1px solid #aeb0af;
 //   border-radius: 10px;
 //   display: grid;
@@ -366,6 +434,7 @@
 // const GoodContents = styled.div`
 //   font-size: 13px;
 //   font-weight: 300;
+//   text-align: left;
 // `;
 
 // const Bad = styled.div`
@@ -385,6 +454,7 @@
 // const BadContents = styled.div`
 //   font-size: 13px;
 //   font-weight: 300;
+//   text-align: left;
 // `;
 
 // const RateMenu = styled.div`
@@ -397,6 +467,7 @@
 //   font-size: 18px;
 //   font-weight: 400;
 //   margin-bottom: 35px;
+//   text-align: left;
 // `;
 // const Menu = styled.div`
 //   display: inline-grid;
