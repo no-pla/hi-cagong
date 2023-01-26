@@ -1,5 +1,10 @@
+import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
 import { Roadview } from "react-kakao-maps-sdk";
 import styled from "styled-components";
+import { GetCageAverageRate } from "./GetCafeAverageRate";
+import { useGetReviews } from "./Hooks/useGetReviews";
 import { useGetStoreData } from "./Hooks/useGetStoreData";
 
 const StoreInfo = styled.div`
@@ -40,8 +45,18 @@ const StoreContent = styled.div`
   }
 `;
 
+const StoreRate = styled.span`
+  position: relative;
+`;
+
+const AverageRate = styled.span`
+  margin-left: 4px;
+  font-size: 14px;
+`;
+
 export const DetailContent = () => {
   const { stores, isLoading, x, y } = useGetStoreData();
+  const { totalRate, averageRate } = GetCageAverageRate();
 
   return (
     <StoreContent>
@@ -71,6 +86,40 @@ export const DetailContent = () => {
           <StoreInfoDesc>
             <div>전화번호</div>
             <div>{stores?.data.documents[0].phone}</div>
+          </StoreInfoDesc>
+          <StoreInfoDesc>
+            <div>평균 별점</div>
+            <StoreRate>
+              <FontAwesomeIcon
+                icon={faStar}
+                size="1x"
+                color="magenta"
+              ></FontAwesomeIcon>
+              <FontAwesomeIcon
+                icon={faStar}
+                size="1x"
+                color="magenta"
+              ></FontAwesomeIcon>
+              <FontAwesomeIcon
+                icon={faStar}
+                size="1x"
+                color="magenta"
+              ></FontAwesomeIcon>
+              <FontAwesomeIcon
+                icon={faStar}
+                size="1x"
+                color="magenta"
+              ></FontAwesomeIcon>
+              <FontAwesomeIcon
+                icon={faStar}
+                size="1x"
+                color="magenta"
+              ></FontAwesomeIcon>
+              <AverageRate>
+                {(totalRate / (averageRate * 5)).toFixed(2)}
+              </AverageRate>
+            </StoreRate>
+            <div>({averageRate} 개)</div>
           </StoreInfoDesc>
         </StoreInfo>
       )}
