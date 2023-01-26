@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 export const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const IntroItem = ({ placeItem }) => {
             {placeItem?.map(
               (item) =>
                 //카테고리가 카페 인것만 나올 수 있도록
-                item.content.category_group_code === "CE7" && (
+                item.content.category_group_code === 'CE7' && (
                   <Item
                     key={item.content.x}
                     onClick={() => goToDetail(`${item.content.id}`)}
@@ -70,7 +70,7 @@ const IntronItemWrap = styled.div`
   overflow-y: scroll;
 
   @media (max-width: 1100px) {
-    height: 60vh;
+    height: 100%;
     order: 2;
     width: calc(100% - 16px);
     box-sizing: border-box;

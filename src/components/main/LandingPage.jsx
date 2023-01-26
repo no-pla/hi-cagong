@@ -120,7 +120,7 @@ const SearchForm = styled.form`
   background-color: #fff;
   border: 1px solid #000;
   padding: 1em;
-  z-index: 9999999999999999;
+  z-index:999;
 
   > p {
     margin-bottom: 1em;
