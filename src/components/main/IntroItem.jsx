@@ -2,60 +2,68 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const IntroItem = ({ placeItem }) => {
-  console.log('{ placeItem }', placeItem);
-
-  const placeId = placeItem?.map((item) => item.content.id);
-
-  console.log(placeId);
-
+  console.log(placeItem);
+  const placeId = placeItem?.map(
+    (item) => `${item.content.x},${item.content.y}`
+  );
+  console.log('placeId', placeId);
+  let idNumber;
   const navigate = useNavigate();
   const goToDetail = (id) => {
-    const idNumber = placeId.find((num) => num === id);
+    console.log('id', id);
+    idNumber = placeId?.find((num) => num === id);
     navigate(`/${idNumber}`);
   };
+  console.log('idNumber', idNumber);
 
   return (
-    <IntronItemWrap>
-      <IntronItemTitle>
-        <em>📚</em>
-        <span>
-          여러분만의 카공 장소를
-          <br /> 소개해 주세요 !
-        </span>
-      </IntronItemTitle>
-      <ItemTitle> 평점 높은 순</ItemTitle>
-      {Array.isArray(placeItem) && placeItem.length === 0 ? (
-        <SearchTitle>가까운 카페를 검색해 주세요.</SearchTitle>
-      ) : (
-        <ItemWrap>
-          {placeItem?.map(
-            (item) =>
-              //카테고리가 카페 인것만 나올 수 있도록
-              item.content.category_group_code === 'CE7' && (
-                <Item
-                  key={item.content.id}
-                  onClick={() => goToDetail(item.content.id)}
-                >
-                  <div className="img-wrap">
-                    <img
-                      src="https://t1.daumcdn.net/cfile/tistory/998BF13D5ACD603C20"
-                      alt="이미지"
-                    />
-                  </div>
-                  <div className="item-content">
-                    <h4 className="item-title">{item.content.place_name}</h4>
-                    <p className="item-address">{item.content.address_name}</p>
-                    <p className="item-address">
-                      {item.content.category_group_code}
-                    </p>
-                    <p>⭐⭐⭐⭐</p>
-                  </div>
-                </Item>
-              )
-          )}
-        </ItemWrap>
-      )}
-    </IntronItemWrap>
+    <>
+      <IntronItemWrap>
+        <IntronItemTitle>
+          <em>📚</em>
+          <span>
+            여러분만의 카공 장소를
+            <br /> 소개해 주세요 !
+          </span>
+        </IntronItemTitle>
+        <ItemTitle> 평점 높은 순</ItemTitle>
+        {Array.isArray(placeItem) && placeItem.length === 0 ? (
+          <SearchTitle>가까운 카페를 검색해 주세요.</SearchTitle>
+        ) : (
+          <ItemWrap>
+            {placeItem?.map(
+              (item) =>
+                //카테고리가 카페 인것만 나올 수 있도록
+                item.content.category_group_code === 'CE7' && (
+                  <Item
+                    key={item.content.x}
+                    onClick={() =>
+                      goToDetail(`${item.content.x},${item.content.y}`)
+                    }
+                  >
+                    <div className="img-wrap">
+                      <img
+                        src="https://t1.daumcdn.net/cfile/tistory/998BF13D5ACD603C20"
+                        alt="이미지"
+                      />
+                    </div>
+                    <div className="item-content">
+                      <h4 className="item-title">{item.content.place_name}</h4>
+                      <p className="item-address">
+                        {item.content.address_name}
+                      </p>
+                      <p className="item-address">
+                        {item.content.category_group_code}
+                      </p>
+                      <p>⭐⭐⭐⭐</p>
+                    </div>
+                  </Item>
+                )
+            )}
+          </ItemWrap>
+        )}
+      </IntronItemWrap>
+    </>
   );
 };
 

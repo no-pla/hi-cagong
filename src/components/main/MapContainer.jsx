@@ -1,6 +1,5 @@
-import { IntroItem } from './IntroItem';
-
 const MapContainer = ({ placeItem }) => {
+
   return (
     <>
       <div
