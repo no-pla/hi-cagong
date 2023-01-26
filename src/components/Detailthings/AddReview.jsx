@@ -53,25 +53,13 @@ export default function AddReview({ reviewData, setReviews, reviews }) {
 
   const myDate = new Date();
 
-  const data = {
-    uid: UserID,
-    createAt: myDate,
-    reason: reason,
-    location: location,
-    good: good,
-    bad: bad,
-    rate: rate,
-    menu: menu,
-    reviewTitle: reviewTitle,
-    // id: reviewData?.id,
-    userNickname: userNickname,
-  };
   // console.log("test입니다", data);
 
   const onAddSubmit = () => {
     // console.log(reviews);
 
     const data = {
+      createAt: myDate,
       reason: reason,
       location: location,
       good: good,
@@ -90,9 +78,9 @@ export default function AddReview({ reviewData, setReviews, reviews }) {
         return AddReview;
       },
     });
-    // setReviews((prev) => {
-    //   return [...prev, data];
-    // });
+    setReviews((prev) => {
+      return [...prev, data];
+    });
   };
 
   return (
