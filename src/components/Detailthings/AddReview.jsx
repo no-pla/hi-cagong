@@ -4,14 +4,17 @@ import {
   Mutation,
   QueryClient,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "react-query";
 import styled from "styled-components";
 import { addReview, getReviews } from "../../api";
 import { dbService } from "../../firebase";
 
-export default function AddReview({ reviewData, setReviews, reviews }) {
+export default function AddReview({ reviewData }) {
   const queryClient = useQueryClient();
+
+  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // createMutate(data, {
   //   onSuccess: () => {
@@ -75,13 +78,11 @@ export default function AddReview({ reviewData, setReviews, reviews }) {
     createMutate(data, {
       onSuccess: () => {
         queryClient.invalidateQueries("data");
-        return AddReview;
       },
     });
-    setReviews((prev) => {
-      return [...prev, data];
-    });
   };
+
+  if (createLoading) return;
 
   return (
     <ReviewItems>
