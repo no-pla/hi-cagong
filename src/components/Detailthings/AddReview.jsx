@@ -22,7 +22,7 @@ import {
   uploadString,
 } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, reload } from "firebase/auth";
 // import { readBuilderProgram } from "typescript";
 
 export const AddReview = (reviews) => {
@@ -37,7 +37,7 @@ export const AddReview = (reviews) => {
   // add 관련
 
   // review 관련
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
   const [reason, setReason] = useState("");
   const [location, setLocation] = useState("");
   const [good, setGood] = useState("");
@@ -82,6 +82,7 @@ export const AddReview = (reviews) => {
     fileInput.current.value = null;
   };
 
+  //review 등록 부분
   const onAddSubmit = async () => {
     const fileRef = ref(storageService, `${reviews.uid}/${id}`);
     const response = await uploadString(fileRef, attachment, "data_url");
@@ -121,8 +122,12 @@ export const AddReview = (reviews) => {
         console.log(error.message);
       });
 
-    if (isLoading) return;
     console.log("isloading");
+
+    {
+      return window.location.reload();
+      //임시로..
+    }
   };
 
   const fileInput = useRef();
@@ -169,14 +174,16 @@ export const AddReview = (reviews) => {
             (5)
           </ReviewCountNum>
         </ReviewCount>
-        <ReviewBtn
-          onClick={() => {
-            setToggle(!toggle);
-          }}
-        >
-          {" "}
-          리뷰 작성
-        </ReviewBtn>
+        {toggle ? (
+          <ReviewBtn
+            onClick={() => {
+              setToggle(!toggle);
+            }}
+          >
+            {" "}
+            리뷰 작성
+          </ReviewBtn>
+        ) : null}
       </ReviewTitles>
       {toggle ? null : (
         <ReviewContents>
@@ -355,7 +362,7 @@ const ReviewContents = styled.section`
   border: 1px solid #aeb0af;
   border-radius: 10px;
   display: grid;
-  margin-top: 10px;
+  margin: 10px 0px 30px 0px;
   padding: 25px;
 `;
 
