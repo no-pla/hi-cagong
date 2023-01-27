@@ -6,7 +6,7 @@ import { Home } from './components/Home';
 import { MyPage } from './components/MyPage';
 import { Nav } from './components/main/Nav';
 import { ModalSignIn } from './components/Auth/SignIn';
-// import { ModalSignUp } from "./components/Auth/SignUp";
+// import { ModalSignUp } from './components/Auth/SignUp';
 
 export const Router = () => {
   return (

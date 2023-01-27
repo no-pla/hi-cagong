@@ -35,21 +35,26 @@ const Modal = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
+  gap: 24px;
   border-radius: 4px;
   color: #000;
   background-color: #fff;
   padding: 24px 36px;
+  min-width: 300px;
+  min-height: 80px;
 
   > div {
     margin: 4px 0;
     > p {
-      margin: 8px 0;
+      margin: 8px 0 16px 0;
+      font-size: 14px;
     }
   }
 `;
 
 export const AuthTitle = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
+  color: #dd0000;
 `;

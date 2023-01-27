@@ -4,20 +4,18 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  UserCredential,
 } from 'firebase/auth';
-import { set } from 'immer/dist/internal';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { authService } from '../../firebase';
-import { emailRegex, pwRegex } from '../../until';
+import { emailRegex } from '../../until';
 import CustomButton from '../common/CustomButton';
 import AuthModal, { AuthTitle } from './AuthModal';
 import Join from './Join';
 
 type LoginProps = {
-  onClickLogin?: () => void;
+  onClickLogin: () => void;
   onClickJoin?: () => void;
   email?: string;
   paswword?: string;
@@ -33,7 +31,8 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
   const [notMember, setNotMember] = useState<boolean>(false);
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [signUp, setSignUp] = useState<boolean>(false);
-  const [checkedUser, setCheckedUser] = useState<boolean>(false);
+  const [checkedUser, setCheckedUser] = useState('');
+  const matchCheckEmail = email.match(emailRegex);
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -53,11 +52,6 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
           setWrongPassword(!wrongPassword);
         }
       });
-    const matchCheckEmail = email.match(emailRegex);
-
-    if (matchCheckEmail === null) {
-      setCheckedUser(!checkedUser);
-    }
   };
 
   const onGitHubSignIn = async () => {
@@ -69,9 +63,6 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
     await signInWithPopup(authService, provider);
   };
 
-  const onClickSignUp = () => {
-    console.log('^^!');
-  };
   return (
     <ModalBackground>
       <ModalWrap>
@@ -92,7 +83,13 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
             }}
           />
 
-          {checkedUser && <ErrorMessage>이메일 형식이 아닙니다.</ErrorMessage>}
+          {!matchCheckEmail ? (
+            email ? (
+              <ErrorMessage>올바른 이메일 형식이 아닙니다.</ErrorMessage>
+            ) : null
+          ) : (
+            <OkMessage>올바른 이메일 형식입니다.</OkMessage>
+          )}
 
           <Input
             name={password}
@@ -116,10 +113,6 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
           </ButtonWrap>
         </FormWrap>
 
-        {/* 회원가입 */}
-        <Singup onClick={onClickSignUp}>회원가입</Singup>
-        {signUp && <Join />}
-
         <ButtonWrap>
           <span onClick={onGoogleSignIn}>
             <img src="/img/google.png" alt="구글" />
@@ -128,6 +121,9 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
             <img src="/img/github.png" alt="구글" />
           </span>
         </ButtonWrap>
+        {/* 회원가입 */}
+        <Singup onClick={onClickJoin}>회원가입</Singup>
+        {signUp && <Join />}
       </ModalWrap>
 
       {/* 회원이 아닌경우 */}
@@ -198,14 +194,15 @@ export const Title = styled.h2`
 export const FormWrap = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  /* gap: 8px; */
   width: 320px;
   margin: 1em 0;
 `;
 
 const Singup = styled.button`
-  color: #878787;
-  margin: 1em;
+  color: #33a264;
+  font-weight: 600;
+  margin-top: 16px;
   cursor: pointer;
 `;
 
@@ -227,11 +224,16 @@ export const Input = styled.input`
   border-bottom: 1px solid #ddd;
   background: transparent;
   padding: 8px;
-  margin: 4px;
+  margin: 4px 4px 8px 4px;
 `;
 
 export const ErrorMessage = styled.p`
   color: red;
+  font-size: 12px;
+  padding: 0 8px;
+`;
+export const OkMessage = styled.p`
+  color: #33a264;
   font-size: 12px;
   padding: 0 8px;
 `;
