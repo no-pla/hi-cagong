@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { emailRegex, PasswordRegex } from "./utils";
 
 // Modal 컴포넌트 규현
-export const ModalSignUp = () => {
+export const SignUp = () => {
   // Modal 오픈 여부를 State로 관리
   const [isOpen, setIsOpen] = useState(true);
 
@@ -76,7 +76,7 @@ export const ModalSignUp = () => {
     <>
       <ModalContainer>
         <ModalBtn onClick={openModalHandler}>
-          {isOpen ? "Opened !" : "회원가입"}
+          {isOpen ? 'Opened !' : '회원가입'}
         </ModalBtn>
         {isOpen ? (
           <ModalBackdrop onClick={closeModalHandler}>
@@ -133,7 +133,7 @@ export const ModalSignUp = () => {
                   </NickNameTiTleTextBox>
                 </NickNameBoxImage>
                 <Frame>
-                  <CompleteButton onClick={() => alert("완료")}>
+                  <CompleteButton onClick={() => alert('완료')}>
                     완료
                   </CompleteButton>
                   <CancelButton onClick={closeModalHandler}>취소</CancelButton>
@@ -180,7 +180,7 @@ export const ModalBackdrop = styled.div`
 // div 태그로서 Modal이 떴을 때 Modal 창의 CSS를 구현
 // attrs 메소드를 이용해서 아래와 같이 div 엘리먼트에 속성을 추가
 export const ModalView = styled.div.attrs((props) => ({
-  role: "dialog",
+  role: 'dialog',
 }))`
   display: flex;
   flex-direction: column;
@@ -210,7 +210,7 @@ export const InputBox = styled.input`
   height: 49px;
   background: #ffffff;
   border-bottom: 1px solid #9f9f9f;
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -220,7 +220,7 @@ export const InputBox = styled.input`
 //이메일 타이틀
 const EmailTitle = styled.div`
   width: 320px;
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -233,7 +233,7 @@ const EmailTitle = styled.div`
 //페스워드 타이틀
 const PasswordTitle = styled.div`
   width: 320px;
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -279,7 +279,7 @@ const NickNameTiTleTextBox = styled.div`
 `;
 const NickNameTiTle = styled.div`
   height: 14px;
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -297,7 +297,7 @@ const NickNameTextBox = styled.input`
   width: 222px;
   height: 49px;
   background: #ffffff;
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -312,7 +312,7 @@ const NickNameImage = styled.div`
 
 //회원가입제목
 const SignUpTitle = styled.div`
-  font-family: "Noto Sans KR";
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 700;
   font-size: 24px;
