@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../firebase";
 
@@ -8,6 +8,7 @@ export const useGetReviews = (target, targetId) => {
   const q = query(
     collection(dbService, "review"),
     where(target, "==", targetId)
+    // orderBy("createAt", "desc")
   );
 
   const getMyReviewList = async () => {

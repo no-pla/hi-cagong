@@ -37,7 +37,7 @@ export const ReviewItem = (reviews) => {
                   }}
                 >
                   {/* createAt,userNickname */}
-                  <ReviewDate>{reviewData?.createAt.seconds}</ReviewDate>
+                  <ReviewDate>{reviewData?.createAt}</ReviewDate>
                   {/* createAt */}
                   <UserNickName>{reviewData?.userNickname} ,</UserNickName>
                   {/* userNickname */}
@@ -199,7 +199,6 @@ const ReviewTitle = styled.div`
 
   width: 30%;
 `;
-
 const EditDeleteBtn = styled.div`
   display: flex;
   flex-direction: row;
