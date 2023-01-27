@@ -3,23 +3,23 @@ import { deleteReview } from "../../api";
 import { useMutation, useQueryClient } from "react-query";
 
 export const ReviewItem = (reviews) => {
-  const queryClient = useQueryClient();
-  const { isLoading: deleteLoading, mutate: deleteMutate } =
-    useMutation(deleteReview);
+  // const queryClient = useQueryClient();
+  // const { isLoading: deleteLoading, mutate: deleteMutate } =
+  //   useMutation(deleteReview);
 
-  const onDeleteReview = () => {
-    deleteMutate(reviews.id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries("reviewdata");
-      },
-    });
-  };
+  // const onDeleteReview = () => {
+  //   deleteMutate(reviews.id, {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries("reviewdata");
+  //     },
+  //   });
+  // };
 
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
         <ReviewItems>
-          <button onClick={onDeleteReview}> delete 버튼</button>
+          {/* <button onClick={onDeleteReview}> delete 버튼</button> */}
           {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
 
           <ReviewContents>
@@ -37,7 +37,7 @@ export const ReviewItem = (reviews) => {
                   }}
                 >
                   {/* createAt,userNickname */}
-                  <ReviewDate>{reviewData?.createAt.seconds}</ReviewDate>
+                  <ReviewDate>{reviewData?.createAt}</ReviewDate>
                   {/* createAt */}
                   <UserNickName>{reviewData?.userNickname} ,</UserNickName>
                   {/* userNickname */}
@@ -45,7 +45,6 @@ export const ReviewItem = (reviews) => {
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
               <EditDeleteBtn>
-                <EditBtn>수정</EditBtn>
                 <DeleteBtn>삭제</DeleteBtn>
               </EditDeleteBtn>
             </UserIdTitleBtn>
@@ -113,37 +112,37 @@ const ReviewItems = styled.div`
   width: 100%;
 `;
 
-const ReviewTitles = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 30px;
-`;
+// const ReviewTitles = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   width: 100%;
+//   height: 30px;
+// `;
 
-const ReviewCount = styled.div`
-  display: flex;
-  font-size: 18px;
-  text-align: left;
-  font-weight: 900;
-`;
+// // const ReviewCount = styled.div`
+// //   display: flex;
+// //   font-size: 18px;
+// //   text-align: left;
+// //   font-weight: 900;
+// // `;
 
-const ReviewCountNum = styled.div`
-  margin-left: 4px;
-  font-size: 18px;
-  font-weight: 300;
-`;
+// // const ReviewCountNum = styled.div`
+// //   margin-left: 4px;
+// //   font-size: 18px;
+// //   font-weight: 300;
+// // `;
 
-const ReviewBtn = styled.button`
-  border-radius: 30px;
-  background-color: #33a264;
-  color: white;
-  font-weight: 300;
-  font-size: 18px;
-  width: 100px;
-  height: 100%;
-  /* border: none; */
-  text-align: center;
-`;
+// // const ReviewBtn = styled.button`
+// //   border-radius: 30px;
+// //   background-color: #33a264;
+// //   color: white;
+// //   font-weight: 300;
+// //   font-size: 18px;
+// //   width: 100px;
+// //   height: 100%;
+// //   /* border: none; */
+// //   text-align: center;
+// // `;
 
 const ReviewContents = styled.section`
   width: 932px;
@@ -200,6 +199,7 @@ const ReviewTitle = styled.div`
 
   width: 30%;
 `;
+
 const EditDeleteBtn = styled.div`
   display: flex;
   flex-direction: row;
@@ -207,15 +207,7 @@ const EditDeleteBtn = styled.div`
   justify-content: flex-end;
   align-items: center;
 `;
-const EditBtn = styled.button`
-  height: 80%;
-  display: flex;
-  color: blue;
-  align-items: center;
-  font-size: 15px;
-  border-style: none;
-  background-color: #ffffff;
-`;
+
 const DeleteBtn = styled.button`
   height: 80%;
   display: flex;
