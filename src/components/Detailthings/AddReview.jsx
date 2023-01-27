@@ -6,12 +6,13 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useEffect,
 } from "react-query";
 import styled from "styled-components";
-import { addReview, getReviews } from "../../api";
+import { getReviews } from "../../api";
 import { dbService } from "../../firebase";
 
-export default function AddReview({ reviewData }) {
+export default function AddReview() {
   const queryClient = useQueryClient();
 
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
@@ -39,8 +40,29 @@ export default function AddReview({ reviewData }) {
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
 
+  const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
+
+  // const [reviews, setReviews] = useState(reviewData);
+
   // createAt 현재 시간
-  const myDate = new Date();
+  const date = new Date();
+
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  const dateStr = year + "-" + month + "-" + day;
+
+  // Read 부분
+  // useEffect(() => {
+  //   const q = query(collection(dbService, "reviws"))
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     let reviewsArr = []
+  //     querySnapshot.forEach((doc) => {
+  //       reviewsArr.push({...doc.data(), id: doc.id})
+  //     })
+  //     setReviews(reviewsArr)
+  //   })
+  // }, []);
 
   // const addReview = async () => {
   //   await addDoc(collection(dbService, "review"), {
@@ -79,31 +101,54 @@ export default function AddReview({ reviewData }) {
   const onAddSubmit = async () => {
     await addDoc(collection(dbService, "review"), {
       bad: bad,
-      createAt: myDate,
+      createAt: dateStr,
       good: good,
       location: location,
       menu: menu,
       rate: rate,
       reason: reason,
       reviewTitle: reviewTitle,
-      uid: UserID,
+      uid: "임재영",
       // id: reviewData?.id,
-      //image:image
-      userNickname: userNickname,
+      image:
+        "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
+      userNickname: "코쟁이",
     });
+    alert("입력되었습니다 !");
 
-    //input창에 입력 된 value값들을 data로 표시 중
-    console.log(data);
-
-    // data를 가져오면 화면에 query로 바로 표시하는 것
-    // createMutate(data, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries("reviewdata");
-    //   },
-    // });
+    if (isLoading) return;
+    console.log("isloading");
   };
 
-  if (createLoading) return;
+  // const onAddSubmit = () => {
+  //   const reviewData = {
+  //     bad: bad,
+  //     createAt: myDate,
+  //     good: good,
+  //     location: location,
+  //     menu: menu,
+  //     rate: rate,
+  //     reason: reason,
+  //     reviewTitle: reviewTitle,
+  //     uid: "임재영",
+  //     // id: reviewData?.id,
+  //     image:
+  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
+  //     userNickname: "코쟁이",
+  //   };
+  //   console.log(reviewData);
+  // };
+
+  //input창에 입력 된 value값들을 data로 표시 중
+
+  // data를 가져오면 화면에 query로 바로 표시하는 것
+  // createMutate(reviewData, {
+  //   onSuccess: () => {
+  //     // queryClient.invalidateQueries("reviewdata");
+  //   },
+  // });
+
+  // if (isLoading) return;
 
   return (
     <ReviewItems>
@@ -156,17 +201,6 @@ export default function AddReview({ reviewData }) {
             onChange={(event) => setReviewTitle(event.target.value)}
           />
         </UserIdTitleBtn>
-        <div
-          style={{
-            display: "inline-flex",
-            height: "fit-contents",
-          }}
-        >
-          <Recommend>추천 명당</Recommend>
-          <RecommendContents>
-            추천하는 이 카페의 나만의 명당은!?
-          </RecommendContents>
-        </div>
         <GoodBad>
           {/* good,bad,rate,menu */}
           <Good>
@@ -210,6 +244,7 @@ export default function AddReview({ reviewData }) {
             </Menu>
           </RateMenu>
         </GoodBad>
+
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>
