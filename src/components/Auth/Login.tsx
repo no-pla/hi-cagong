@@ -69,9 +69,9 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
     await signInWithPopup(authService, provider);
   };
 
-  const onClickSignUp = ()=>{
-    setSignUp()
-  }
+  const onClickSignUp = () => {
+    console.log('^^!');
+  };
   return (
     <ModalBackground>
       <ModalWrap>

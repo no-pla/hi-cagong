@@ -6,13 +6,13 @@ import Join from '../Auth/Join';
 
 export const Nav = () => {
   const [loginModal, setLoginModal] = useState(false);
-  const [joinModal, setJoinModal] = useState(false);
+  const [joinModal, setJoinModal] = useState(true);
 
   const onClickLogin = () => {
     setLoginModal(!loginModal);
   };
   const onClickJoin = () => {
-    setJoinModal(!joinModal);
+    setJoinModal(!joinModal) .    ;
   };
 
   return (
