@@ -4,12 +4,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyApXqfClX9B93pT0kGVgoQlmTC1vkR8w_c',
-  authDomain: 'hicagong.firebaseapp.com',
-  projectId: 'hicagong',
-  storageBucket: 'hicagong.appspot.com',
-  messagingSenderId: '890667475492',
-  appId: '1:890667475492:web:8b52a7c1a893907b256eb1',
+  apiKey: 'AIzaSyDM-AdQvs63m7c0QXGwp1cu4xmORxDIEeE',
+  authDomain: 'hicagong-f6bcb.firebaseapp.com',
+  projectId: 'hicagong-f6bcb',
+  storageBucket: 'hicagong-f6bcb.appspot.com',
+  messagingSenderId: '1011974124347',
+  appId: '1:1011974124347:web:82cf126bb97011946ebd1e',
 };
 
 const app = initializeApp(firebaseConfig);

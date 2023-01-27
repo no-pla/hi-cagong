@@ -2,15 +2,17 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Login from '../Auth/Login';
-import SingUp from '../Auth/SingUp';
+import Join from '../Auth/Join';
 
 export const Nav = () => {
   const [loginModal, setLoginModal] = useState(false);
-  // const [singupModal, setSingupModal] = useState(false);
+  const [joinModal, setJoinModal] = useState(false);
 
-  const onClickopenModal = () => {
+  const onClickLogin = () => {
     setLoginModal(!loginModal);
-    // setSingupModal(!singupModal);
+  };
+  const onClickJoin = () => {
+    setJoinModal(!joinModal);
   };
 
   return (
@@ -19,10 +21,17 @@ export const Nav = () => {
         <Link to="/">Hi,카공</Link>
       </Logo>
       <Auth>
-        <Link onClick={onClickopenModal}>Login</Link>
-        <Link>Sign up</Link>
+        <Link onClick={onClickLogin}>Login</Link>
+        <Link onClick={onClickJoin}>Sign up</Link>
       </Auth>
-      {loginModal && <Login onClickopenModal={onClickopenModal} />}
+      {loginModal && (
+        <Login
+          onClickLogin={onClickLogin}
+          setJoinModal={setJoinModal}
+          onClickJoin={onClickJoin}
+        />
+      )}
+      {joinModal && <Join onClickJoin={onClickJoin} />}
     </NavWrap>
   );
 };
@@ -38,8 +47,13 @@ const NavWrap = styled.div`
 `;
 
 const Logo = styled.h1`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 800;
+
+  > a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 const Auth = styled.div`
