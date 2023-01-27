@@ -1,13 +1,28 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { isConstructorDeclaration } from "typescript";
 
 // Modal 컴포넌트 규현
 export const ModalSignUp = () => {
   // Modal 오픈 여부를 State로 관리
   const [isOpen, setIsOpen] = useState(true);
+
+  const [EmailText, setEmailText] = useState("");
+  const [EmailRight, setEmailRight] = useState(false);
+
+  const [PasswordMessage, setPasswordMessage] = useState("");
+  const [PasswordRight, setPasswordRight] = useState(false);
+
+  const [Password, setPassword] = useState("");
+
+  const [PasswordConfirmMessage, setPasswordConfirmMessage] = useState("");
+  const [PasswordConformRight, setPasswordConformRight] = useState(false);
   // 이벤트 핸들러 함수로 state를 변경
   const openModalHandler = () => {
     setIsOpen(true);
+    setEmailText("");
+    setPasswordMessage("");
+    setPassword("");
   };
   const closeModalHandler = () => {
     setIsOpen(false);
@@ -15,22 +30,48 @@ export const ModalSignUp = () => {
   const test = (event: React.MouseEvent) => {
     event.stopPropagation();
   };
-  const InputRender = () => {
-    return <InputBox type="email" placeholder="이메일을 입력하세요" />;
+  //이메일 유효성 검사
+  const validateEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailRegex =
+      /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    const emailCurrent = e.target.value;
+    if (emailRegex.test(emailCurrent)) {
+      setEmailText("올바른 이메일 형식입니다");
+      setEmailRight(true);
+    } else {
+      setEmailText("이메일 형식이 틀렸습니다");
+      setEmailRight(false);
+    }
   };
-  const InputRender2 = () => {
-    return (
-      <InputBox
-        type="password"
-        placeholder="8자 이상 영문/숫자/특수문자 중 2가지 포함"
-      />
-    );
+  //비밀번호 유효성 검사
+  const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const PasswordRegex =
+      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+    const PasswordCurrent = e.target.value;
+    setPassword(PasswordCurrent);
+
+    if (!PasswordRegex.test(PasswordCurrent)) {
+      setPasswordMessage(
+        "숫자+영문자+특수문자 조합으로 8자리 이상으로 입력부탁드립니다"
+      );
+      setPasswordRight(false);
+    } else {
+      setPasswordMessage("안전한 비밀번호입니다");
+      setPasswordRight(true);
+    }
   };
-  const InputRender3 = () => {
-    return (
-      <InputBox type="password" placeholder="비밀번호를 다시 한번 입력하세요" />
-    );
+  //비밀번호 확인 유효성 검사
+  const checkSamePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const conformPassword = e.target.value;
+    if (conformPassword == Password) {
+      setPasswordConfirmMessage(`일치합니다`);
+      setPasswordConformRight(true);
+    } else {
+      setPasswordConfirmMessage(`일치하지않습니다.`);
+      setPasswordConformRight(false);
+    }
   };
+
   const NickName = () => {
     return <NickNameTextBox type="text" placeholder="닉네임을 입력해주세요" />;
   };
@@ -47,26 +88,53 @@ export const ModalSignUp = () => {
               <ModalWrapper>
                 <EmailPasswordTitle>
                   <EmailTitle>이메일</EmailTitle>
-                  <InputRender />
+                  <InputBox
+                    type="email"
+                    onChange={validateEmail}
+                    placeholder="이메일을 입력하세요"
+                  />
+                  {EmailRight ? (
+                    <InputBoxText>{EmailText}</InputBoxText>
+                  ) : (
+                    <InputBoxRedText>{EmailText}</InputBoxRedText>
+                  )}
                 </EmailPasswordTitle>
                 <EmailPasswordTitle>
                   <PasswordTitle>비밀번호</PasswordTitle>
-                  <InputRender2 />
+                  <InputBox
+                    type="Password"
+                    onChange={validatePassword}
+                    placeholder="비밀번호를 입력하세요"
+                  />
+                  {PasswordRight ? (
+                    <InputBoxText>{PasswordMessage}</InputBoxText>
+                  ) : (
+                    <InputBoxRedText>{PasswordMessage}</InputBoxRedText>
+                  )}
                 </EmailPasswordTitle>
                 <EmailPasswordTitle>
                   <PasswordTitle>비밀번호</PasswordTitle>
-                  <InputRender3 />
+                  <InputBox
+                    type="Password"
+                    onChange={checkSamePassword}
+                    placeholder="비밀번호를 다시 한 번 입력하세요."
+                  />
+                  {PasswordConformRight ? (
+                    <InputBoxText>{PasswordConfirmMessage}</InputBoxText>
+                  ) : (
+                    <InputBoxRedText>{PasswordConfirmMessage}</InputBoxRedText>
+                  )}
                 </EmailPasswordTitle>
 
-                <NickNameBoximage>
-                  <NickNameimage>
+                <NickNameBoxImage>
+                  <NickNameImage>
                     <img src="/img/noimage.png" />
-                  </NickNameimage>
+                  </NickNameImage>
                   <NickNameTiTleTextBox>
                     <NickNameTiTle>닉네임</NickNameTiTle>
                     <NickName />
                   </NickNameTiTleTextBox>
-                </NickNameBoximage>
+                </NickNameBoxImage>
                 <Frame>
                   <CompleteButton onClick={() => alert("완료")}>
                     완료
@@ -149,7 +217,7 @@ export const InputBox = styled.input`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
+
   line-height: 150%;
 `;
 //이메일 타이틀
@@ -178,9 +246,20 @@ const PasswordTitle = styled.div`
   letter-spacing: -0.05em;
   margin-top: 20px;
 `;
-
+const InputBoxText = styled.div`
+  margin-top: 5px;
+  color: #33a264;
+  font-size: 10px;
+  text-align: left;
+`;
+const InputBoxRedText = styled.div`
+  margin-top: 5px;
+  color: red;
+  font-size: 10px;
+  text-align: left;
+`;
 //닉네임 이미지 및 박스 묶음
-const NickNameBoximage = styled.div`
+const NickNameBoxImage = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -229,7 +308,7 @@ const NickNameTextBox = styled.input`
   border-bottom: 1px solid #9f9f9f;
 `;
 //닉네임 이미지
-const NickNameimage = styled.div`
+const NickNameImage = styled.div`
   width: 80px;
   height: 80px;
 `;
