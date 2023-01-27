@@ -61,6 +61,7 @@ export const ModalSignIn = () => {
                 ) : (
                   <InputBoxRedText>{emailText}</InputBoxRedText>
                 )}
+                
                 <InputBox type="password" placeholder="비밀번호를 입력하세요" />
                 <SignUpText>회원가입</SignUpText>
                 <Frame>

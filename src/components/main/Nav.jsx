@@ -1,16 +1,60 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Login from '../Auth/Login';
+import Join from '../Auth/Join';
+import { authService } from '../../firebase';
+import { signOut } from 'firebase/auth';
+
 export const Nav = () => {
+  const [loginModal, setLoginModal] = useState(false);
+  const [joinModal, setJoinModal] = useState(false);
+  const [isLoginIn, setIsLoginIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
+
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLoginIn(true);
+        setUserObj(user);
+      } else {
+        setIsLoginIn(false);
+      }
+    });
+  });
+
+  const onClickLogin = () => {
+    setLoginModal(!loginModal);
+  };
+  const onClickJoin = () => {
+    setJoinModal(!joinModal);
+  };
+
+  const onLogOutClick = () => {
+    signOut(authService);
+    window.location('/');
+  };
+
   return (
     <NavWrap>
       <Logo>
         <Link to="/">Hi,카공</Link>
       </Logo>
-      <Auth>
-        <p>Login</p>
-        <p>Sign up</p>
-      </Auth>
+      {isLoginIn ? (
+        <Auth>
+          <Link onClick={onLogOutClick}>Log out</Link>
+          <Link to="/mypage">마이페이지</Link>
+        </Auth>
+      ) : (
+        <Auth>
+          <Link onClick={onClickLogin}>Login</Link>
+          <Link onClick={onClickJoin}>Sign up</Link>
+        </Auth>
+      )}
+      {loginModal && !isLoginIn && (
+        <Login onClickLogin={onClickLogin} onClickJoin={onClickJoin} />
+      )}
+      {joinModal && <Join onClickJoin={onClickJoin} userObj={userObj} />}
     </NavWrap>
   );
 };
@@ -26,16 +70,20 @@ const NavWrap = styled.div`
 `;
 
 const Logo = styled.h1`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 800;
+
   > a {
+    color: inherit;
     text-decoration: none;
-    color: #fff;
   }
 `;
 
 const Auth = styled.div`
-  > p {
+  > a {
+    display: block;
     margin-bottom: 16px;
+    text-decoration: none;
+    color: inherit;
   }
 `;

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import LandingPage from './main/LandingPage';
 
 export const Home = () => {
