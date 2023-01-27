@@ -107,17 +107,23 @@ export const DetailContent = () => {
             <div>{stores?.data.documents[0].phone}</div>
           </StoreInfoDesc>
           <StoreInfoDesc>
-            <div>평균 별점 ({(totalRate / averageRate).toFixed(2) * 20})</div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <StoreRate>
-                <AverageRate
-                  style={{
-                    width: (totalRate / averageRate).toFixed(2) * 20 + "%",
-                  }}
-                />
-              </StoreRate>
-              <RateCount>({averageRate} 개)</RateCount>
-            </div>
+            {totalRate && (
+              <>
+                <div>
+                  평균 별점 ({(totalRate / averageRate).toFixed(2) * 20})
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <StoreRate>
+                    <AverageRate
+                      style={{
+                        width: (totalRate / averageRate).toFixed(2) * 20 + "%",
+                      }}
+                    />
+                  </StoreRate>
+                  <RateCount>({averageRate}개)</RateCount>
+                </div>
+              </>
+            )}
           </StoreInfoDesc>
         </StoreInfo>
       )}
