@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import { deleteReview } from "../../api";
 import { useMutation, useQueryClient } from "react-query";
+import { useState } from "react";
+import { dbService } from "../../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
 
-export const ReviewItem = (reviews) => {
+export const ReviewItem = (reviews, isOwner) => {
+  // const [review, setReview] = useState("");
   // const queryClient = useQueryClient();
   // const { isLoading: deleteLoading, mutate: deleteMutate } =
   //   useMutation(deleteReview);
@@ -14,14 +18,32 @@ export const ReviewItem = (reviews) => {
   //     },
   //   });
   // };
-
+  // reviews.reviews.map((reviewData) => {
+  // console.log("image주소", reviewData.image);
+  // });
+  const onDeleteClick = async () => {
+    // const uid = reviews.reviews[0].uid;
+    const ok = window.confirm("정말로 삭제하시겠습니까?");
+    console.log(ok);
+    if (ok) {
+      console.log(reviews.reviews[0].uid);
+      // console.log(`${uid}`);
+      // await dbService.doc(`review/${reviews.reviews[0].uid}`).delete();
+      // await deleteDoc(doc(dbService, `review/%{reviews.reviews[0].uid}`));
+      await deleteDoc(doc(dbService, "review", reviews.reviews[0].uid));
+      // v9에 설명하는 대로 형식을 (데베, 컬렉션, 문서) 로 바꿔보자
+      // await deleteDoc(doc(dbService, "sweets", sweetObj.id));
+      // const data = deleteDoc(doc(dbService, `sweets/%{sweetOnj.id}`));
+      // console.log(reviews);
+      // console.log(reviews.reviews[0].uid);
+    }
+  };
+  // const fileRef = ref(storageService, `${reviws.uid}/${id}`);
+  // await deleteDoc(doc(dbService, `review/${item}`), item);
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
         <ReviewItems>
-          {/* <button onClick={onDeleteReview}> delete 버튼</button> */}
-          {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
-
           <ReviewContents>
             {/* crud 될 리뷰들 */}
             <UserIdTitleBtn>
@@ -44,9 +66,11 @@ export const ReviewItem = (reviews) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              <EditDeleteBtn>
-                <DeleteBtn>삭제</DeleteBtn>
-              </EditDeleteBtn>
+              {isOwner && (
+                <EditDeleteBtn>
+                  <DeleteBtn onClick={onDeleteClick}>삭제</DeleteBtn>
+                </EditDeleteBtn>
+              )}
             </UserIdTitleBtn>
             <div
               style={{

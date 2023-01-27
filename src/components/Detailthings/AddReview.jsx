@@ -1,34 +1,39 @@
-import { addDoc, collection, query } from "firebase/firestore";
-import React, { useRef, useState } from "react";
+// import { addDoc, collection, query } from "firebase/firestore";
+import { useRef, useState } from "react";
 import {
-  Mutation,
-  QueryClient,
-  useMutation,
+  // Mutation,
+  // QueryClient,
+  // useMutation,
   useQuery,
   useQueryClient,
-  useEffect,
+  // useEffect,
 } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { dbService, storageService } from "../../firebase";
+// import { uuid } from "uuidv4";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  // ref,
+  // uploadBytes,
+  // getDownloadURL,
+  uploadString,
+} from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+// import { readBuilderProgram } from "typescript";
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+export const AddReview = (reviews) => {
+  useQueryClient();
 
-export default function AddReview() {
-  const queryClient = useQueryClient();
+  let id = crypto.randomUUID();
+  // const uid = reviews.reviews[0];
+  // console.log(uid);
 
+  // console.log("id", id);
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
-  // createMutate(data, {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries("data");
-  //   },
-  // });
-
-  // review 작성 value 감지
-  // 완료 버튼 클릭 시 value 값 저장 및 newreview로 표시
-  // 실시간 review DB 감지
-
   // add 관련
 
   // review 관련
@@ -40,92 +45,51 @@ export default function AddReview() {
   const [rate, setRate] = useState(null);
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
-  const [userNickname, setUserNickname] = useState("");
+  const [cafeId, setCafeId] = useState("");
+  // const [userNickname, setUserNickname] = useState("");
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
   const [url, setUrl] = useState(null);
+  const [attachment, setAttachment] = useState();
+
+  // console.log(setUrl);
+  // console.log(rate);
 
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // 이미지 업로드 부분
   const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImageUpload(e.target.files[0]);
-    }
+    const {
+      target: { files },
+    } = e;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      // console.log(finishedEvent);
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
   };
 
-  // const reader = new FileReader();
-  // reader.readAsDataURL(imageUpload);
-  // console.log(imageUpload);
+  // const uid = reviws.uid;
+  // console.log(reviws);
 
-  // const numberreader = Number(reader);
-
-  // localStorage.setItem("contentimgDataUrl", contentimgDataUrl);
-  console.log(imageUpload);
-
-  // const [reviews, setReviews] = useState(reviewData);
-
-  // createAt 현재 시간
-  const date = new Date();
-
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const day = ("0" + date.getDate()).slice(-2);
-  const seconds = ("0" + date.getSeconds()).slice(-2);
-  const dateStr = Number(year + month + day + seconds);
-
-  // Read 부분
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "reviws"))
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     let reviewsArr = []
-  //     querySnapshot.forEach((doc) => {
-  //       reviewsArr.push({...doc.data(), id: doc.id})
-  //     })
-  //     setReviews(reviewsArr)
-  //   })
-  // }, []);
-
-  // const addReview = async () => {
-  //   await addDoc(collection(dbService, "review"), {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: UserID,
-  //     // id: reviewData?.id,
-  //     //image:image
-  //     userNickname: userNickname,
-  //   });
-  // };
-
-  // const { isLoading: createLoading, mutate: createMutate } =
-  //   useMutation(addReview);
-  // const data = {
-  //   bad: bad,
-  //   createAt: myDate,
-  //   good: good,
-  //   location: location,
-  //   menu: menu,
-  //   rate: rate,
-  //   reason: reason,
-  //   reviewTitle: reviewTitle,
-  //   uid: UserID,
-  //   // id: reviewData?.id,
-  //   //image:image
-  //   userNickname: userNickname,
-  // };
-
-  // const images = imageUpload.name();
+  const onClearAttachment = () => {
+    setAttachment(null);
+    fileInput.current.value = null;
+  };
 
   const onAddSubmit = async () => {
+    const fileRef = ref(storageService, `${reviews.uid}/${id}`);
+    const response = await uploadString(fileRef, attachment, "data_url");
+    const attachmentUrl = await getDownloadURL(response.ref);
+
     await addDoc(collection(dbService, "review"), {
       bad: bad,
-      createAt: dateStr,
+      createAt: Date.now(),
       good: good,
       location: location,
       menu: menu,
@@ -134,9 +98,11 @@ export default function AddReview() {
       reviewTitle: reviewTitle,
       uid: "임재영",
       // id: reviewData?.id,
-      image: "imageUpload",
+      image: attachmentUrl,
       userNickname: "코쟁이",
+      cafeId: cafeId,
     });
+    // console.log(id);
     alert("입력되었습니다 !");
     // const fileInput = useRef()
     const imageRef = ref(storageService, "image");
@@ -159,6 +125,7 @@ export default function AddReview() {
     console.log("isloading");
   };
 
+  const fileInput = useRef();
   // const onAddSubmit = () => {
   //   const reviewData = {
   //     bad: bad,
@@ -226,9 +193,11 @@ export default function AddReview() {
               }}
             >
               {/* createAt,userNickname */}
-              <ReviewDate>{dateStr}</ReviewDate>
+              <ReviewDate>{Date.now()}</ReviewDate>
               {/* createAt */}
-              <UserNickName>{reviewData?.userNickname} ,</UserNickName>
+              <UserNickName>
+                {reviewData?.userNickname || "닉네임"} ,
+              </UserNickName>
               {/* userNickname */}
             </div>
           </UserID>
@@ -297,9 +266,13 @@ export default function AddReview() {
               // id="new-review-image"
               className="new-review-image"
               accept="images/*"
+              src={url}
+              ref={fileInput}
               // ref={imageRef}
             />
+            {attachment && <SpotImgs src={attachment} />}
           </SpotImg>
+          <button onClick={onClearAttachment}>취소</button>
           <ReasonLocation>
             {/* reason,location */}
             <ReasonMap>
@@ -332,7 +305,7 @@ export default function AddReview() {
       </ReviewContents>
     </ReviewItems>
   );
-}
+};
 
 const ReviewItems = styled.div`
   width: 100%;
@@ -460,6 +433,11 @@ const SpotImg = styled.div`
   height: 201px;
   width: 246px;
   background-color: tomato;
+`;
+
+const SpotImgs = styled.img`
+  height: 201px;
+  width: 246px;
 `;
 
 const ReasonLocation = styled.div`

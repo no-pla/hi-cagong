@@ -58,7 +58,7 @@ export const IntroItem = ({ placeItem }) => {
             {placeItem?.map(
               (item) =>
                 //카테고리가 카페 인것만 나올 수 있도록
-                item.content.category_group_code === 'CE7' && (
+                item.content.category_group_code === "CE7" && (
                   <Item
                     key={item.content.id}
                     id={item.content.id}

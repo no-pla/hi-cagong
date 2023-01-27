@@ -1,14 +1,26 @@
+import { getAuth } from "firebase/auth";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { useGetReviews } from "../Hooks/useGetReviews";
-import AddReview from "./AddReview";
+import { AddReview } from "./AddReview";
 
 import { ReviewItem } from "./ReviewItem";
 
 function Review() {
+  //currentuser.uid 값
+  // const auth = getAuth().currentUser;
+  // const authuid = auth.uid;
+  // console.log(authuid);
+  // const uid = reviews.reviews[0].uid;
+  // console.log(uid);
+  // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
   const { reviews } = useGetReviews("uid", "임재영"); //임시값
-
+  // console.log(reviews[0].id);
+  // const uid = reviews.reviews;
+  // console.log(uid);
+  // const u = reviews[0].reviewTitle;
+  // console.log("결과", u);
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // useQueryClient 사용
@@ -57,6 +69,8 @@ function Review() {
         }}
       >
         <AddReview reviews={reviews} />
+        {/* const uid = reviews.reviews[0].uid;
+  console.log(uid); */}
         <ReviewItem reviews={reviews} />
       </AllReview>
     </div>
