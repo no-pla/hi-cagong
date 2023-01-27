@@ -1,17 +1,20 @@
-import { addDoc, collection } from "firebase/firestore";
-import React, { useState } from "react";
+import { addDoc, collection, query } from "firebase/firestore";
+import React, { useRef, useState } from "react";
 import {
   Mutation,
   QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
+  useEffect,
 } from "react-query";
 import styled from "styled-components";
-import { addReview, getReviews } from "../../api";
-import { dbService } from "../../firebase";
+import { getReviews } from "../../api";
+import { dbService, storageService } from "../../firebase";
 
-export default function AddReview({ reviewData }) {
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+export default function AddReview() {
   const queryClient = useQueryClient();
 
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
@@ -22,9 +25,15 @@ export default function AddReview({ reviewData }) {
   //   },
   // });
 
+  // review 작성 value 감지
+  // 완료 버튼 클릭 시 value 값 저장 및 newreview로 표시
+  // 실시간 review DB 감지
+
+  // add 관련
+
+  // review 관련
   const [toggle, setToggle] = useState(false);
   const [reason, setReason] = useState("");
-  // location good bad rate menu
   const [location, setLocation] = useState("");
   const [good, setGood] = useState("");
   const [bad, setBad] = useState("");
@@ -32,57 +41,153 @@ export default function AddReview({ reviewData }) {
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
+  // image 관련 state
+  const [imageUpload, setImageUpload] = useState(null);
+  const [url, setUrl] = useState(null);
 
-  const addReview = async () => {
+  const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
+
+  // 이미지 업로드 부분
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImageUpload(e.target.files[0]);
+    }
+  };
+
+  // const reader = new FileReader();
+  // reader.readAsDataURL(imageUpload);
+  // console.log(imageUpload);
+
+  // const numberreader = Number(reader);
+
+  // localStorage.setItem("contentimgDataUrl", contentimgDataUrl);
+  console.log(imageUpload);
+
+  // const [reviews, setReviews] = useState(reviewData);
+
+  // createAt 현재 시간
+  const date = new Date();
+
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  const seconds = ("0" + date.getSeconds()).slice(-2);
+  const dateStr = Number(year + month + day + seconds);
+
+  // Read 부분
+  // useEffect(() => {
+  //   const q = query(collection(dbService, "reviws"))
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     let reviewsArr = []
+  //     querySnapshot.forEach((doc) => {
+  //       reviewsArr.push({...doc.data(), id: doc.id})
+  //     })
+  //     setReviews(reviewsArr)
+  //   })
+  // }, []);
+
+  // const addReview = async () => {
+  //   await addDoc(collection(dbService, "review"), {
+  //     bad: bad,
+  //     createAt: myDate,
+  //     good: good,
+  //     location: location,
+  //     menu: menu,
+  //     rate: rate,
+  //     reason: reason,
+  //     reviewTitle: reviewTitle,
+  //     uid: UserID,
+  //     // id: reviewData?.id,
+  //     //image:image
+  //     userNickname: userNickname,
+  //   });
+  // };
+
+  // const { isLoading: createLoading, mutate: createMutate } =
+  //   useMutation(addReview);
+  // const data = {
+  //   bad: bad,
+  //   createAt: myDate,
+  //   good: good,
+  //   location: location,
+  //   menu: menu,
+  //   rate: rate,
+  //   reason: reason,
+  //   reviewTitle: reviewTitle,
+  //   uid: UserID,
+  //   // id: reviewData?.id,
+  //   //image:image
+  //   userNickname: userNickname,
+  // };
+
+  // const images = imageUpload.name();
+
+  const onAddSubmit = async () => {
     await addDoc(collection(dbService, "review"), {
-      uid: UserID,
-      createAt: myDate,
-      reason: reason,
-      location: location,
-      good: good,
       bad: bad,
-      rate: rate,
+      createAt: dateStr,
+      good: good,
+      location: location,
       menu: menu,
+      rate: rate,
+      reason: reason,
       reviewTitle: reviewTitle,
+      uid: "임재영",
       // id: reviewData?.id,
-      userNickname: userNickname,
+      image: "imageUpload",
+      userNickname: "코쟁이",
     });
+    alert("입력되었습니다 !");
+    // const fileInput = useRef()
+    const imageRef = ref(storageService, "image");
+    uploadBytes(imageRef, imageUpload)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((url) => {
+            setUrl(url);
+          })
+          .catch((error) => {
+            console.log(error.message, "사진을 가져오는데 문제가 생겼습니다. ");
+          });
+        setImageUpload(null);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+    if (isLoading) return;
+    console.log("isloading");
   };
 
-  const { isLoading: createLoading, mutate: createMutate } =
-    useMutation(addReview);
+  // const onAddSubmit = () => {
+  //   const reviewData = {
+  //     bad: bad,
+  //     createAt: myDate,
+  //     good: good,
+  //     location: location,
+  //     menu: menu,
+  //     rate: rate,
+  //     reason: reason,
+  //     reviewTitle: reviewTitle,
+  //     uid: "임재영",
+  //     // id: reviewData?.id,
+  //     image:
+  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
+  //     userNickname: "코쟁이",
+  //   };
+  //   console.log(reviewData);
+  // };
 
-  if (createLoading) return;
+  //input창에 입력 된 value값들을 data로 표시 중
 
-  const myDate = new Date();
+  // data를 가져오면 화면에 query로 바로 표시하는 것
+  // createMutate(reviewData, {
+  //   onSuccess: () => {
+  //     // queryClient.invalidateQueries("reviewdata");
+  //   },
+  // });
 
-  // console.log("test입니다", data);
-
-  const onAddSubmit = () => {
-    // console.log(reviews);
-
-    const data = {
-      createAt: myDate,
-      reason: reason,
-      location: location,
-      good: good,
-      bad: bad,
-      rate: rate,
-      menu: menu,
-      reviewTitle: reviewTitle,
-      // id: reviewData?.id,
-      userNickname: userNickname,
-    };
-    //input창에 입력 된 value값들을 data로 표시 중
-    // console.log(data);
-    createMutate(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries("data");
-      },
-    });
-  };
-
-  if (createLoading) return;
+  // if (isLoading) return;
 
   return (
     <ReviewItems>
@@ -121,7 +226,7 @@ export default function AddReview({ reviewData }) {
               }}
             >
               {/* createAt,userNickname */}
-              <ReviewDate>{reviewData?.createAt}</ReviewDate>
+              <ReviewDate>{dateStr}</ReviewDate>
               {/* createAt */}
               <UserNickName>{reviewData?.userNickname} ,</UserNickName>
               {/* userNickname */}
@@ -135,17 +240,6 @@ export default function AddReview({ reviewData }) {
             onChange={(event) => setReviewTitle(event.target.value)}
           />
         </UserIdTitleBtn>
-        <div
-          style={{
-            display: "inline-flex",
-            height: "fit-contents",
-          }}
-        >
-          <Recommend>추천 명당</Recommend>
-          <RecommendContents>
-            추천하는 이 카페의 나만의 명당은!?
-          </RecommendContents>
-        </div>
         <GoodBad>
           {/* good,bad,rate,menu */}
           <Good>
@@ -192,10 +286,18 @@ export default function AddReview({ reviewData }) {
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>
-            <img
+            {/* <img
               // value={image}
               src={`${reviewData?.image}`}
               style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
+            /> */}
+            <input
+              type="file"
+              onChange={handleImageChange}
+              // id="new-review-image"
+              className="new-review-image"
+              accept="images/*"
+              // ref={imageRef}
             />
           </SpotImg>
           <ReasonLocation>
@@ -330,21 +432,21 @@ const RevieTitleinput = styled.input`
   }
 `;
 
-const Recommend = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  font-size: 25px;
-  font-weight: 700;
-  align-items: flex-end;
-`;
+// const Recommend = styled.div`
+//   display: inline-flex;
+//   flex-direction: row;
+//   font-size: 25px;
+//   font-weight: 700;
+//   align-items: flex-end;
+// `;
 
-const RecommendContents = styled.div`
-  display: inline-flex;
-  font-size: 15px;
-  margin-left: 10px;
-  font-weight: 200;
-  align-items: flex-end;
-`;
+// const RecommendContents = styled.div`
+//   display: inline-flex;
+//   font-size: 15px;
+//   margin-left: 10px;
+//   font-weight: 200;
+//   align-items: flex-end;
+// `;
 
 const NiceSpot = styled.section`
   width: 100%;
