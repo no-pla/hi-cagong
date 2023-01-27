@@ -178,59 +178,60 @@ export const AddReview = (reviews) => {
           리뷰 작성
         </ReviewBtn>
       </ReviewTitles>
-      <ReviewContents>
-        {/* crud 될 리뷰들 */}
-        <UserIdTitleBtn>
-          {/* profile, createAt, userId, title, edit, delete btn */}
-          <UserID>
-            {/* profileImg, createAt, userNickname */}
-            <UserImg>{/*{reviewData?.image}*/}</UserImg>
-            {/* profileImg */}
-            <div
-              style={{
-                display: "grid",
-                marginLeft: 10,
-              }}
-            >
-              {/* createAt,userNickname */}
-              <ReviewDate>{Date.now()}</ReviewDate>
-              {/* createAt */}
-              <UserNickName>
-                {reviewData?.userNickname || "닉네임"} ,
-              </UserNickName>
-              {/* userNickname */}
-            </div>
-          </UserID>
+      {toggle ? null : (
+        <ReviewContents>
+          {/* crud 될 리뷰들 */}
+          <UserIdTitleBtn>
+            {/* profile, createAt, userId, title, edit, delete btn */}
+            <UserID>
+              {/* profileImg, createAt, userNickname */}
+              <UserImg>{/*{reviewData?.image}*/}</UserImg>
+              {/* profileImg */}
+              <div
+                style={{
+                  display: "grid",
+                  marginLeft: 10,
+                }}
+              >
+                {/* createAt,userNickname */}
+                <ReviewDate>{Date.now()}</ReviewDate>
+                {/* createAt */}
+                <UserNickName>
+                  {reviewData?.userNickname || "닉네임"} ,
+                </UserNickName>
+                {/* userNickname */}
+              </div>
+            </UserID>
 
-          <RevieTitleinput
-            value={reviewTitle}
-            placeholder="제목을 입력해 주세요."
-            type="text"
-            onChange={(event) => setReviewTitle(event.target.value)}
-          />
-        </UserIdTitleBtn>
-        <GoodBad>
-          {/* good,bad,rate,menu */}
-          <Good>
-            <GoodTitle>장점</GoodTitle>
-            <GoodInput
-              value={good}
-              onChange={(event) => setGood(event.target.value)}
-              placeholder="장점을 입력해주세요. 30글자 이내"
-            />
-          </Good>
-          <Bad>
-            <BadTitle>단점</BadTitle>
-            <BadInput
-              value={bad}
+            <RevieTitleinput
+              value={reviewTitle}
+              placeholder="제목을 입력해 주세요."
               type="text"
-              onChange={(event) => setBad(event.target.value)}
-              placeholder="단점을 입력해주세요. 30글자 이내"
+              onChange={(event) => setReviewTitle(event.target.value)}
             />
-          </Bad>
-          <RateMenu>
-            {/* rate, menu */}
-            {toggle ? (
+          </UserIdTitleBtn>
+          <GoodBad>
+            {/* good,bad,rate,menu */}
+            <Good>
+              <GoodTitle>장점</GoodTitle>
+              <GoodInput
+                value={good}
+                onChange={(event) => setGood(event.target.value)}
+                placeholder="장점을 입력해주세요. 30글자 이내"
+              />
+            </Good>
+            <Bad>
+              <BadTitle>단점</BadTitle>
+              <BadInput
+                value={bad}
+                type="text"
+                onChange={(event) => setBad(event.target.value)}
+                placeholder="단점을 입력해주세요. 30글자 이내"
+              />
+            </Bad>
+            <RateMenu>
+              {/* rate, menu */}
+
               <div>
                 평점
                 <input
@@ -238,71 +239,76 @@ export const AddReview = (reviews) => {
                   onChange={(event) => setRate(event.target.value)}
                 />
               </div>
-            ) : (
-              <Rate>평점 {reviewData?.rate}</Rate>
-            )}
-            <Menu>
-              <MenuTitle>추천메뉴</MenuTitle>
-              <MenuInput
-                value={menu}
-                placeholder="추천메뉴를 작성해주세요."
-                type="text"
-                onChange={(event) => setMenu(event.target.value)}
+
+              <Menu>
+                <MenuTitle>추천메뉴</MenuTitle>
+                <MenuInput
+                  value={menu}
+                  placeholder="추천메뉴를 작성해주세요."
+                  type="text"
+                  onChange={(event) => setMenu(event.target.value)}
+                />
+              </Menu>
+            </RateMenu>
+          </GoodBad>
+          <NiceSpot>
+            {/* spotImaage, reason, location\ */}
+            <SpotImg>
+              {/* <img
+            // value={image}
+            src={`${reviewData?.image}`}
+            style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
+          /> */}
+              <input
+                type="file"
+                onChange={handleImageChange}
+                // id="new-review-image"
+                className="new-review-image"
+                accept="images/*"
+                src={url}
+                ref={fileInput}
+                // ref={imageRef}
               />
-            </Menu>
-          </RateMenu>
-        </GoodBad>
-        <NiceSpot>
-          {/* spotImaage, reason, location\ */}
-          <SpotImg>
-            {/* <img
-              // value={image}
-              src={`${reviewData?.image}`}
-              style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
-            /> */}
-            <input
-              type="file"
-              onChange={handleImageChange}
-              // id="new-review-image"
-              className="new-review-image"
-              accept="images/*"
-              src={url}
-              ref={fileInput}
-              // ref={imageRef}
-            />
-            {attachment && <SpotImgs src={attachment} />}
-          </SpotImg>
-          <button onClick={onClearAttachment}>취소</button>
-          <ReasonLocation>
-            {/* reason,location */}
-            <ReasonMap>
-              {/* 명당추천 */}
-              <Reason>명당 추천 이유</Reason>
-              <ReasonInput
-                value={reason}
-                placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
-                onChange={(event) => setReason(event.target.value)}
-                type="text"
-              />
-            </ReasonMap>
-            <LocationMap>
-              {/* 명당위치 */}
-              <Location>명당위치</Location>
-              <LocationInput
-                value={location}
-                placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
-                onChange={(event) => setLocation(event.target.value)}
-                type="text"
-              />
-            </LocationMap>
-          </ReasonLocation>
-        </NiceSpot>
-        {/* 완료 취소 버튼 */}
-        <AddCancleBtn>
-          <AddBtn onClick={onAddSubmit}>완료</AddBtn>
-          <CancleBtn>취소</CancleBtn>
-        </AddCancleBtn>
-      </ReviewContents>
+              {attachment && <SpotImgs src={attachment} />}
+            </SpotImg>
+            <button onClick={onClearAttachment}>취소</button>
+            <ReasonLocation>
+              {/* reason,location */}
+              <ReasonMap>
+                {/* 명당추천 */}
+                <Reason>명당 추천 이유</Reason>
+                <ReasonInput
+                  value={reason}
+                  placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
+                  onChange={(event) => setReason(event.target.value)}
+                  type="text"
+                />
+              </ReasonMap>
+              <LocationMap>
+                {/* 명당위치 */}
+                <Location>명당위치</Location>
+                <LocationInput
+                  value={location}
+                  placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
+                  onChange={(event) => setLocation(event.target.value)}
+                  type="text"
+                />
+              </LocationMap>
+            </ReasonLocation>
+          </NiceSpot>
+          {/* 완료 취소 버튼 */}
+          <AddCancleBtn>
+            <AddBtn onClick={onAddSubmit}>완료</AddBtn>
+            <CancleBtn
+              onClick={() => {
+                setToggle(!toggle);
+              }}
+            >
+              취소
+            </CancleBtn>
+          </AddCancleBtn>
+        </ReviewContents>
+      )}
     </ReviewItems>
   );
 };
