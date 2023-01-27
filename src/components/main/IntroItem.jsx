@@ -1,5 +1,8 @@
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { dbService } from "../../firebase";
 
 export const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -11,6 +14,31 @@ export const IntroItem = ({ placeItem }) => {
       },
     });
   };
+
+  const getImage = async (cafeId) => {
+    const q = query(
+      collection(dbService, "review"),
+      where("cafeId", "==", cafeId)
+    );
+
+    const getMyReviewList = async () => {
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.docs[0]) {
+        return "https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg";
+      }
+      return querySnapshot.docs[0].data().image;
+    };
+    let url = await getMyReviewList();
+    document.getElementById(`imageId-${cafeId}`).src = url;
+  };
+
+  useEffect(() => {}, []);
+
+  // const { reviews } = useGetReviews("cafeId", String(2140311573));
+  // console.log(reviews[0].image);
+  // 배열에 현재 메인에 띄워진 아이디 넣기
+  //
+  // 맵 돌면서 이미지가 존재하면 각 배열의 객체에 넣기
 
   return (
     <>
@@ -32,12 +60,14 @@ export const IntroItem = ({ placeItem }) => {
                 //카테고리가 카페 인것만 나올 수 있도록
                 item.content.category_group_code === 'CE7' && (
                   <Item
-                    key={item.content.x}
+                    key={item.content.id}
+                    id={item.content.id}
                     onClick={() => goToDetail(`${item.content.id}`)}
                   >
                     <div className="img-wrap">
                       <img
-                        src="https://t1.daumcdn.net/cfile/tistory/998BF13D5ACD603C20"
+                        id={`imageId-${item.content.id}`}
+                        src={getImage(item.content.id)}
                         alt="이미지"
                       />
                     </div>
