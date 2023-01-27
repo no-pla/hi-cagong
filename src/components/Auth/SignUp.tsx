@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { emailRegex, PasswordRegex } from "./untils";
+import { emailRegex, PasswordRegex } from "./utils";
 
 // Modal 컴포넌트 규현
 export const ModalSignUp = () => {
