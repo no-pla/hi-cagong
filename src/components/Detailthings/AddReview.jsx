@@ -188,7 +188,7 @@ export default function AddReview() {
               }}
             >
               {/* createAt,userNickname */}
-              <ReviewDate>{reviewData?.createAt}</ReviewDate>
+              <ReviewDate>{dateStr}</ReviewDate>
               {/* createAt */}
               <UserNickName>{reviewData?.userNickname} ,</UserNickName>
               {/* userNickname */}
