@@ -1,5 +1,5 @@
 import { addDoc, collection, query } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Mutation,
   QueryClient,
@@ -53,6 +53,14 @@ export default function AddReview() {
       setImageUpload(e.target.files[0]);
     }
   };
+
+  // const reader = new FileReader();
+  // reader.readAsDataURL(imageUpload);
+  // console.log(imageUpload);
+
+  // const numberreader = Number(reader);
+
+  // localStorage.setItem("contentimgDataUrl", contentimgDataUrl);
   console.log(imageUpload);
 
   // const [reviews, setReviews] = useState(reviewData);
@@ -126,11 +134,11 @@ export default function AddReview() {
       reviewTitle: reviewTitle,
       uid: "임재영",
       // id: reviewData?.id,
-      image: imageUpload,
+      image: "imageUpload",
       userNickname: "코쟁이",
     });
     alert("입력되었습니다 !");
-
+    // const fileInput = useRef()
     const imageRef = ref(storageService, "image");
     uploadBytes(imageRef, imageUpload)
       .then(() => {
@@ -283,7 +291,14 @@ export default function AddReview() {
               src={`${reviewData?.image}`}
               style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
             /> */}
-            <input type="file" onChange={handleImageChange} />
+            <input
+              type="file"
+              onChange={handleImageChange}
+              // id="new-review-image"
+              className="new-review-image"
+              accept="images/*"
+              // ref={imageRef}
+            />
           </SpotImg>
           <ReasonLocation>
             {/* reason,location */}
