@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { Roadview } from "react-kakao-maps-sdk";
 import styled from "styled-components";
-import { GetCageAverageRate } from "./GetCafeAverageRate";
+import { GetCafeAverageRate } from "./GetCafeAverageRate";
 import { useGetReviews } from "./Hooks/useGetReviews";
 import { useGetStoreData } from "./Hooks/useGetStoreData";
 
@@ -75,7 +75,7 @@ const RateCount = styled.span`
 
 export const DetailContent = () => {
   const { stores, isLoading, x, y } = useGetStoreData();
-  const { totalRate, averageRate } = GetCageAverageRate();
+  const { totalRate, averageRate } = GetCafeAverageRate();
 
   return (
     <StoreContent>

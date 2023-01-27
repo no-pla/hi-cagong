@@ -100,7 +100,7 @@ const ReviewImg = styled.div`
   background: ${(props) => `url(${props.ImgSrc})`};
   background-size: cover;
   width: 100%;
-  height: 40%;
+  height: 50%;
 `;
 
 const ReviewDesc = styled.div`
@@ -186,7 +186,7 @@ export const MyPage = () => {
           <UserEmail>adrain.nader@yahoo.com</UserEmail>
         </UserProfileContainer>
       </SectionContainer>
-      <SectionContainer>
+      <SectionContainer style={{ width: "100%" }}>
         <Title>내가쓴리뷰</Title>
         <ReviewList>
           {reviews &&
