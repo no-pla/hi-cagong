@@ -46,12 +46,31 @@ const StoreContent = styled.div`
 `;
 
 const StoreRate = styled.span`
+  font-size: 20px;
   position: relative;
+  display: inline-block;
+  &::before {
+    content: "★★★★★";
+    color: #e5e5e5;
+    filter: drop-shadow(0 0.6rem 0.3rem rgba(0, 0, 0, 0.05));
+  }
 `;
 
 const AverageRate = styled.span`
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  &::before {
+    content: "★★★★★";
+    color: #fcd939;
+  }
+`;
+
+const RateCount = styled.span`
+  font-size: 12px;
   margin-left: 4px;
-  font-size: 14px;
 `;
 
 export const DetailContent = () => {
@@ -88,38 +107,23 @@ export const DetailContent = () => {
             <div>{stores?.data.documents[0].phone}</div>
           </StoreInfoDesc>
           <StoreInfoDesc>
-            <div>평균 별점</div>
-            <StoreRate>
-              <FontAwesomeIcon
-                icon={faStar}
-                size="1x"
-                color="magenta"
-              ></FontAwesomeIcon>
-              <FontAwesomeIcon
-                icon={faStar}
-                size="1x"
-                color="magenta"
-              ></FontAwesomeIcon>
-              <FontAwesomeIcon
-                icon={faStar}
-                size="1x"
-                color="magenta"
-              ></FontAwesomeIcon>
-              <FontAwesomeIcon
-                icon={faStar}
-                size="1x"
-                color="magenta"
-              ></FontAwesomeIcon>
-              <FontAwesomeIcon
-                icon={faStar}
-                size="1x"
-                color="magenta"
-              ></FontAwesomeIcon>
-              <AverageRate>
-                {(totalRate / (averageRate * 5)).toFixed(2)}
-              </AverageRate>
-            </StoreRate>
-            <div>({averageRate} 개)</div>
+            {totalRate && (
+              <>
+                <div>
+                  평균 별점 ({(totalRate / averageRate).toFixed(2) * 20})
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <StoreRate>
+                    <AverageRate
+                      style={{
+                        width: (totalRate / averageRate).toFixed(2) * 20 + "%",
+                      }}
+                    />
+                  </StoreRate>
+                  <RateCount>({averageRate}개)</RateCount>
+                </div>
+              </>
+            )}
           </StoreInfoDesc>
         </StoreInfo>
       )}
