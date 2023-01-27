@@ -10,7 +10,9 @@ import {
 } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
-import { dbService } from "../../firebase";
+import { dbService, storageService } from "../../firebase";
+
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function AddReview() {
   const queryClient = useQueryClient();
@@ -39,8 +41,19 @@ export default function AddReview() {
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
+  // image 관련 state
+  const [imageUpload, setImageUpload] = useState(null);
+  const [url, setUrl] = useState(null);
 
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
+
+  // 이미지 업로드 부분
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImageUpload(e.target.files[0]);
+    }
+  };
+  console.log(imageUpload);
 
   // const [reviews, setReviews] = useState(reviewData);
 
@@ -99,6 +112,8 @@ export default function AddReview() {
   //   userNickname: userNickname,
   // };
 
+  // const images = imageUpload.name();
+
   const onAddSubmit = async () => {
     await addDoc(collection(dbService, "review"), {
       bad: bad,
@@ -111,11 +126,26 @@ export default function AddReview() {
       reviewTitle: reviewTitle,
       uid: "임재영",
       // id: reviewData?.id,
-      image:
-        "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
+      image: imageUpload,
       userNickname: "코쟁이",
     });
     alert("입력되었습니다 !");
+
+    const imageRef = ref(storageService, "image");
+    uploadBytes(imageRef, imageUpload)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((url) => {
+            setUrl(url);
+          })
+          .catch((error) => {
+            console.log(error.message, "사진을 가져오는데 문제가 생겼습니다. ");
+          });
+        setImageUpload(null);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
 
     if (isLoading) return;
     console.log("isloading");
@@ -245,15 +275,15 @@ export default function AddReview() {
             </Menu>
           </RateMenu>
         </GoodBad>
-
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>
-            <img
+            {/* <img
               // value={image}
               src={`${reviewData?.image}`}
               style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
-            />
+            /> */}
+            <input type="file" onChange={handleImageChange} />
           </SpotImg>
           <ReasonLocation>
             {/* reason,location */}
