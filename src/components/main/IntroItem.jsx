@@ -1,8 +1,8 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { dbService } from "../../firebase";
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { dbService } from '../../firebase';
 
 export const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -17,14 +17,14 @@ export const IntroItem = ({ placeItem }) => {
 
   const getImage = async (cafeId) => {
     const q = query(
-      collection(dbService, "review"),
-      where("cafeId", "==", cafeId)
+      collection(dbService, 'review'),
+      where('cafeId', '==', cafeId)
     );
 
     const getMyReviewList = async () => {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.docs[0]) {
-        return "https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg";
+        return 'https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg';
       }
       return querySnapshot.docs[0].data().image;
     };
@@ -41,53 +41,45 @@ export const IntroItem = ({ placeItem }) => {
   // 맵 돌면서 이미지가 존재하면 각 배열의 객체에 넣기
 
   return (
-    <>
-      <IntronItemWrap>
-        <IntronItemTitle>
-          <em>📚</em>
-          <span>
-            여러분만의 카공 장소를
-            <br /> 소개해 주세요 !
-          </span>
-        </IntronItemTitle>
-        <ItemTitle> 평점 높은 순</ItemTitle>
-        {Array.isArray(placeItem) && placeItem.length === 0 ? (
-          <SearchTitle>가까운 카페를 검색해 주세요.</SearchTitle>
-        ) : (
-          <ItemWrap>
-            {placeItem?.map(
-              (item) =>
-                //카테고리가 카페 인것만 나올 수 있도록
-                item.content.category_group_code === 'CE7' && (
-                  <Item
-                    key={item.content.id}
-                    id={item.content.id}
-                    onClick={() => goToDetail(`${item.content.id}`)}
-                  >
-                    <div className="img-wrap">
-                      <img
-                        id={`imageId-${item.content.id}`}
-                        src={getImage(item.content.id)}
-                        alt="이미지"
-                      />
-                    </div>
-                    <div className="item-content">
-                      <h4 className="item-title">{item.content.place_name}</h4>
-                      <p className="item-address">
-                        {item.content.address_name}
-                      </p>
-                      <p className="item-address">
-                        {item.content.category_group_code}
-                      </p>
-                      <p>⭐⭐⭐⭐</p>
-                    </div>
-                  </Item>
-                )
-            )}
-          </ItemWrap>
+    <IntronItemWrap>
+      <IntronItemTitle>
+        <em>📚</em>
+        <span>
+          여러분만의 카공 장소를
+          <br /> 소개해 주세요 !
+        </span>
+      </IntronItemTitle>
+      <ItemTitle> 평점 높은 순</ItemTitle>
+      <ItemWrap>
+        {placeItem?.map(
+          (item) =>
+            //카테고리가 카페 인것만 나올 수 있도록
+            item.content.category_group_code === 'CE7' && (
+              <Item
+                key={item.content.id}
+                id={item.content.id}
+                onClick={() => goToDetail(`${item.content.id}`)}
+              >
+                <div className="img-wrap">
+                  <img
+                    id={`imageId-${item.content.id}`}
+                    src={getImage(item.content.id)}
+                    alt="이미지"
+                  />
+                </div>
+                <div className="item-content">
+                  <h4 className="item-title">{item.content.place_name}</h4>
+                  <p className="item-address">{item.content.address_name}</p>
+                  <p className="item-address">
+                    {item.content.category_group_code}
+                  </p>
+                  <p>⭐⭐⭐⭐</p>
+                </div>
+              </Item>
+            )
         )}
-      </IntronItemWrap>
-    </>
+      </ItemWrap>
+    </IntronItemWrap>
   );
 };
 
@@ -96,16 +88,15 @@ const IntronItemWrap = styled.div`
   width: 100%;
   flex-direction: column;
   padding: 4em;
-
   overflow-y: scroll;
 
   @media (max-width: 1100px) {
-    height: 100%;
+    height: 60vh;
     order: 2;
     width: calc(100% - 16px);
     box-sizing: border-box;
     margin: 0 auto;
-    overflow-y: auto;
+    /* overflow-y: auto; */
   }
 `;
 

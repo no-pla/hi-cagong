@@ -10,7 +10,6 @@ const MapContainer = () => {
           height: '100%',
         }}
       />
-      <IntroItem />
     </>
   );
 };
