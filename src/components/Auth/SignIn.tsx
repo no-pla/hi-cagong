@@ -1,25 +1,36 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { emailRegex } from "./untils";
 
 // Modal 컴포넌트 규현
 export const ModalSignIn = () => {
   // Modal 오픈 여부를 State로 관리
   const [isOpen, setIsOpen] = useState(true);
+  const [emailText, setEmailText] = useState("");
+  const [emailRight, setEmailRight] = useState(false);
+
   // 이벤트 핸들러 함수로 state를 변경
   const openModalHandler = () => {
+    setEmailText("");
+
     setIsOpen(true);
   };
   const closeModalHandler = () => {
     setIsOpen(false);
   };
-  const test = (event: React.MouseEvent) => {
+  const stopPropagation = (event: React.MouseEvent) => {
     event.stopPropagation();
   };
-  const InputRender = () => {
-    return <InputBox type="email" placeholder="이메일을 입력하세요" />;
-  };
-  const InputRender2 = () => {
-    return <InputBox type="password" placeholder="비밀번호를 입력하세요" />;
+  //이메일 유효성 검사
+  const validateEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailCurrent = e.target.value;
+    if (emailRegex.test(emailCurrent)) {
+      setEmailText("올바른 이메일 형식입니다");
+      setEmailRight(true);
+    } else {
+      setEmailText("이메일 형식이 틀렸습니다");
+      setEmailRight(false);
+    }
   };
 
   const GotoGithub = () => {
@@ -37,11 +48,20 @@ export const ModalSignIn = () => {
         </ModalBtn>
         {isOpen ? (
           <ModalBackdrop onClick={closeModalHandler}>
-            <ModalView onClick={test}>
+            <ModalView onClick={stopPropagation}>
               <Title>로그인</Title>
               <ModalWrapper>
-                <InputRender />
-                <InputRender2 />
+                <InputBox
+                  type="email"
+                  onChange={validateEmail}
+                  placeholder="이메일을 입력하세요"
+                />
+                {emailRight ? (
+                  <InputBoxText>{emailText}</InputBoxText>
+                ) : (
+                  <InputBoxRedText>{emailText}</InputBoxRedText>
+                )}
+                <InputBox type="password" placeholder="비밀번호를 입력하세요" />
                 <SignUpText>회원가입</SignUpText>
                 <Frame>
                   <LoginButton onClick={() => alert("로그인")}>
@@ -128,8 +148,21 @@ export const InputBox = styled.input`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
   line-height: 150%;
+  color: black;
+`;
+
+const InputBoxText = styled.div`
+  margin-top: 5px;
+  color: #33a264;
+  font-size: 10px;
+  text-align: left;
+`;
+const InputBoxRedText = styled.div`
+  margin-top: 5px;
+  color: red;
+  font-size: 10px;
+  text-align: left;
 `;
 //로그인 제목
 const Title = styled.div`
