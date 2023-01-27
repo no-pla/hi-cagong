@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { searchStoreData } from "../atom";
 import { IntroItem } from "./IntroItem";
 import MapContainer from "./MapContainer";
 const { kakao } = window;
 
 function LandingPage() {
-  const [InputText, setInputText] = useState("");
-  const [Place, setPlace] = useState("서울대입구 스타벅스");
+  const initialPlace = useRecoilValue(searchStoreData);
+  const [InputText, setInputText] = useState(initialPlace);
+  const [Place, setPlace] = useState(initialPlace);
   const [placeItem, setePlaceItem] = useState([]);
 
   const onChange = (e) => {
     setInputText(e.target.value);
   };
 
+  const setNamesState = useSetRecoilState(searchStoreData);
   const handleSubmit = (e) => {
     e.preventDefault();
     setPlace(InputText);
+    setNamesState(InputText);
     setInputText("");
   };
 

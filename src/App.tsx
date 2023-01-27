@@ -1,10 +1,9 @@
-
 import React from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
+import { RecoilRoot } from "recoil";
 import { createGlobalStyle } from "styled-components";
 import { Reset } from "styled-reset";
 import { Router } from "./Router";
-
 
 function App() {
   const queryClient = new QueryClient();
@@ -15,11 +14,13 @@ function App() {
   `;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Reset />
-      <Router />
-      <GlobalStyle />
-    </QueryClientProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <Reset />
+        <Router />
+        <GlobalStyle />
+      </QueryClientProvider>
+    </RecoilRoot>
   );
 }
 
