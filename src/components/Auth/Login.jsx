@@ -14,27 +14,17 @@ import CustomButton from '../common/CustomButton';
 import AuthModal, { AuthTitle } from './AuthModal';
 import Join from './Join';
 
-type LoginProps = {
-  onClickLogin: () => void;
-  onClickJoin?: () => void;
-  email?: string;
-  paswword?: string;
-  notMember?: boolean;
-  onSocialClick?: () => void;
-  userNotFount?: () => void;
-};
-
-const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
+const Login = ({ onClickLogin, onClickJoin }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [notMember, setNotMember] = useState<boolean>(false);
-  const [wrongPassword, setWrongPassword] = useState<boolean>(false);
-  const [signUp, setSignUp] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [notMember, setNotMember] = useState(false);
+  const [wrongPassword, setWrongPassword] = useState(false);
+  const [signUp, setSignUp] = useState(false);
   const [checkedUser, setCheckedUser] = useState('');
   const matchCheckEmail = email.match(emailRegex);
 
-  const onSubmit = async (e: any) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     await signInWithEmailAndPassword(authService, email, password)
@@ -43,7 +33,7 @@ const Login = ({ onClickLogin, onClickJoin }: LoginProps) => {
         setPassword('');
         navigate('/');
       })
-      .catch((err: any) => {
+      .catch((err) => {
         // errorMessage = err.message;
         if (err.message.includes('user-not-found')) {
           setNotMember(!notMember);

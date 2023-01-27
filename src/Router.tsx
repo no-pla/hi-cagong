@@ -5,8 +5,6 @@ import { Detail } from './components/Detail';
 import { Home } from './components/Home';
 import { MyPage } from './components/MyPage';
 import { Nav } from './components/main/Nav';
-import { ModalSignIn } from './components/Auth/SignIn';
-// import { ModalSignUp } from './components/Auth/SignUp';
 
 export const Router = () => {
   return (
@@ -17,8 +15,6 @@ export const Router = () => {
           <Route path="/" element={<Home />}></Route>
           <Route path="/:cafeId" element={<Detail />}></Route>
           <Route path="/mypage" element={<MyPage />}></Route>
-          <Route path="/test" element={<ModalSignIn />}></Route>
-          {/* <Route path="/test1" element={<ModalSignUp />}></Route> */}
         </Routes>
       </ContentWrap>
     </BrowserRouter>

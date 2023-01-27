@@ -344,8 +344,8 @@ const ReviewBtn = styled.button`
 `;
 
 const ReviewContents = styled.section`
-  width: 932px;
-  height: 529px;
+  /* width: 932px;
+  height: 529px; */
   border: 1px solid #aeb0af;
   border-radius: 10px;
   display: grid;

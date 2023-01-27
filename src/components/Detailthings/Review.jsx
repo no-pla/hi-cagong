@@ -83,7 +83,7 @@ const AllReview = styled.section`
   display: inline-flex;
   place-content: center;
   padding: 10px;
-  margin: 10px;
+  /* margin: 10px; */
   text-align: center;
   width: 100%;
   box-sizing: border-box;

@@ -129,7 +129,7 @@ export const ReviewItem = (reviews, isOwner) => {
 };
 
 const ReviewItemContainer = styled.div`
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 `;
 
 const ReviewItems = styled.div`
@@ -220,7 +220,6 @@ const ReviewTitle = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-
   width: 30%;
 `;
 
