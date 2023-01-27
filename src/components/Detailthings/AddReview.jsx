@@ -50,7 +50,8 @@ export default function AddReview() {
   const year = date.getFullYear();
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const day = ("0" + date.getDate()).slice(-2);
-  const dateStr = year + "-" + month + "-" + day;
+  const seconds = ("0" + date.getSeconds()).slice(-2);
+  const dateStr = Number(year + month + day + seconds);
 
   // Read 부분
   // useEffect(() => {
@@ -386,21 +387,21 @@ const RevieTitleinput = styled.input`
   }
 `;
 
-const Recommend = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  font-size: 25px;
-  font-weight: 700;
-  align-items: flex-end;
-`;
+// const Recommend = styled.div`
+//   display: inline-flex;
+//   flex-direction: row;
+//   font-size: 25px;
+//   font-weight: 700;
+//   align-items: flex-end;
+// `;
 
-const RecommendContents = styled.div`
-  display: inline-flex;
-  font-size: 15px;
-  margin-left: 10px;
-  font-weight: 200;
-  align-items: flex-end;
-`;
+// const RecommendContents = styled.div`
+//   display: inline-flex;
+//   font-size: 15px;
+//   margin-left: 10px;
+//   font-weight: 200;
+//   align-items: flex-end;
+// `;
 
 const NiceSpot = styled.section`
   width: 100%;

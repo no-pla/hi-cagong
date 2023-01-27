@@ -37,7 +37,7 @@ export const ReviewItem = (reviews) => {
                   }}
                 >
                   {/* createAt,userNickname */}
-                  <ReviewDate>{reviewData?.createAt.seconds}</ReviewDate>
+                  <ReviewDate>{reviewData?.createAt}</ReviewDate>
                   {/* createAt */}
                   <UserNickName>{reviewData?.userNickname} ,</UserNickName>
                   {/* userNickname */}
@@ -112,37 +112,37 @@ const ReviewItems = styled.div`
   width: 100%;
 `;
 
-const ReviewTitles = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 30px;
-`;
+// const ReviewTitles = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   width: 100%;
+//   height: 30px;
+// `;
 
-const ReviewCount = styled.div`
-  display: flex;
-  font-size: 18px;
-  text-align: left;
-  font-weight: 900;
-`;
+// // const ReviewCount = styled.div`
+// //   display: flex;
+// //   font-size: 18px;
+// //   text-align: left;
+// //   font-weight: 900;
+// // `;
 
-const ReviewCountNum = styled.div`
-  margin-left: 4px;
-  font-size: 18px;
-  font-weight: 300;
-`;
+// // const ReviewCountNum = styled.div`
+// //   margin-left: 4px;
+// //   font-size: 18px;
+// //   font-weight: 300;
+// // `;
 
-const ReviewBtn = styled.button`
-  border-radius: 30px;
-  background-color: #33a264;
-  color: white;
-  font-weight: 300;
-  font-size: 18px;
-  width: 100px;
-  height: 100%;
-  /* border: none; */
-  text-align: center;
-`;
+// // const ReviewBtn = styled.button`
+// //   border-radius: 30px;
+// //   background-color: #33a264;
+// //   color: white;
+// //   font-weight: 300;
+// //   font-size: 18px;
+// //   width: 100px;
+// //   height: 100%;
+// //   /* border: none; */
+// //   text-align: center;
+// // `;
 
 const ReviewContents = styled.section`
   width: 932px;
