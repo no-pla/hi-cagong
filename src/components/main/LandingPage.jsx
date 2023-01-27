@@ -1,27 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { IntroItem } from './IntroItem';
-import MapContainer from './MapContainer';
+import React, { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
+import { searchStoreData } from "../atom";
+import { IntroItem } from "./IntroItem";
+import MapContainer from "./MapContainer";
 const { kakao } = window;
 
 function LandingPage() {
-  const [InputText, setInputText] = useState('');
-  const [Place, setPlace] = useState('');
+  const initialPlace = useRecoilValue(searchStoreData);
+  const [InputText, setInputText] = useState(initialPlace);
+  const [Place, setPlace] = useState(initialPlace);
   const [placeItem, setePlaceItem] = useState([]);
 
   const onChange = (e) => {
     setInputText(e.target.value);
   };
 
+  const setNamesState = useSetRecoilState(searchStoreData);
   const handleSubmit = (e) => {
     e.preventDefault();
     setPlace(InputText);
-    setInputText('');
+    setNamesState(InputText);
+    setInputText("");
   };
 
   useEffect(() => {
     var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-    const container = document.getElementById('myMap');
+    const container = document.getElementById("myMap");
     const options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667),
       level: 3,
@@ -39,7 +44,7 @@ function LandingPage() {
         let placeItem = [];
 
         for (let i = 0; i < data.length; i++) {
-          data[i].category_group_code === 'CE7' && displayMarker(data[i]);
+          data[i].category_group_code === "CE7" && displayMarker(data[i]);
           placeItem.push({
             position: {
               lat: data[i].y,
@@ -62,7 +67,7 @@ function LandingPage() {
 
       // 마커에 클릭이벤트를 등록합니다
 
-      kakao.maps.event.addListener(marker, 'click', function () {
+      kakao.maps.event.addListener(marker, "click", function () {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         infowindow.setContent(
           `<div class="overlaybox">
