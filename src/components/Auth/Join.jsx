@@ -18,11 +18,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { uuidv4 } from '@firebase/util';
 
-type JoinProps = {
-  onClickJoin?: () => void,
-};
-
-const Join = ({ onClickJoin }: JoinProps) => {
+const Join = ({ onClickJoin }) => {
   const [attachment, setAttachment] = useState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,7 +57,8 @@ const Join = ({ onClickJoin }: JoinProps) => {
       authService,
       email,
       password,
-      attachmentUrl
+      attachmentUrl,
+      nickName
     )
       .then((userCredential) => {
         console.log('회원가입 성공!');

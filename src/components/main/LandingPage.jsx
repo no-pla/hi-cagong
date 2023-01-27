@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { searchStoreData } from '../atom';
-import { IntroItem } from './IntroItem';
+import IntroItem from './IntroItem';
 import MapContainer from './MapContainer';
 const { kakao } = window;
 
@@ -71,8 +71,8 @@ function LandingPage() {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         infowindow.setContent(
           `<div class="overlaybox">
-            <a style="text-decoration:none; color:#000; display:block;" href=${place.place_url} target="blank">${place.place_name}</a>
-            <span class="title">${place.phone}</span>
+            <a style="font-size:14px;text-decoration:none; color:#000; display:block; padding:4px" href=${place.place_url} target="blank">${place.place_name}</a>
+            <span style="display:block;font-size:14px;padding:4px"class="title">${place.phone}</span>
           </div>`
         );
         infowindow.open(map, marker);

@@ -1,10 +1,10 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { dbService } from '../../firebase';
 
-export const IntroItem = ({ placeItem }) => {
+const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
 
   const goToDetail = (id) => {
@@ -70,10 +70,6 @@ export const IntroItem = ({ placeItem }) => {
                 <div className="item-content">
                   <h4 className="item-title">{item.content.place_name}</h4>
                   <p className="item-address">{item.content.address_name}</p>
-                  <p className="item-address">
-                    {item.content.category_group_code}
-                  </p>
-                  <p>⭐⭐⭐⭐</p>
                 </div>
               </Item>
             )
@@ -82,6 +78,8 @@ export const IntroItem = ({ placeItem }) => {
     </IntronItemWrap>
   );
 };
+
+export default memo(IntroItem);
 
 const IntronItemWrap = styled.div`
   display: flex;

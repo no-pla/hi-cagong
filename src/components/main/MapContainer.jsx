@@ -1,5 +1,3 @@
-import { IntroItem } from './IntroItem';
-
 const MapContainer = () => {
   return (
     <>
