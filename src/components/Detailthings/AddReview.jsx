@@ -59,26 +59,24 @@ export default function AddReview({ reviewData }) {
   //   });
   // };
 
-  const { isLoading: createLoading, mutate: createMutate } =
-    useMutation(addReview);
-  const data = {
-    bad: bad,
-    createAt: myDate,
-    good: good,
-    location: location,
-    menu: menu,
-    rate: rate,
-    reason: reason,
-    reviewTitle: reviewTitle,
-    uid: UserID,
-    // id: reviewData?.id,
-    //image:image
-    userNickname: userNickname,
-  };
+  // const { isLoading: createLoading, mutate: createMutate } =
+  //   useMutation(addReview);
+  // const data = {
+  //   bad: bad,
+  //   createAt: myDate,
+  //   good: good,
+  //   location: location,
+  //   menu: menu,
+  //   rate: rate,
+  //   reason: reason,
+  //   reviewTitle: reviewTitle,
+  //   uid: UserID,
+  //   // id: reviewData?.id,
+  //   //image:image
+  //   userNickname: userNickname,
+  // };
 
-  const onAddSubmit = async (e) => {
-    e.preventDefault(e);
-
+  const onAddSubmit = async () => {
     await addDoc(collection(dbService, "review"), {
       bad: bad,
       createAt: myDate,
@@ -98,11 +96,11 @@ export default function AddReview({ reviewData }) {
     console.log(data);
 
     // data를 가져오면 화면에 query로 바로 표시하는 것
-    createMutate(data, {
-      onSuccess: () => {
-        queryClient.invalidateQueries("reviewdata");
-      },
-    });
+    // createMutate(data, {
+    //   onSuccess: () => {
+    //     queryClient.invalidateQueries("reviewdata");
+    //   },
+    // });
   };
 
   if (createLoading) return;
@@ -158,6 +156,17 @@ export default function AddReview({ reviewData }) {
             onChange={(event) => setReviewTitle(event.target.value)}
           />
         </UserIdTitleBtn>
+        <div
+          style={{
+            display: "inline-flex",
+            height: "fit-contents",
+          }}
+        >
+          <Recommend>추천 명당</Recommend>
+          <RecommendContents>
+            추천하는 이 카페의 나만의 명당은!?
+          </RecommendContents>
+        </div>
         <GoodBad>
           {/* good,bad,rate,menu */}
           <Good>
@@ -201,7 +210,6 @@ export default function AddReview({ reviewData }) {
             </Menu>
           </RateMenu>
         </GoodBad>
-
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>

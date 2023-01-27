@@ -45,6 +45,7 @@ export const ReviewItem = (reviews) => {
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
               <EditDeleteBtn>
+                <EditBtn>수정</EditBtn>
                 <DeleteBtn>삭제</DeleteBtn>
               </EditDeleteBtn>
             </UserIdTitleBtn>
@@ -206,7 +207,15 @@ const EditDeleteBtn = styled.div`
   justify-content: flex-end;
   align-items: center;
 `;
-
+const EditBtn = styled.button`
+  height: 80%;
+  display: flex;
+  color: blue;
+  align-items: center;
+  font-size: 15px;
+  border-style: none;
+  background-color: #ffffff;
+`;
 const DeleteBtn = styled.button`
   height: 80%;
   display: flex;
