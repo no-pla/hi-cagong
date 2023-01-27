@@ -1,4 +1,4 @@
-import { addDoc, collection, query } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
 import {
   Mutation,
@@ -6,7 +6,6 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  useEffect,
 } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
@@ -45,24 +44,7 @@ export default function AddReview() {
   // const [reviews, setReviews] = useState(reviewData);
 
   // createAt 현재 시간
-  const date = new Date();
-
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const day = ("0" + date.getDate()).slice(-2);
-  const dateStr = year + "-" + month + "-" + day;
-
-  // Read 부분
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "reviws"))
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     let reviewsArr = []
-  //     querySnapshot.forEach((doc) => {
-  //       reviewsArr.push({...doc.data(), id: doc.id})
-  //     })
-  //     setReviews(reviewsArr)
-  //   })
-  // }, []);
+  const myDate = new Date();
 
   // const addReview = async () => {
   //   await addDoc(collection(dbService, "review"), {
@@ -101,7 +83,7 @@ export default function AddReview() {
   const onAddSubmit = async () => {
     await addDoc(collection(dbService, "review"), {
       bad: bad,
-      createAt: dateStr,
+      createAt: myDate,
       good: good,
       location: location,
       menu: menu,
@@ -114,10 +96,7 @@ export default function AddReview() {
         "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
       userNickname: "코쟁이",
     });
-    alert("입력되었습니다 !");
-
-    if (isLoading) return;
-    console.log("isloading");
+    console.log("addDoc()");
   };
 
   // const onAddSubmit = () => {
@@ -244,7 +223,17 @@ export default function AddReview() {
             </Menu>
           </RateMenu>
         </GoodBad>
-
+        <div
+          style={{
+            display: "inline-flex",
+            height: "fit-contents",
+          }}
+        >
+          <Recommend>추천 명당</Recommend>
+          <RecommendContents>
+            추천하는 이 카페의 나만의 명당은!?
+          </RecommendContents>
+        </div>
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>
