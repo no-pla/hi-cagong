@@ -6,13 +6,12 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  useEffect,
 } from "react-query";
 import styled from "styled-components";
-import { getReviews } from "../../api";
+import { addReview, getReviews } from "../../api";
 import { dbService } from "../../firebase";
 
-export default function AddReview() {
+export default function AddReview({ reviewData }) {
   const queryClient = useQueryClient();
 
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
@@ -40,29 +39,8 @@ export default function AddReview() {
   const [reviewTitle, setReviewTitle] = useState("");
   const [userNickname, setUserNickname] = useState("");
 
-  const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
-  // const [reviews, setReviews] = useState(reviewData);
-
   // createAt 현재 시간
-  const date = new Date();
-
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const day = ("0" + date.getDate()).slice(-2);
-  const dateStr = year + "-" + month + "-" + day;
-
-  // Read 부분
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "reviws"))
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     let reviewsArr = []
-  //     querySnapshot.forEach((doc) => {
-  //       reviewsArr.push({...doc.data(), id: doc.id})
-  //     })
-  //     setReviews(reviewsArr)
-  //   })
-  // }, []);
+  const myDate = new Date();
 
   // const addReview = async () => {
   //   await addDoc(collection(dbService, "review"), {
@@ -81,74 +59,53 @@ export default function AddReview() {
   //   });
   // };
 
-  // const { isLoading: createLoading, mutate: createMutate } =
-  //   useMutation(addReview);
-  // const data = {
-  //   bad: bad,
-  //   createAt: myDate,
-  //   good: good,
-  //   location: location,
-  //   menu: menu,
-  //   rate: rate,
-  //   reason: reason,
-  //   reviewTitle: reviewTitle,
-  //   uid: UserID,
-  //   // id: reviewData?.id,
-  //   //image:image
-  //   userNickname: userNickname,
-  // };
+  const { isLoading: createLoading, mutate: createMutate } =
+    useMutation(addReview);
+  const data = {
+    bad: bad,
+    createAt: myDate,
+    good: good,
+    location: location,
+    menu: menu,
+    rate: rate,
+    reason: reason,
+    reviewTitle: reviewTitle,
+    uid: UserID,
+    // id: reviewData?.id,
+    //image:image
+    userNickname: userNickname,
+  };
 
-  const onAddSubmit = async () => {
+  const onAddSubmit = async (e) => {
+    e.preventDefault(e);
+
     await addDoc(collection(dbService, "review"), {
       bad: bad,
-      createAt: dateStr,
+      createAt: myDate,
       good: good,
       location: location,
       menu: menu,
       rate: rate,
       reason: reason,
       reviewTitle: reviewTitle,
-      uid: "임재영",
+      uid: UserID,
       // id: reviewData?.id,
-      image:
-        "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-      userNickname: "코쟁이",
+      //image:image
+      userNickname: userNickname,
     });
-    alert("입력되었습니다 !");
 
-    if (isLoading) return;
-    console.log("isloading");
+    //input창에 입력 된 value값들을 data로 표시 중
+    console.log(data);
+
+    // data를 가져오면 화면에 query로 바로 표시하는 것
+    createMutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("reviewdata");
+      },
+    });
   };
 
-  // const onAddSubmit = () => {
-  //   const reviewData = {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: "임재영",
-  //     // id: reviewData?.id,
-  //     image:
-  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-  //     userNickname: "코쟁이",
-  //   };
-  //   console.log(reviewData);
-  // };
-
-  //input창에 입력 된 value값들을 data로 표시 중
-
-  // data를 가져오면 화면에 query로 바로 표시하는 것
-  // createMutate(reviewData, {
-  //   onSuccess: () => {
-  //     // queryClient.invalidateQueries("reviewdata");
-  //   },
-  // });
-
-  // if (isLoading) return;
+  if (createLoading) return;
 
   return (
     <ReviewItems>
