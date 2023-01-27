@@ -24,9 +24,9 @@
 //   return data;
 // };
 
-// export const addReview = async (item) => {
-//   await addDoc(collection(dbService, "review"), item);
-// };
+// // export const addReview = async (item) => {
+// //   await addDoc(collection(dbService, "review"), item);
+// // };
 
 // export const deleteReview = async (item) => {
 //   await deleteDoc(doc(dbService, `review/${item}`), item);
