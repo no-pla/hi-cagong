@@ -146,11 +146,9 @@ const Join = ({ onClickJoin }: JoinProps) => {
               }}
             />
             {password !== confirmpassword ? (
-              confirmpassword ? (
-                <ErrorMessage>비밀번호가 다릅니다.</ErrorMessage>
-              ) : null
+              <ErrorMessage>비밀번호가 다릅니다.</ErrorMessage>
             ) : (
-              <OkMessage>동일한 비밀번호 입니다.</OkMessage>
+              confirmpassword && <OkMessage>동일한 비밀번호 입니다.</OkMessage>
             )}
           </InputWrap>
           <Profile>
