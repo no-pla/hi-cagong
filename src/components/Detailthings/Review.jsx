@@ -1,13 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import styled from "styled-components";
-import { getReviews } from "../../api";
-import { useGetReviews } from "../Hooks/useGetReviews";
-import AddReview from "./AddReview";
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import styled from 'styled-components';
+import { getReviews } from '../../api';
+import { useGetReviews } from '../Hooks/useGetReviews';
+import AddReview from './AddReview';
 
-import { ReviewItem } from "./ReviewItem";
+import { ReviewItem } from './ReviewItem';
 
 function Review() {
-  const { reviews } = useGetReviews("uid", "임재영"); //임시값
+  const { reviews } = useGetReviews('uid', '임재영'); //임시값
 
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
@@ -40,7 +40,7 @@ function Review() {
   return (
     <div
       style={{
-        display: "grid",
+        display: 'grid',
       }}
     >
       {/* <button
@@ -53,7 +53,7 @@ function Review() {
       </button> */}
       <AllReview
         style={{
-          display: "grid",
+          display: 'grid',
         }}
       >
         <AddReview reviews={reviews} />
@@ -69,7 +69,7 @@ const AllReview = styled.section`
   display: inline-flex;
   place-content: center;
   padding: 10px;
-  margin: 10px;
+  /* margin: 10px; */
   text-align: center;
   width: 100%;
   box-sizing: border-box;

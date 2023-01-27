@@ -1,12 +1,13 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { DetailContent } from "./DetailContent";
-import Review from "./Detailthings/Review";
+import { useState } from 'react';
+import styled from 'styled-components';
+import { DetailContent } from './DetailContent';
+import Review from './Detailthings/Review';
 
 const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100% - 160px);
+  overflow-y: scroll;
 `;
 
 export const Detail = () => {

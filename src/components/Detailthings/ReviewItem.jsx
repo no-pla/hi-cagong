@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { deleteReview } from "../../api";
-import { useMutation, useQueryClient } from "react-query";
+import styled from 'styled-components';
+import { deleteReview } from '../../api';
+import { useMutation, useQueryClient } from 'react-query';
 
 export const ReviewItem = (reviews) => {
   // const queryClient = useQueryClient();
@@ -32,7 +32,7 @@ export const ReviewItem = (reviews) => {
                 {/* profileImg */}
                 <div
                   style={{
-                    display: "grid",
+                    display: 'grid',
                     marginLeft: 10,
                   }}
                 >
@@ -50,7 +50,7 @@ export const ReviewItem = (reviews) => {
             </UserIdTitleBtn>
             <div
               style={{
-                display: "inline-flex",
+                display: 'inline-flex',
                 marginLeft: 25,
               }}
             >
@@ -105,7 +105,7 @@ export const ReviewItem = (reviews) => {
 };
 
 const ReviewItemContainer = styled.div`
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 `;
 
 const ReviewItems = styled.div`
@@ -196,7 +196,6 @@ const ReviewTitle = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-
   width: 30%;
 `;
 

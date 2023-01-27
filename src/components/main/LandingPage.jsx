@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import styled from "styled-components";
-import { searchStoreData } from "../atom";
-import { IntroItem } from "./IntroItem";
-import MapContainer from "./MapContainer";
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
+import { searchStoreData } from '../atom';
+import IntroItem from './IntroItem';
+import MapContainer from './MapContainer';
 const { kakao } = window;
 
 function LandingPage() {
@@ -21,12 +21,12 @@ function LandingPage() {
     e.preventDefault();
     setPlace(InputText);
     setNamesState(InputText);
-    setInputText("");
+    setInputText('');
   };
 
   useEffect(() => {
     var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-    const container = document.getElementById("myMap");
+    const container = document.getElementById('myMap');
     const options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667),
       level: 3,
@@ -44,7 +44,7 @@ function LandingPage() {
         let placeItem = [];
 
         for (let i = 0; i < data.length; i++) {
-          data[i].category_group_code === "CE7" && displayMarker(data[i]);
+          data[i].category_group_code === 'CE7' && displayMarker(data[i]);
           placeItem.push({
             position: {
               lat: data[i].y,
@@ -67,12 +67,12 @@ function LandingPage() {
 
       // 마커에 클릭이벤트를 등록합니다
 
-      kakao.maps.event.addListener(marker, "click", function () {
+      kakao.maps.event.addListener(marker, 'click', function () {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         infowindow.setContent(
           `<div class="overlaybox">
-            <a style="text-decoration:none; color:#000; display:block;" href=${place.place_url} target="blank">${place.place_name}</a>
-            <span class="title">${place.phone}</span>
+            <a style="font-size:14px;text-decoration:none; color:#000; display:block; padding:4px" href=${place.place_url} target="blank">${place.place_name}</a>
+            <span style="display:block;font-size:14px;padding:4px"class="title">${place.phone}</span>
           </div>`
         );
         infowindow.open(map, marker);
@@ -109,7 +109,6 @@ export default LandingPage;
 const SearchWrap = styled.div`
   width: 100%;
   position: relative;
-
   height: 100vh;
 
   @media (max-width: 1100px) {
@@ -125,7 +124,7 @@ const SearchForm = styled.form`
   background-color: #fff;
   border: 1px solid #000;
   padding: 1em;
-  z-index:999;
+  z-index: 999;
 
   > p {
     margin-bottom: 1em;

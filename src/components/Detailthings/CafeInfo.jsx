@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 function CafeInfo() {
   return (
@@ -10,26 +10,26 @@ function CafeInfo() {
           style={{
             width: 350,
             height: 300,
-            backgroundColor: "tomato",
-            display: "flex",
-            flexDirection: "inherit",
-            alignItems: "center",
+            backgroundColor: 'tomato',
+            display: 'flex',
+            flexDirection: 'inherit',
+            alignItems: 'center',
           }}
         />
       </CafeImg>
       <div
         style={{
-          display: "inline-block",
-          textAlign: "left",
+          display: 'inline-block',
+          textAlign: 'left',
           margin: 20,
         }}
       >
         {/* info text */}
         <h2
           style={{
-            fontSize: "30px",
+            fontSize: '30px',
             fontWidth: 100,
-            color: "#33A264",
+            color: '#33A264',
           }}
         >
           스타벅스 (서울대 입구역)
@@ -43,7 +43,7 @@ function CafeInfo() {
           <div
             style={{
               fontSize: 20,
-              color: "#33A264",
+              color: '#33A264',
             }}
           >
             주소
@@ -61,7 +61,7 @@ function CafeInfo() {
           <div
             style={{
               fontSize: 20,
-              color: "#33A264",
+              color: '#33A264',
             }}
           >
             전화번호
@@ -77,7 +77,7 @@ function CafeInfo() {
           <div
             style={{
               fontSize: 20,
-              color: "#33A264",
+              color: '#33A264',
             }}
           >
             평균 점수
@@ -95,7 +95,7 @@ const CafeInfor = styled.section`
   display: inline-flex;
   place-content: center;
   padding: 10px;
-  margin: 10px;
+  /* margin: 10px; */
   text-align: center;
   width: 100%;
   box-sizing: border-box;

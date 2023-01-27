@@ -1,8 +1,14 @@
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { useGetReviews } from "./Hooks/useGetReviews";
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useGetReviews } from './Hooks/useGetReviews';
+
+const SecitonWrap = styled.div`
+  display: flex;
+  width: calc(100% - 160px);
+  overflow-y: scroll;
+`;
 
 const UserProfileContainer = styled.div`
   background: #f6f6f6;
@@ -78,7 +84,7 @@ const ReviewList = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(220px, 3fr));
   grid-template-rows: repeat(auto-fill, 330px);
   gap: 12px 16px;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   width: 100%;
   margin-right: 40px;
 `;
@@ -161,10 +167,10 @@ const SectionContainer = styled.div`
 export const MyPage = () => {
   const [profileSetting, setProfileSetting] = useState(false);
 
-  const { reviews } = useGetReviews("uid", "임재영"); //임시값
+  const { reviews } = useGetReviews('uid', '임재영'); //임시값
 
   return (
-    <>
+    <SecitonWrap>
       <SectionContainer>
         <Title>내프로필</Title>
         <UserProfileContainer>
@@ -186,7 +192,7 @@ export const MyPage = () => {
           <UserEmail>adrain.nader@yahoo.com</UserEmail>
         </UserProfileContainer>
       </SectionContainer>
-      <SectionContainer style={{ width: "100%" }}>
+      <SectionContainer style={{ width: '100%' }}>
         <Title>내가쓴리뷰</Title>
         <ReviewList>
           {reviews &&
@@ -204,6 +210,6 @@ export const MyPage = () => {
             })}
         </ReviewList>
       </SectionContainer>
-    </>
+    </SecitonWrap>
   );
 };
