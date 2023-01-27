@@ -180,17 +180,6 @@ export default function AddReview() {
             onChange={(event) => setReviewTitle(event.target.value)}
           />
         </UserIdTitleBtn>
-        <div
-          style={{
-            display: "inline-flex",
-            height: "fit-contents",
-          }}
-        >
-          <Recommend>추천 명당</Recommend>
-          <RecommendContents>
-            추천하는 이 카페의 나만의 명당은!?
-          </RecommendContents>
-        </div>
         <GoodBad>
           {/* good,bad,rate,menu */}
           <Good>
@@ -234,6 +223,17 @@ export default function AddReview() {
             </Menu>
           </RateMenu>
         </GoodBad>
+        <div
+          style={{
+            display: "inline-flex",
+            height: "fit-contents",
+          }}
+        >
+          <Recommend>추천 명당</Recommend>
+          <RecommendContents>
+            추천하는 이 카페의 나만의 명당은!?
+          </RecommendContents>
+        </div>
         <NiceSpot>
           {/* spotImaage, reason, location\ */}
           <SpotImg>
