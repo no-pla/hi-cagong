@@ -17,12 +17,37 @@ function Review() {
   // console.log(uid);
   // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
   const cafeId = useParams().cafeId;
+  // console.log("auth", getAuth().currentUser.uid);
   const { reviews } = useGetReviews("cafeId", cafeId); //임시값
   // const auth = getAuth();
   // const user = auth.currentUser;
   // const userUid = user.uid;
   // console.log(userUid);
   // console.log("맞나", reviews);
+  // const useruser = firebase.auth().onAuthStateChanged((user) => {
+  //   if (user) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/firebase.User
+  //     var uid = user.uid;
+  //     // ...
+  //   } else {
+  //     // User is signed out
+  //     // ...
+  //   }
+  // });
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  // const uidddd = user.uid;
+  // console.log(uidddd);
+
+  // console.log(user.uid);
+
+  // console.log("dddd", useruser);
+  // const userUid = reviews.reviews[0].uid;
+  // const currentUserId = getAuth().currentUser.uid;
+
+  // console.log("dd", currentUserId);
   return (
     <div
       style={{
@@ -42,7 +67,6 @@ function Review() {
     </div>
   );
 }
-
 export default Review;
 
 const AllReview = styled.section`

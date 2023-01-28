@@ -4,8 +4,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { useState } from "react";
 import { dbService } from "../../firebase";
 import { deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-export const ReviewItem = (reviews, isOwner) => {
+export const ReviewItem = (reviews, Owner) => {
   // const [review, setReview] = useState("");
   // const queryClient = useQueryClient();
   // const { isLoading: deleteLoading, mutate: deleteMutate } =
@@ -24,9 +25,10 @@ export const ReviewItem = (reviews, isOwner) => {
   const onDeleteClick = async () => {
     // const uid = reviews.reviews[0].uid;
     const ok = window.confirm("정말로 삭제하시겠습니까?");
-    console.log(ok);
+    // console.log(ok);
     if (ok) {
-      console.log(reviews.reviews[0].uid);
+      const userUid = reviews.reviews[0].uid;
+      console.log(userUid);
       // console.log(`${uid}`);
       // await dbService.doc(`review/${reviews.reviews[0].uid}`).delete();
       // await deleteDoc(doc(dbService, `review/%{reviews.reviews[0].uid}`));
@@ -38,8 +40,19 @@ export const ReviewItem = (reviews, isOwner) => {
       // console.log(reviews.reviews[0].uid);
     }
   };
-  // const fileRef = ref(storageService, `${reviws.uid}/${id}`);
-  // await deleteDoc(doc(dbService, `review/${item}`), item);
+
+  // const [userUidCheck, SetUserUidCheck] = useState(false)
+  console.log(reviews);
+  // console.log("auth", getAuth().currentUser.uid);
+  // const Owner = () => {
+  //   const userUid = reviews.reviews[0].uid;
+  //   const currentUserId = getAuth().currentUser.uid;
+  //   // console.log("userUid", userUid);
+  //   if (currentUserId === userUid) {
+  //   }
+  //   return false;
+  // };
+
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
@@ -66,7 +79,7 @@ export const ReviewItem = (reviews, isOwner) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {isOwner && (
+              {Owner ? null : (
                 <EditDeleteBtn>
                   <DeleteBtn onClick={onDeleteClick}>삭제</DeleteBtn>
                 </EditDeleteBtn>

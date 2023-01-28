@@ -99,7 +99,7 @@ export const AddReview = (reviews) => {
     const userUid = user.uid;
 
     // }
-
+    console.log("Adduseruid 참고", userUid);
     await addDoc(collection(dbService, "review"), {
       reviewTitle: reviewTitle,
       bad: bad,
