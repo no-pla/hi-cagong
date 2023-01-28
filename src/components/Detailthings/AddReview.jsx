@@ -1,5 +1,7 @@
 // import { addDoc, collection, query } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
+import { FaStar } from "react-icons/fa";
+
 import {
   // Mutation,
   // QueryClient,
@@ -25,6 +27,7 @@ import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { getAuth, reload } from "firebase/auth";
 import { useParams } from "react-router-dom";
 import { uid } from "uid";
+import { click } from "@testing-library/user-event/dist/click";
 // import { readBuilderProgram } from "typescript";
 
 export const AddReview = (reviews) => {
@@ -45,7 +48,6 @@ export const AddReview = (reviews) => {
   const [location, setLocation] = useState("");
   const [good, setGood] = useState("");
   const [bad, setBad] = useState("");
-  const [rate, setRate] = useState(null);
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
   // const [userNickname, setUserNickname] = useState("");
@@ -105,7 +107,7 @@ export const AddReview = (reviews) => {
       good: good,
       location: location,
       menu: menu,
-      rate: rate,
+      rate: rated,
       reason: reason,
       uid: userUid,
       // id: reviewData?.id,
@@ -141,6 +143,52 @@ export const AddReview = (reviews) => {
     }
   };
 
+  // start rating 관련 test
+  const ARRAY = [0, 1, 2, 3, 4];
+  const [clicked, setClicked] = useState([false, false, false, false, false]);
+
+  const handleStarClick = (index) => {
+    let clickStates = [...clicked];
+    for (let i = 0; i < 5; i++) {
+      clickStates[i] = i <= index ? true : false;
+    }
+    // const rateNum = clickStates.toString(true);
+
+    setClicked(clickStates);
+  };
+
+  useEffect(() => {
+    sendReview();
+  }, [clicked]); //컨디마 컨디업
+  // useEffect(async () => {
+  // const coll = collection(dbService, "review");
+  //   const snapshot = await getCountFromServer(coll);
+  //   const count = snapshot.data().count;
+  //   console.log("count: ", count);
+  // });
+  const sendReview = () => {
+    let score = clicked.filter(Boolean).length;
+    console.log("score", score);
+    // console.log(score);
+    // fetch('http://52.78.63.175:8000/movie', {
+    //   method: 'POST',
+    //   Headers: {
+    //     Authroization: 'e7f59ef4b4900fe5aa839fcbe7c5ceb7',
+    //   },
+    //   body: JSON.stringify({
+    //     movie_id:1
+    //     star: score,
+    //   }),
+    // });
+  };
+  //별점을 rate라는 함수에 숫자로 표시
+  const rated = clicked.filter(Boolean).length;
+  // 숫자를 별로 변환
+  // const str1 = String(rated);
+
+  // console.log(str1 + "⭐️" + typeof str1);
+
+  // console.log(clicked.filter(Boolean).length);
   const fileInput = useRef();
   return (
     <ReviewItems>
@@ -179,10 +227,11 @@ export const AddReview = (reviews) => {
                 style={{
                   display: "grid",
                   marginLeft: 10,
+                  alignContent: "flex-end",
                 }}
               >
                 {/* createAt,userNickname */}
-                <ReviewDate>{Date.now()}</ReviewDate>
+                <ReviewDate></ReviewDate>
                 {/* createAt */}
                 <UserNickName>
                   {reviewData?.userNickname || "닉네임"} ,
@@ -219,15 +268,21 @@ export const AddReview = (reviews) => {
             </Bad>
             <RateMenu>
               {/* rate, menu */}
-
-              <div>
-                평점
-                <input
-                  type="text"
-                  onChange={(event) => setRate(event.target.value)}
-                />
-              </div>
-
+              <Wrap>
+                <RatingText>평점</RatingText>
+                <Stars>
+                  {ARRAY.map((el, idx) => {
+                    return (
+                      <FaStar
+                        key={idx}
+                        size="25"
+                        onClick={() => handleStarClick(el)}
+                        className={clicked[el] && "yellowStar"}
+                      />
+                    );
+                  })}
+                </Stars>
+              </Wrap>
               <Menu>
                 <MenuTitle>추천메뉴</MenuTitle>
                 <MenuInput
@@ -345,6 +400,7 @@ const ReviewContents = styled.section`
   display: grid;
   margin: 10px 0px 30px 0px;
   padding: 25px;
+  gap: 20px;
 `;
 
 const UserIdTitleBtn = styled.div`
@@ -637,4 +693,42 @@ const CancleBtn = styled.button`
   width: 90px;
   height: 30px;
   border-width: none;
+`;
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+`;
+
+const RatingText = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  flex-direction: column-reverse;
+`;
+
+const Stars = styled.div`
+  display: flex;
+  padding-left: 10px;
+  align-items: flex-start;
+  vertical-align: middle;
+
+  & svg {
+    color: gray;
+    cursor: pointer;
+  }
+
+  :hover svg {
+    color: #fcc419;
+  }
+
+  & svg:hover ~ svg {
+    color: gray;
+  }
+
+  .yellowStar {
+    color: #fcc419;
+  }
 `;
