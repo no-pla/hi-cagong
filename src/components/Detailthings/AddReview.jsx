@@ -1,5 +1,5 @@
 // import { addDoc, collection, query } from "firebase/firestore";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   // Mutation,
   // QueryClient,
@@ -21,22 +21,24 @@ import {
   // getDownloadURL,
   uploadString,
 } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { getAuth, reload } from "firebase/auth";
 import { useParams } from "react-router-dom";
+import { uid } from "uid";
 // import { readBuilderProgram } from "typescript";
 
 export const AddReview = (reviews) => {
-  useQueryClient();
-
+  // useEffect(async () => {
+  //   const coll = collection(dbService, "review");
+  //   const snapshot = await getCountFromServer(coll);
+  //   const count = snapshot.data().count;
+  //   console.log("count: ", count);
+  // });
   let id = crypto.randomUUID();
-  // const uid = reviews.reviews[0];
-  // console.log(uid);
-
   // console.log("id", id);
   // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
   // add 관련
-
+  const reviewCount = reviews.reviews.length;
   // review 관련
   const [toggle, setToggle] = useState(true);
   const [reason, setReason] = useState("");
@@ -56,7 +58,7 @@ export const AddReview = (reviews) => {
   // console.log(rate);
 
   const cafeId = useParams().cafeId;
-  console.log(cafeId);
+  // console.log("cafeId", cafeId);
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // 이미지 업로드 부분
@@ -89,6 +91,12 @@ export const AddReview = (reviews) => {
     const fileRef = ref(storageService, `${reviews.uid}/${id}`);
     const response = await uploadString(fileRef, attachment, "data_url");
     const attachmentUrl = await getDownloadURL(response.ref);
+    const auth = getAuth();
+    const user = auth.currentUser;
+    // if (user !== null) {
+    const userUid = user.uid;
+
+    // }
 
     await addDoc(collection(dbService, "review"), {
       reviewTitle: reviewTitle,
@@ -99,7 +107,7 @@ export const AddReview = (reviews) => {
       menu: menu,
       rate: rate,
       reason: reason,
-      uid: "임재영",
+      uid: userUid,
       // id: reviewData?.id,
       image: attachmentUrl,
       userNickname: "코쟁이",
@@ -125,6 +133,7 @@ export const AddReview = (reviews) => {
       });
 
     console.log("isloading");
+    console.log("uid", userUid);
 
     {
       return window.location.reload();
@@ -133,36 +142,6 @@ export const AddReview = (reviews) => {
   };
 
   const fileInput = useRef();
-  // const onAddSubmit = () => {
-  //   const reviewData = {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: "임재영",
-  //     // id: reviewData?.id,
-  //     image:
-  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-  //     userNickname: "코쟁이",
-  //   };
-  //   console.log(reviewData);
-  // };
-
-  //input창에 입력 된 value값들을 data로 표시 중
-
-  // data를 가져오면 화면에 query로 바로 표시하는 것
-  // createMutate(reviewData, {
-  //   onSuccess: () => {
-  //     // queryClient.invalidateQueries("reviewdata");
-  //   },
-  // });
-
-  // if (isLoading) return;
-
   return (
     <ReviewItems>
       {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
@@ -172,8 +151,8 @@ export const AddReview = (reviews) => {
           {/* 리뷰 라는 글 */}
           리뷰
           <ReviewCountNum>
-            {/* 리뷰 갯수 */}
-            (5)
+            ({reviewCount}){/* 리뷰 갯수 */}
+            {/* {reviewData.length} */}
           </ReviewCountNum>
         </ReviewCount>
         {toggle ? (

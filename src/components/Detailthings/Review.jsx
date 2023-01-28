@@ -18,53 +18,17 @@ function Review() {
   // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
   const cafeId = useParams().cafeId;
   const { reviews } = useGetReviews("cafeId", cafeId); //임시값
-  // console.log(reviews[0].id);
-  // const uid = reviews.reviews;
-  // console.log(uid);
-  // const u = reviews[0].reviewTitle;
-  // console.log("결과", u);
-  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
-  // useQueryClient 사용
-  // const queryClient = useQueryClient();
-
-  // // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
-  // const { isLoading: createLoading, mutate: createMutate } =
-  //   useMutation(addReview);
-
-  // const addCreateReview = () => {
-  //   const reviewData = {
-  //     bad: "냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요",
-  //     createAt: Date.now(),
-  //     good: "집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다",
-  //     location:
-  //       "화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다",
-  //     menu: "아메리카노 디카페인",
-  //     rate: "⭐️⭐️⭐️",
-  //     reason:
-  //       "조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요",
-  //     reviewTitle: "제목이에요 여긴",
-  //     uid: "임재영",
-  //     image:
-  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-  //     userNickname: "코쟁이",
-  //   };
-  // };
-
+  // const auth = getAuth();
+  // const user = auth.currentUser;
+  // const userUid = user.uid;
+  // console.log(userUid);
+  // console.log("맞나", reviews);
   return (
     <div
       style={{
         display: "grid",
       }}
     >
-      {/* <button
-        // onClick={addCreateReview}
-        style={{
-          display: "inline-flex",
-        }}
-      >
-        create 버튼
-      </button> */}
       <AllReview
         style={{
           display: "grid",
