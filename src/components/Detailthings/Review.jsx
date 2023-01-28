@@ -1,5 +1,6 @@
 import { getAuth } from "firebase/auth";
 import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { useGetReviews } from "../Hooks/useGetReviews";
@@ -15,7 +16,8 @@ function Review() {
   // const uid = reviews.reviews[0].uid;
   // console.log(uid);
   // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
-  const { reviews } = useGetReviews("uid", "임재영"); //임시값
+  const cafeId = useParams().cafeId;
+  const { reviews } = useGetReviews("cafeId", cafeId); //임시값
   // console.log(reviews[0].id);
   // const uid = reviews.reviews;
   // console.log(uid);

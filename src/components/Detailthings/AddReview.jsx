@@ -23,6 +23,7 @@ import {
 } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
 import { getAuth, reload } from "firebase/auth";
+import { useParams } from "react-router-dom";
 // import { readBuilderProgram } from "typescript";
 
 export const AddReview = (reviews) => {
@@ -45,7 +46,6 @@ export const AddReview = (reviews) => {
   const [rate, setRate] = useState(null);
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
-  const [cafeId, setCafeId] = useState("");
   // const [userNickname, setUserNickname] = useState("");
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
@@ -55,6 +55,8 @@ export const AddReview = (reviews) => {
   // console.log(setUrl);
   // console.log(rate);
 
+  const cafeId = useParams().cafeId;
+  console.log(cafeId);
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // 이미지 업로드 부분
@@ -89,6 +91,7 @@ export const AddReview = (reviews) => {
     const attachmentUrl = await getDownloadURL(response.ref);
 
     await addDoc(collection(dbService, "review"), {
+      reviewTitle: reviewTitle,
       bad: bad,
       createAt: Date.now(),
       good: good,
@@ -96,7 +99,6 @@ export const AddReview = (reviews) => {
       menu: menu,
       rate: rate,
       reason: reason,
-      reviewTitle: reviewTitle,
       uid: "임재영",
       // id: reviewData?.id,
       image: attachmentUrl,
