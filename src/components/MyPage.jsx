@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetReviews } from "./Hooks/useGetReviews";
 import { useRecoilValue } from "recoil";
 import { currentUserUid } from "./atom";
@@ -182,6 +182,7 @@ export const MyPage = () => {
     if (ok) {
       try {
         await deleteDoc(doc(dbService, "review", id));
+        window.location.reload();
       } catch (error) {
         alert(error);
       }
@@ -213,13 +214,13 @@ export const MyPage = () => {
             )}
             <UserProfileImg
               src={
-                auth.currentUser?.photoURL ||
+                auth.currentUser?.photoURL ??
                 "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
               } // 임시값
               alt=""
             />
             <UserNickname>
-              {auth.currentUser?.displayName || "닉네임없음"}
+              {auth.currentUser?.displayName ?? "닉네임없음"}
             </UserNickname>
             <UserEmail>{auth.currentUser?.email}</UserEmail>
           </UserProfileContainer>
