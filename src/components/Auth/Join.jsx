@@ -42,6 +42,9 @@ const Join = ({ onClickJoin }) => {
         if (!email || !password) {
           setJoinFail(true);
         }
+        if (password !== confirmpassword) {
+          setJoinFail(true);
+        }
       });
 
     setEmail("");
@@ -152,8 +155,8 @@ const Join = ({ onClickJoin }) => {
       )}
       {joinFail && (
         <AuthModal>
-          <AuthTitle>가입 할 수 없습니다.</AuthTitle>
-          <p>이메일 또는 비밀번호를 입력해주세요.</p>
+          <AuthTitle>가입할 수 없습니다.</AuthTitle>
+          <p>이메일 또는 비밀번호를 확인해 주세요.</p>
           <CustomButton
             bgColor="#444444"
             height={8}

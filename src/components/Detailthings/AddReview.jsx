@@ -6,6 +6,7 @@ import { authService, dbService, storageService } from "../../firebase";
 
 import {
   getDownloadURL,
+  getStorage,
   ref,
   uploadBytes,
   uploadString,
@@ -35,6 +36,21 @@ export const AddReview = (reviews) => {
   const [imageUpload, setImageUpload] = useState(null);
   const [url, setUrl] = useState(null);
   const [attachment, setAttachment] = useState();
+  const [noImageUrl, setNoImageUrl] = useState();
+
+  useEffect(() => {
+    const noimageFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/noimage.png`);
+      await getDownloadURL(reference).then((url) => {
+        setNoImageUrl(url);
+      });
+    };
+
+    if (noImageUrl === undefined) {
+      noimageFunc();
+    }
+  }, []);
 
   // 카페 id 불러오는 부분
   const cafeId = useParams().cafeId;
@@ -243,7 +259,7 @@ export const AddReview = (reviews) => {
               {/* profile, createAt, userId, title, edit, delete btn */}
               <UserID>
                 {/* profileImg, createAt, userNickname */}
-                <UserImg src={profileImg} />
+                <UserImg src={profileImg || noImageUrl} />
                 {/* profileImg */}
                 <div
                   style={{
@@ -346,7 +362,6 @@ export const AddReview = (reviews) => {
                 />
                 {attachment && <SpotImgs src={attachment} />}
               </SpotImg>
-              <ImgCancleBtn onClick={onClearAttachment}> X </ImgCancleBtn>
               <ReasonLocation>
                 {/* reason,location */}
                 <ReasonMap>
@@ -521,14 +536,8 @@ const SpotImg = styled.label`
 
 const SpotImgs = styled.img`
   height: 100%;
-  width: 280px;
-`;
-
-const ImgCancleBtn = styled.button`
-  display: flex;
-  color: black;
-  font-size: 18px;
-  cursor: pointer;
+  width: 100%;
+  object-fit: cover;
 `;
 
 const ReasonLocation = styled.div`

@@ -1,6 +1,11 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadString,
+} from "firebase/storage";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import AuthModal, { AuthTitle } from "./Auth/AuthModal";
 import {
@@ -12,8 +17,6 @@ import {
 } from "./Auth/Login";
 import CustomButton from "./common/CustomButton";
 import { authService, storageService } from "../firebase";
-import { useRecoilValue } from "recoil";
-import { currentUserUid } from "./atom";
 
 const ImgWrap = styled.label`
   border-radius: 100%;
@@ -40,6 +43,21 @@ export const ChangeProfileModal = ({
   const [longNickName, setLongNickName] = useState(false);
   const [success, setSucess] = useState(false);
   const [error, setError] = useState(false);
+  const [url, setUrl] = useState();
+
+  useEffect(() => {
+    const noimageFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/noimage.png`);
+      await getDownloadURL(reference).then((url) => {
+        setUrl(url);
+      });
+    };
+
+    if (url === undefined) {
+      noimageFunc();
+    }
+  }, []);
   const auth = getAuth();
 
   const uploadPhoto = async (event) => {
@@ -88,8 +106,8 @@ export const ChangeProfileModal = ({
       })
         .then(() => {
           setNewNickName("");
-          setOpenModal((prev) => !prev);
-          setProfileSetting((prev) => !prev);
+          setOpenModal(false);
+          setProfileSetting(false);
         })
         .catch((error) => {
           alert("에러가 발생했습니다. 다시 시도해 주세요.");
@@ -173,7 +191,7 @@ export const ChangeProfileModal = ({
               <ImgWrap htmlFor="file">
                 <img
                   id="preview-photo"
-                  src={auth.currentUser.photoURL}
+                  src={auth.currentUser.photoURL || url}
                   alt="프로필사진"
                 />
               </ImgWrap>
