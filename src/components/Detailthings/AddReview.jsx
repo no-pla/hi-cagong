@@ -436,6 +436,7 @@ const ReviewBtn = styled.button`
   width: 100px;
   height: 100%;
   /* border: none; */
+  cursor: pointer;
   text-align: center;
 `;
 
@@ -740,6 +741,7 @@ const AddBtn = styled.button`
   border-width: none;
   font-size: 16px;
   color: white;
+  cursor: pointer;
 `;
 const CancleBtn = styled.button`
   font-size: 16px;
@@ -750,6 +752,7 @@ const CancleBtn = styled.button`
   width: 90px;
   height: 30px;
   border-width: none;
+  cursor: pointer;
 `;
 
 const Wrap = styled.div`
