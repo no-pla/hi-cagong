@@ -11,6 +11,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { ButtonWrap } from "./Auth/Login";
 import CustomButton from "./common/CustomButton";
 import AuthModal, { AuthTitle } from "./Auth/AuthModal";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -181,6 +182,7 @@ export const MyPage = () => {
   const [isLoginIn, setIsLoginIn] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [targetId, setTargetId] = useState("");
+  const [url, setUrl] = useState();
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
@@ -188,6 +190,18 @@ export const MyPage = () => {
         setIsLoginIn(true);
       }
     });
+
+    const func = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/noimage.png`);
+      await getDownloadURL(reference).then((url) => {
+        setUrl(url);
+      });
+    };
+
+    if (url === undefined) {
+      func();
+    }
   }, []);
 
   const openConfirmModal = (event) => {
@@ -256,14 +270,11 @@ export const MyPage = () => {
             {isLoginIn && (
               <>
                 <UserProfileImg
-                  src={
-                    auth.currentUser?.photoURL ??
-                    "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
-                  } // 임시값
+                  src={auth.currentUser?.photoURL ?? url}
                   alt=""
                 />
                 <UserNickname>
-                  {auth.currentUser?.displayName ?? "닉네임없음"}
+                  {auth.currentUser?.displayName ?? "닉네임 없음"}
                 </UserNickname>
               </>
             )}
