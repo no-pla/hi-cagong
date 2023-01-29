@@ -1,32 +1,37 @@
-import { useEffect, useRef, useState } from "react";
-import { FaStar } from "react-icons/fa";
+import { useEffect, useRef, useState } from 'react';
+import { FaStar } from 'react-icons/fa';
 
-import { useQuery } from "react-query";
-import styled from "styled-components";
-import { getReviews } from "../../api";
-import { authService, dbService, storageService } from "../../firebase";
+import { useQuery } from 'react-query';
+import styled from 'styled-components';
+import { getReviews } from '../../api';
+import { authService, dbService, storageService } from '../../firebase';
 
 import {
   getDownloadURL,
   ref,
   uploadBytes,
   uploadString,
-} from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { useParams } from "react-router-dom";
+} from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { useParams } from 'react-router-dom';
+import AuthModal, { AuthTitle } from '../Auth/AuthModal';
+import CustomButton from '../common/CustomButton';
 
 export const AddReview = (reviews) => {
   let id = crypto.randomUUID();
   const reviewCount = reviews.reviews.length;
   // review 관련
   const [toggle, setToggle] = useState(true);
-  const [reason, setReason] = useState("");
-  const [location, setLocation] = useState("");
-  const [good, setGood] = useState("");
-  const [bad, setBad] = useState("");
-  const [menu, setMenu] = useState("");
-  const [reviewTitle, setReviewTitle] = useState("");
+  const [reason, setReason] = useState('');
+  const [location, setLocation] = useState('');
+  const [good, setGood] = useState('');
+  const [bad, setBad] = useState('');
+  const [menu, setMenu] = useState('');
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [validationModal, setValidationModal] = useState(false);
+  const [complete, setComplete] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
 
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
@@ -37,8 +42,14 @@ export const AddReview = (reviews) => {
   const cafeId = useParams().cafeId;
 
   // reviewdata 가져오는 부분
-  const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
+  const { data: reviewData, isLoading } = useQuery('reviewdata', getReviews);
+  // 날짜 추가
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
   // 이미지 업로드 부분
   const handleImageChange = (e) => {
     const {
@@ -59,36 +70,32 @@ export const AddReview = (reviews) => {
   const onClearAttachment = () => {
     setAttachment(null);
     fileInput.current.value = null;
-    console.log("first");
+    console.log('first');
   };
 
   //review 등록 부분
   const onAddSubmit = async () => {
+    if (
+      !reviewTitle ||
+      !bad ||
+      !good ||
+      !location ||
+      !menu ||
+      !rated ||
+      !reason ||
+      !attachment
+    ) {
+      setValidationModal((prev) => !prev);
+    }
+
     const fileRef = ref(storageService, `${reviews.uid}/${id}`);
-    const response = await uploadString(fileRef, attachment, "data_url");
+    const response = await uploadString(fileRef, attachment, 'data_url');
     const attachmentUrl = await getDownloadURL(response.ref);
     const auth = getAuth();
     const user = auth.currentUser;
     const userUid = user.uid;
+    const imageRef = ref(storageService, 'image');
 
-    console.log("Adduseruid 참고", userUid);
-    await addDoc(collection(dbService, "review"), {
-      reviewTitle: reviewTitle,
-      bad: bad,
-      createAt: Date.now(),
-      good: good,
-      location: location,
-      menu: menu,
-      rate: rated,
-      reason: reason,
-      uid: userUid,
-      image: attachmentUrl,
-      userNickname: userNickName,
-      cafeId: cafeId,
-      profileImg: profileImg,
-    });
-    alert("입력되었습니다 !");
-    const imageRef = ref(storageService, "image");
     uploadBytes(imageRef, imageUpload)
       .then(() => {
         getDownloadURL(imageRef)
@@ -96,7 +103,7 @@ export const AddReview = (reviews) => {
             setUrl(url);
           })
           .catch((error) => {
-            console.log(error.message, "사진을 가져오는데 문제가 생겼습니다. ");
+            console.log(error.message, '사진을 가져오는데 문제가 생겼습니다. ');
           });
         setImageUpload(null);
       })
@@ -104,12 +111,27 @@ export const AddReview = (reviews) => {
         console.log(error.message);
       });
 
-    console.log("isloading");
-    console.log("uid", userUid);
-
-    {
-      return window.location.reload();
-    }
+    await addDoc(collection(dbService, 'review'), {
+      reviewTitle,
+      bad,
+      createAt: Date.now(),
+      good,
+      location,
+      menu,
+      rate: rated,
+      reason,
+      uid: userUid,
+      image: attachmentUrl,
+      userNickname: userNickName,
+      cafeId: cafeId,
+      profileImg: profileImg,
+    })
+      .then(() => {
+        setComplete(true);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   // start rating 관련 test
@@ -149,185 +171,235 @@ export const AddReview = (reviews) => {
 
   // login 시 리뷰작성 가능
   const onAlertLogin = () => {
-    alert("로그인을 진행해 주세요");
+    setLoginModal(true);
   };
 
+  const handleComplete = () => {
+    setComplete(false);
+    return window.location.reload();
+  };
   const fileInput = useRef();
   return (
-    <ReviewItems>
-      <ReviewTitles>
-        {/* 리뷰와 리뷰등록 버튼 */}
-        <ReviewCount>
-          {/* 리뷰 라는 글 */}
-          리뷰
-          <ReviewCountNum>
-            ({reviewCount}){/* 리뷰 갯수 */}
-          </ReviewCountNum>
-        </ReviewCount>
-        {authService.currentUser === null ? (
-          <ReviewBtn onClick={onAlertLogin}> 리뷰작성</ReviewBtn>
-        ) : (
-          <>
-            {toggle ? (
-              <ReviewBtn
+    <>
+      {validationModal && (
+        <AuthModal>
+          <AuthTitle>작성을 완료할 수 없습니다.</AuthTitle>
+          <p>입력 칸에 모든 글을 작성해 주세요.</p>
+          <CustomButton
+            bgColor="#000000"
+            height={8}
+            width={16}
+            onClick={() => setValidationModal((prev) => !prev)}
+          >
+            확인
+          </CustomButton>
+        </AuthModal>
+      )}
+      {loginModal && (
+        <AuthModal>
+          <AuthTitle>로그인을 진행해 주세요</AuthTitle>
+          <p>로그인 후 리뷰를 작성할수 있습니다.</p>
+          <CustomButton
+            bgColor="#33a264"
+            height={8}
+            width={16}
+            onClick={() => setLoginModal(false)}
+          >
+            확인
+          </CustomButton>
+        </AuthModal>
+      )}
+      {complete && (
+        <AuthModal>
+          <AuthTitle>완료 되었습니다.</AuthTitle>
+          <p>리뷰 작성이 완료되었습니다.</p>
+          <CustomButton
+            bgColor="#33a264"
+            height={8}
+            width={16}
+            onClick={handleComplete}
+          >
+            확인
+          </CustomButton>
+        </AuthModal>
+      )}
+      <ReviewItems>
+        <ReviewTitles>
+          {/* 리뷰와 리뷰등록 버튼 */}
+          <ReviewCount>
+            {/* 리뷰 라는 글 */}
+            리뷰
+            <ReviewCountNum>
+              ({reviewCount}){/* 리뷰 갯수 */}
+            </ReviewCountNum>
+          </ReviewCount>
+          {authService.currentUser === null ? (
+            <ReviewBtn onClick={onAlertLogin}> 리뷰작성</ReviewBtn>
+          ) : (
+            <>
+              {toggle ? (
+                <ReviewBtn
+                  onClick={() => {
+                    setToggle(!toggle);
+                  }}
+                >
+                  {' '}
+                  리뷰 작성
+                </ReviewBtn>
+              ) : null}
+            </>
+          )}
+        </ReviewTitles>
+        {toggle ? null : (
+          <ReviewContents>
+            {/* crud 될 리뷰들 */}
+            <UserIdTitleBtn>
+              {/* profile, createAt, userId, title, edit, delete btn */}
+              <UserID>
+                {/* profileImg, createAt, userNickname */}
+                <UserImg src={profileImg} />
+                {/* profileImg */}
+                <div
+                  style={{
+                    display: 'grid',
+                    alignContent: 'flex-end',
+                    textAlign: 'left',
+                  }}
+                >
+                  {/* createAt,userNickname */}
+                  <ReviewDate>
+                    {new Date().toLocaleDateString('kr-KO', options)}
+                  </ReviewDate>
+                  {/* createAt */}
+                  <UserNickName>{userNickName || '닉네임 없음'}</UserNickName>
+                  {/* userNickname */}
+                </div>
+              </UserID>
+
+              <RevieTitleinput
+                value={reviewTitle}
+                placeholder="제목을 입력해 주세요."
+                type="text"
+                onChange={(event) => setReviewTitle(event.target.value)}
+              />
+            </UserIdTitleBtn>
+            <GoodBad>
+              {/* good,bad,rate,menu */}
+              <Good>
+                <GoodTitle>장점</GoodTitle>
+                <GoodInput
+                  type="text"
+                  value={good}
+                  onChange={(event) => setGood(event.target.value)}
+                  placeholder="장점을 입력해주세요. 30글자 이내"
+                />
+              </Good>
+              <Bad>
+                <BadTitle>단점</BadTitle>
+                <BadInput
+                  value={bad}
+                  type="text"
+                  onChange={(event) => setBad(event.target.value)}
+                  placeholder="단점을 입력해주세요. 30글자 이내"
+                />
+              </Bad>
+              <RateMenu>
+                {/* rate, menu */}
+                <Wrap>
+                  <RatingText>평점</RatingText>
+                  <Stars>
+                    {ARRAY.map((el, idx) => {
+                      return (
+                        <FaStar
+                          key={idx}
+                          size="20"
+                          onClick={() => handleStarClick(el)}
+                          className={clicked[el] && 'yellowStar'}
+                        />
+                      );
+                    })}
+                  </Stars>
+                </Wrap>
+                <Menu>
+                  <MenuTitle>추천메뉴</MenuTitle>
+                  <MenuInput
+                    value={menu}
+                    placeholder="추천메뉴를 작성해주세요."
+                    type="text"
+                    onChange={(event) => setMenu(event.target.value)}
+                  />
+                </Menu>
+              </RateMenu>
+            </GoodBad>
+            <div
+              style={{
+                display: 'inline-flex',
+              }}
+            >
+              <Recommend>추천 명당</Recommend>
+              <RecommendContents>
+                추천하는 이 카페의 나만의 명당은!?
+              </RecommendContents>
+            </div>
+            <NiceSpot>
+              {/* spotImaage, reason, location\ */}
+              <SpotImg htmlFor="file">
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  className="new-review-image"
+                  accept="images/*"
+                  id="file"
+                  src={url}
+                  ref={fileInput}
+                  style={{
+                    height: '100%',
+                    width: '280px',
+                    display: 'none',
+                  }}
+                />
+                {attachment && <SpotImgs src={attachment} />}
+              </SpotImg>
+              <ImgCancleBtn onClick={onClearAttachment}> X </ImgCancleBtn>
+              <ReasonLocation>
+                {/* reason,location */}
+                <ReasonMap>
+                  {/* 명당추천 */}
+                  <Reason>명당 추천 이유</Reason>
+                  <ReasonInput
+                    value={reason}
+                    placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
+                    onChange={(event) => setReason(event.target.value)}
+                    type="text"
+                  />
+                </ReasonMap>
+                <LocationMap>
+                  {/* 명당위치 */}
+                  <Location>명당위치</Location>
+                  <LocationInput
+                    value={location}
+                    placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
+                    onChange={(event) => setLocation(event.target.value)}
+                    type="text"
+                  />
+                </LocationMap>
+              </ReasonLocation>
+            </NiceSpot>
+            {/* 완료 취소 버튼 */}
+            <AddCancleBtn>
+              <AddBtn onClick={onAddSubmit}>완료</AddBtn>
+              <CancleBtn
                 onClick={() => {
                   setToggle(!toggle);
                 }}
               >
-                {" "}
-                리뷰 작성
-              </ReviewBtn>
-            ) : null}
-          </>
+                취소
+              </CancleBtn>
+            </AddCancleBtn>
+          </ReviewContents>
         )}
-      </ReviewTitles>
-      {toggle ? null : (
-        <ReviewContents>
-          {/* crud 될 리뷰들 */}
-          <UserIdTitleBtn>
-            {/* profile, createAt, userId, title, edit, delete btn */}
-            <UserID>
-              {/* profileImg, createAt, userNickname */}
-              <UserImg src={profileImg}></UserImg>
-              {/* profileImg */}
-              <div
-                style={{
-                  display: "grid",
-                  alignContent: "flex-end",
-                  textAlign: "left",
-                }}
-              >
-                {/* createAt,userNickname */}
-                <ReviewDate></ReviewDate>
-                {/* createAt */}
-                <UserNickName>{userNickName || "닉네임 없음"}</UserNickName>
-                {/* userNickname */}
-              </div>
-            </UserID>
-
-            <RevieTitleinput
-              value={reviewTitle}
-              placeholder="제목을 입력해 주세요."
-              type="text"
-              onChange={(event) => setReviewTitle(event.target.value)}
-            />
-          </UserIdTitleBtn>
-          <GoodBad>
-            {/* good,bad,rate,menu */}
-            <Good>
-              <GoodTitle>장점</GoodTitle>
-              <GoodInput
-                type="text"
-                value={good}
-                onChange={(event) => setGood(event.target.value)}
-                placeholder="장점을 입력해주세요. 30글자 이내"
-              />
-            </Good>
-            <Bad>
-              <BadTitle>단점</BadTitle>
-              <BadInput
-                value={bad}
-                type="text"
-                onChange={(event) => setBad(event.target.value)}
-                placeholder="단점을 입력해주세요. 30글자 이내"
-              />
-            </Bad>
-            <RateMenu>
-              {/* rate, menu */}
-              <Wrap>
-                <RatingText>평점</RatingText>
-                <Stars>
-                  {ARRAY.map((el, idx) => {
-                    return (
-                      <FaStar
-                        key={idx}
-                        size="20"
-                        onClick={() => handleStarClick(el)}
-                        className={clicked[el] && "yellowStar"}
-                      />
-                    );
-                  })}
-                </Stars>
-              </Wrap>
-              <Menu>
-                <MenuTitle>추천메뉴</MenuTitle>
-                <MenuInput
-                  value={menu}
-                  placeholder="추천메뉴를 작성해주세요."
-                  type="text"
-                  onChange={(event) => setMenu(event.target.value)}
-                />
-              </Menu>
-            </RateMenu>
-          </GoodBad>
-          <div
-            style={{
-              display: "inline-flex",
-            }}
-          >
-            <Recommend>추천 명당</Recommend>
-            <RecommendContents>
-              추천하는 이 카페의 나만의 명당은!?
-            </RecommendContents>
-          </div>
-          <NiceSpot>
-            {/* spotImaage, reason, location\ */}
-            <SpotImg htmlFor="file">
-              <input
-                type="file"
-                onChange={handleImageChange}
-                className="new-review-image"
-                accept="images/*"
-                id="file"
-                src={url}
-                ref={fileInput}
-                style={{
-                  height: "100%",
-                  width: "280px",
-                  display: "none",
-                }}
-              />
-              {attachment && <SpotImgs src={attachment} />}
-            </SpotImg>
-            <ImgCancleBtn onClick={onClearAttachment}> X </ImgCancleBtn>
-            <ReasonLocation>
-              {/* reason,location */}
-              <ReasonMap>
-                {/* 명당추천 */}
-                <Reason>명당 추천 이유</Reason>
-                <ReasonInput
-                  value={reason}
-                  placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
-                  onChange={(event) => setReason(event.target.value)}
-                  type="text"
-                />
-              </ReasonMap>
-              <LocationMap>
-                {/* 명당위치 */}
-                <Location>명당위치</Location>
-                <LocationInput
-                  value={location}
-                  placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
-                  onChange={(event) => setLocation(event.target.value)}
-                  type="text"
-                />
-              </LocationMap>
-            </ReasonLocation>
-          </NiceSpot>
-          {/* 완료 취소 버튼 */}
-          <AddCancleBtn>
-            <AddBtn onClick={onAddSubmit}>완료</AddBtn>
-            <CancleBtn
-              onClick={() => {
-                setToggle(!toggle);
-              }}
-            >
-              취소
-            </CancleBtn>
-          </AddCancleBtn>
-        </ReviewContents>
-      )}
-    </ReviewItems>
+      </ReviewItems>
+    </>
   );
 };
 
