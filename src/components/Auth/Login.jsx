@@ -1,15 +1,25 @@
+import { faEllipsis, faG } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import React, { useState } from "react";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { useEffect, useState } from "react";
+import {
+  FaCat,
+  FaCode,
+  FaGit,
+  FaGithub,
+  FaGoogle,
+  FaGoogleDrive,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { authService } from "../../firebase";
-import { emailRegex } from "../../until";
+import { emailRegex } from "../../utils";
 import CustomButton from "../common/CustomButton";
 import AuthModal, { AuthTitle } from "./AuthModal";
 import Join from "./Join";
@@ -21,8 +31,22 @@ const Login = ({ onClickLogin, onClickJoin }) => {
   const [notMember, setNotMember] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [signUp, setSignUp] = useState(false);
-  const [checkedUser, setCheckedUser] = useState("");
   const matchCheckEmail = email.match(emailRegex);
+  const [githubUrl, setGithubUrl] = useState("");
+
+  useEffect(() => {
+    const githubFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/github.png`);
+      await getDownloadURL(reference).then((url) => {
+        setGithubUrl(url);
+      });
+    };
+
+    if (githubUrl === "") {
+      githubFunc();
+    }
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +58,6 @@ const Login = ({ onClickLogin, onClickJoin }) => {
         navigate("/");
       })
       .catch((err) => {
-        // errorMessage = err.message;
         if (err.message.includes("user-not-found")) {
           setNotMember(!notMember);
         }
@@ -105,10 +128,14 @@ const Login = ({ onClickLogin, onClickJoin }) => {
 
         <ButtonWrap>
           <span onClick={onGoogleSignIn}>
-            <img src="/img/google.png" alt="구글" />
+            <FontAwesomeIcon icon={faG} size="2x" color="#C3CAD9" />
           </span>
           <span onClick={onGitHubSignIn}>
-            <img src="/img/github.png" alt="구글" />
+            <img
+              style={{ width: "35px", height: "35px" }}
+              src={githubUrl}
+              alt="깃허브"
+            />
           </span>
         </ButtonWrap>
         {/* 회원가입 */}
@@ -184,7 +211,6 @@ export const Title = styled.h2`
 export const FormWrap = styled.form`
   display: flex;
   flex-direction: column;
-  /* gap: 8px; */
   width: 320px;
   margin: 1em 0;
 `;

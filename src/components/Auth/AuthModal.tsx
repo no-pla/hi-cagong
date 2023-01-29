@@ -1,6 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
-import CustomButton from '../common/CustomButton';
+import React from "react";
+import styled from "styled-components";
 
 type AuthModalProp = {
   children?: React.ReactNode;
@@ -20,6 +19,7 @@ export default AuthModal;
 
 const AuthModalWrap = styled.div`
   position: fixed;
+  top: 0;
   left: 0;
   right: 0;
   width: 100%;

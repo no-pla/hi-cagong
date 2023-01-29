@@ -1,8 +1,8 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { dbService } from '../../firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { memo } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { dbService } from "../../firebase";
 
 const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -17,14 +17,14 @@ const IntroItem = ({ placeItem }) => {
 
   const getImage = async (cafeId) => {
     const q = query(
-      collection(dbService, 'review'),
-      where('cafeId', '==', cafeId)
+      collection(dbService, "review"),
+      where("cafeId", "==", cafeId)
     );
 
     const getMyReviewList = async () => {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot?.docs[0]) {
-        return 'https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg';
+        return "https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg";
       }
       return querySnapshot?.docs[0].data().image;
     };
@@ -41,12 +41,11 @@ const IntroItem = ({ placeItem }) => {
           <br /> 소개해 주세요 !
         </span>
       </IntronItemTitle>
-      <ItemTitle> 평점 높은 순</ItemTitle>
       <ItemWrap>
         {placeItem?.map(
           (item) =>
             //카테고리가 카페 인것만 나올 수 있도록
-            item.content.category_group_code === 'CE7' && (
+            item.content.category_group_code === "CE7" && (
               <Item
                 key={item.content.id}
                 id={item.content.id}
@@ -95,6 +94,7 @@ const IntronItemTitle = styled.h2`
   font-size: 24px;
   font-weight: 800;
   line-height: 1.3;
+  margin-bottom: 16px;
 `;
 
 const ItemTitle = styled.h3`
@@ -108,16 +108,6 @@ const ItemWrap = styled.div`
   flex-wrap: wrap;
   gap: 16px;
   justify-content: space-between;
-`;
-
-const SearchTitle = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  color: #898989;
 `;
 
 const Item = styled.div`

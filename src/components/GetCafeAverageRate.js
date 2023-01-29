@@ -2,12 +2,12 @@ import { useGetReviews } from "./Hooks/useGetReviews";
 
 export const GetCafeAverageRate = (cafeId) => {
   const { reviews } = useGetReviews("cafeId", cafeId);
-  const groupBy = (reviewArray) => {
+  const getTotal = (reviewArray) => {
     return reviewArray.reduce((acc, obj) => {
       return acc + obj.rate;
     }, 0);
   };
 
-  let totalRate = groupBy(reviews);
+  let totalRate = getTotal(reviews);
   return { totalRate, averageRate: reviews.length };
 };

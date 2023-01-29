@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetReviews } from "./Hooks/useGetReviews";
 import { useRecoilValue } from "recoil";
 import { currentUserUid } from "./atom";
 import { authService, dbService } from "../firebase";
 import { ChangeProfileModal } from "./ChangeProfile";
 import { deleteDoc, doc } from "firebase/firestore";
+import { ButtonWrap } from "./Auth/Login";
+import CustomButton from "./common/CustomButton";
+import AuthModal, { AuthTitle } from "./Auth/AuthModal";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -31,6 +35,7 @@ const UserProfileImg = styled.img`
   width: 120px;
   border-radius: 100%;
   margin-top: 50px;
+  object-fit: cover;
 `;
 
 const UserNickname = styled.div`
@@ -140,7 +145,7 @@ const StoreGoodPoint = styled.div`
   overflow: hidden;
 `;
 
-const Title = styled.h2`
+const MyTitle = styled.h2`
   font-weight: 600;
   font-size: 18px;
   line-height: 22px;
@@ -169,19 +174,47 @@ const SectionContainer = styled.div`
 `;
 
 export const MyPage = () => {
-  const [profileSetting, setProfileSetting] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const userUid = useRecoilValue(currentUserUid);
   const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
+  const [profileSetting, setProfileSetting] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [isLoginIn, setIsLoginIn] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [targetId, setTargetId] = useState("");
+  const [url, setUrl] = useState();
 
-  const delete_comment = async (event) => {
-    event.preventDefault();
-    const id = event.target.id;
-    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
-    if (ok) {
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLoginIn(true);
+      }
+    });
+
+    const noimageFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/noimage.png`);
+      await getDownloadURL(reference).then((url) => {
+        setUrl(url);
+      });
+    };
+
+    if (url === undefined) {
+      noimageFunc();
+    }
+  }, []);
+
+  const openConfirmModal = (event) => {
+    setTargetId(event.target.id);
+    setConfirmModal((prev) => !prev);
+  };
+
+  const delete_comment = async () => {
+    if (targetId) {
       try {
-        await deleteDoc(doc(dbService, "review", id));
+        await deleteDoc(doc(dbService, "review", targetId));
+        window.location.reload();
+        setConfirmModal((prev) => !prev);
       } catch (error) {
         alert(error);
       }
@@ -190,6 +223,29 @@ export const MyPage = () => {
 
   return (
     <>
+      {confirmModal && (
+        <AuthModal>
+          <AuthTitle>정말로 삭제할까요?</AuthTitle>
+          <p>삭제하면 되돌릴 수 없습니다.</p>
+          <ButtonWrap>
+            <CustomButton
+              bgColor="#000"
+              height={12}
+              onClick={() => setConfirmModal((prev) => !prev)}
+            >
+              취소
+            </CustomButton>
+            <CustomButton
+              onClick={() => delete_comment()}
+              bgColor="#a23333"
+              height={12}
+              type="submit"
+            >
+              삭제
+            </CustomButton>
+          </ButtonWrap>
+        </AuthModal>
+      )}
       {openModal && (
         <ChangeProfileModal
           setProfileSetting={setProfileSetting}
@@ -199,7 +255,7 @@ export const MyPage = () => {
       )}
       <SecitonWrap>
         <SectionContainer>
-          <Title>내프로필</Title>
+          <MyTitle>내프로필</MyTitle>
           <UserProfileContainer>
             <UserProfileChangeButton
               onClick={() => setProfileSetting((prev) => !prev)}
@@ -211,21 +267,22 @@ export const MyPage = () => {
                 <div onClick={() => setOpenModal(true)}>프로필 변경</div>
               </UserProfilChangeMenu>
             )}
-            <UserProfileImg
-              src={
-                auth.currentUser?.photoURL ||
-                "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
-              } // 임시값
-              alt=""
-            />
-            <UserNickname>
-              {auth.currentUser?.displayName || "닉네임없음"}
-            </UserNickname>
+            {isLoginIn && (
+              <>
+                <UserProfileImg
+                  src={auth.currentUser?.photoURL ?? url}
+                  alt=""
+                />
+                <UserNickname>
+                  {auth.currentUser?.displayName ?? "닉네임 없음"}
+                </UserNickname>
+              </>
+            )}
             <UserEmail>{auth.currentUser?.email}</UserEmail>
           </UserProfileContainer>
         </SectionContainer>
         <SectionContainer style={{ width: "100%" }}>
-          <Title>내가쓴리뷰</Title>
+          <MyTitle>내가쓴리뷰</MyTitle>
           <ReviewList>
             {reviews &&
               reviews.map((review) => {
@@ -237,7 +294,7 @@ export const MyPage = () => {
                       <StoreGoodPoint>{review.good}</StoreGoodPoint>
                       <DeleteButton
                         id={review.docId}
-                        onClick={(event) => delete_comment(event)}
+                        onClick={(event) => openConfirmModal(event)}
                       >
                         삭제하기
                       </DeleteButton>

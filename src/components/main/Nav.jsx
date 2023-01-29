@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import Login from '../Auth/Login';
-import Join from '../Auth/Join';
-import { authService } from '../../firebase';
-import { signOut } from 'firebase/auth';
-import { currentUserUid, searchStoreData } from '../atom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Login from "../Auth/Login";
+import Join from "../Auth/Join";
+import { authService } from "../../firebase";
+import { signOut } from "firebase/auth";
+import { currentUserUid, searchStoreData } from "../atom";
+import { useSetRecoilState } from "recoil";
 
 export const Nav = () => {
   const [loginModal, setLoginModal] = useState(false);
@@ -38,14 +38,9 @@ export const Nav = () => {
 
   const onLogOutClick = () => {
     signOut(authService);
-    setCurrentSearchData('스타벅스 강남');
+    setCurrentSearchData("스타벅스 강남");
     setNamesState(null);
-    // window.location.reload();
   };
-
-  // window.addEventListener("beforeunload", () => {
-  //   setCurrentSearchData("스타벅스 강남");
-  // });
 
   return (
     <NavWrap>
@@ -68,7 +63,13 @@ export const Nav = () => {
       {loginModal && !isLoginIn && (
         <Login onClickLogin={onClickLogin} onClickJoin={onClickJoin} />
       )}
-      {joinModal && <Join onClickJoin={onClickJoin} userObj={userObj} />}
+      {joinModal && (
+        <Join
+          onClickJoin={onClickJoin}
+          setJoinModal={setJoinModal}
+          userObj={userObj}
+        />
+      )}
     </NavWrap>
   );
 };

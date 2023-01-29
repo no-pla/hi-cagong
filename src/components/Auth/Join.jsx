@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { v4 as uuid } from 'uuidv4';
-import styled from 'styled-components';
-import { authService, storageService } from '../../firebase';
-import CustomButton from '../common/CustomButton';
-import { emailRegex, pwRegex } from '../../until';
+import { useState } from "react";
+import styled from "styled-components";
+import { authService } from "../../firebase";
+import CustomButton from "../common/CustomButton";
+import { emailRegex, pwRegex } from "../../utils";
 import {
   ButtonWrap,
   ErrorMessage,
@@ -13,67 +12,49 @@ import {
   ModalWrap,
   OkMessage,
   Title,
-} from './Login';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDownloadURL, ref, uploadString } from 'firebase/storage';
-import { uuidv4 } from '@firebase/util';
+} from "./Login";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import AuthModal, { AuthTitle } from "./AuthModal";
 
 const Join = ({ onClickJoin }) => {
-  const [attachment, setAttachment] = useState();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmpassword, setConfirmpassword] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmpassword] = useState("");
   const matchCheckEmail = email.match(emailRegex);
   const matchCheckPassword = password.match(pwRegex);
-
-  const onFileChange = (event) => {
-    console.log(event.target.files);
-    const {
-      target: { files },
-    } = event;
-    const theFile = files[0];
-    console.log(theFile);
-    const reader = new FileReader();
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setAttachment(result);
-    };
-    reader.readAsDataURL(theFile);
-  };
-
-  const onClearPhotoClick = () => setAttachment(null);
+  const [joinFail, setJoinFail] = useState(false);
+  const [joinComplete, setJoinComplete] = useState(false);
+  const [joinAready, setJoinAready] = useState(false);
 
   const onSubmitJoin = async (event) => {
     event.preventDefault();
-    // console.log(userObj.uid);
-    const fileRef = ref(storageService, `profileImg/${uuidv4()}`);
-    const response = await uploadString(fileRef, attachment, 'data_url');
-    const attachmentUrl = await getDownloadURL(response.ref);
 
-    await createUserWithEmailAndPassword(
-      authService,
-      email,
-      password,
-      attachmentUrl,
-      nickName
-    )
+    await createUserWithEmailAndPassword(authService, email, password)
       .then((userCredential) => {
-        console.log('회원가입 성공!');
-        alert('Sign Up', '회원가입 성공!');
+        setJoinComplete(true);
       })
       .catch((error) => {
         const errorMessage = error.message;
-        console.log('errorMessage:', errorMessage);
-        if (errorMessage.includes('email-already-in-use')) {
-          alert('', '이미 가입된 이메일입니다.');
+        console.log("errorMessage:", errorMessage);
+        if (errorMessage.includes("email-already-in-use")) {
+          setJoinAready(true);
+        }
+        if (!email || !password) {
+          setJoinFail(true);
+        }
+        if (password !== confirmpassword) {
+          setJoinFail(true);
         }
       });
 
-    setEmail('');
-    setPassword('');
+    setEmail("");
+    setPassword("");
+    setConfirmpassword("");
+  };
+
+  const completeJoin = () => {
+    setJoinComplete(false);
+    onClickJoin();
   };
 
   return (
@@ -93,7 +74,7 @@ const Join = ({ onClickJoin }) => {
                 setEmail(value);
               }}
               onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
+                e.key === "Enter" && e.preventDefault();
               }}
             />
             {!matchCheckEmail ? (
@@ -135,7 +116,6 @@ const Join = ({ onClickJoin }) => {
               name={password}
               type="confirmpassword"
               placeholder="비밀번호를 입력해 주세요."
-              // required
               value={confirmpassword}
               onChange={(e) => {
                 const value = e.target.value;
@@ -148,53 +128,9 @@ const Join = ({ onClickJoin }) => {
               confirmpassword && <OkMessage>동일한 비밀번호 입니다.</OkMessage>
             )}
           </InputWrap>
-          <Profile>
-            <ProfileIMG>
-              {attachment ? (
-                <>
-                  <ImgWrap htmlFor="file">
-                    <img src={attachment} alt="프로필사진" />
-                  </ImgWrap>
-                  <CustomButton
-                    bgColor="#777777"
-                    height={4}
-                    onClick={onClearPhotoClick}
-                  >
-                    사진삭제
-                  </CustomButton>
-                </>
-              ) : (
-                <ImgWrap htmlFor="file">
-                  <img src="/img/noimage.png" alt="noimage" />
-                </ImgWrap>
-              )}
 
-              <input
-                style={{ display: 'none' }}
-                type="file"
-                accept="image/*"
-                name="file"
-                id="file"
-                onChange={onFileChange}
-              />
-            </ProfileIMG>
-
-            <NickName>
-              <LabelText>닉네임</LabelText>
-              <Input
-                type="text"
-                placeholder="닉네임을 입력해 주세요."
-                value={nickName}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setNickName(value);
-                }}
-                maxLength="13"
-              />
-            </NickName>
-          </Profile>
           <ButtonWrap>
-            <CustomButton bgColor="#33a264" height={12}>
+            <CustomButton bgColor="#33a264" height={12} type="submit">
               완료
             </CustomButton>
             <CustomButton bgColor="#000" height={12} onClick={onClickJoin}>
@@ -203,18 +139,53 @@ const Join = ({ onClickJoin }) => {
           </ButtonWrap>
         </FormWrap>
       </ModalWrap>
+      {joinAready && (
+        <AuthModal>
+          <AuthTitle>이미 가입된 이메일입니다.</AuthTitle>
+          <p>이미 가입된 이메일입니다. 로그인 해주세요.</p>
+          <CustomButton
+            bgColor="#444444"
+            height={8}
+            width={16}
+            onClick={() => setJoinAready(false)}
+          >
+            되돌아가기
+          </CustomButton>
+        </AuthModal>
+      )}
+      {joinFail && (
+        <AuthModal>
+          <AuthTitle>가입할 수 없습니다.</AuthTitle>
+          <p>이메일 또는 비밀번호를 확인해 주세요.</p>
+          <CustomButton
+            bgColor="#444444"
+            height={8}
+            width={16}
+            onClick={() => setJoinFail(false)}
+          >
+            되돌아가기
+          </CustomButton>
+        </AuthModal>
+      )}
+      {joinComplete && (
+        <AuthModal>
+          <AuthTitle>가입성공</AuthTitle>
+          <p>회원가입이 완료되었습니다.</p>
+          <CustomButton
+            bgColor="#33a264"
+            height={8}
+            width={16}
+            onClick={completeJoin}
+          >
+            확인
+          </CustomButton>
+        </AuthModal>
+      )}
     </ModalBackground>
   );
 };
 
 export default Join;
-
-const Profile = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 16px;
-`;
 
 const InputWrap = styled.div`
   width: 100%;
@@ -226,30 +197,4 @@ const InputWrap = styled.div`
 const LabelText = styled.div`
   font-size: 14px;
   padding: 0 8px;
-`;
-
-const NickName = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 2;
-`;
-
-const ProfileIMG = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const ImgWrap = styled.label`
-  width: 80px;
-  height: 80px;
-  border-radius: 100%;
-  overflow: hidden;
-  cursor: pointer;
-  > img {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    object-fit: cover;
-  }
 `;
