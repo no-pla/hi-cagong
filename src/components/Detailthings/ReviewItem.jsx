@@ -41,13 +41,13 @@ export const ReviewItem = (reviews) => {
 
   //Auth
   const auth = getAuth();
-  const userddd = auth.currentUser;
+  const userddd = auth?.currentUser;
   if (userddd !== null) {
-    const displayName = userddd.displayName;
-    const email = userddd.email;
-    const photoURL = userddd.photoURL;
-    const emailVerified = userddd.emailVerified;
-    const uid = userddd.uid;
+    const displayName = userddd?.displayName;
+    const email = userddd?.email;
+    const photoURL = userddd?.photoURL;
+    const emailVerified = userddd?.emailVerified;
+    const uid = userddd?.uid;
   }
   const userNickName = userddd?.displayName;
   const userProfile = userddd?.photoURL;

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import { DetailContent } from './DetailContent';
-import Review from './Detailthings/Review';
+import { useState } from "react";
+import styled from "styled-components";
+import { DetailContent } from "./DetailContent";
+import Review from "./Detailthings/Review";
 
 const DetailContainer = styled.div`
   display: flex;
