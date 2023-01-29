@@ -1,8 +1,11 @@
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
-import { useGetReviews } from './Hooks/useGetReviews';
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { useGetReviews } from "./Hooks/useGetReviews";
+import { useRecoilValue } from "recoil";
+import { currentUserUid } from "./atom";
+import { authService } from "../firebase";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -84,7 +87,6 @@ const ReviewList = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(220px, 3fr));
   grid-template-rows: repeat(auto-fill, 330px);
   gap: 12px 16px;
-  /* overflow-y: scroll; */
   width: 100%;
   margin-right: 40px;
 `;
@@ -167,7 +169,9 @@ const SectionContainer = styled.div`
 export const MyPage = () => {
   const [profileSetting, setProfileSetting] = useState(false);
 
-  const { reviews } = useGetReviews('uid', '임재영'); //임시값
+  const userUid = useRecoilValue(currentUserUid);
+  const { reviews } = useGetReviews("uid", userUid);
+  const auth = authService;
 
   return (
     <SecitonWrap>
@@ -185,14 +189,19 @@ export const MyPage = () => {
             </UserProfilChangeMenu>
           )}
           <UserProfileImg
-            src="https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751" // 임시값
+            src={
+              auth.currentUser?.photoURL ||
+              "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
+            } // 임시값
             alt=""
           />
-          <UserNickname>Hello Alfred Bryant</UserNickname>
-          <UserEmail>adrain.nader@yahoo.com</UserEmail>
+          <UserNickname>
+            {auth.currentUser?.displayName || "닉네임없음"}
+          </UserNickname>
+          <UserEmail>{auth.currentUser?.email}</UserEmail>
         </UserProfileContainer>
       </SectionContainer>
-      <SectionContainer style={{ width: '100%' }}>
+      <SectionContainer>
         <Title>내가쓴리뷰</Title>
         <ReviewList>
           {reviews &&
