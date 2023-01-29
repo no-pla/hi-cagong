@@ -76,7 +76,7 @@ const RateCount = styled.span`
 export const DetailContent = () => {
   const { cafeId } = useParams();
   const { stores, isLoading, x, y } = useGetStoreData();
-  const { totalRate, averageRate } = GetCafeAverageRate();
+  const { totalRate, averageRate } = GetCafeAverageRate(cafeId);
 
   return (
     <StoreContent>
