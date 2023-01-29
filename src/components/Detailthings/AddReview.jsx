@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
-import { dbService, storageService } from "../../firebase";
+import { authService, dbService, storageService } from "../../firebase";
 
 import {
   getDownloadURL,
@@ -147,6 +147,11 @@ export const AddReview = (reviews) => {
   //별점을 rate라는 함수에 숫자로 표시
   const rated = clicked.filter(Boolean).length;
 
+  // login 시 리뷰작성 가능
+  const onAlertLogin = () => {
+    alert("로그인을 진행해 주세요");
+  };
+
   const fileInput = useRef();
   return (
     <ReviewItems>
@@ -159,16 +164,33 @@ export const AddReview = (reviews) => {
             ({reviewCount}){/* 리뷰 갯수 */}
           </ReviewCountNum>
         </ReviewCount>
-        {toggle ? (
-          <ReviewBtn
-            onClick={() => {
-              setToggle(!toggle);
-            }}
-          >
-            {" "}
-            리뷰 작성
-          </ReviewBtn>
-        ) : null}
+
+        {/* {reviewData.uid === authService.currentUser?.uid ? (
+          <EditDeleteBtn>
+            <DeleteBtn
+              id={reviewData?.docId}
+              onClick={(event) => onDeleteClick(event)}
+            >
+              삭제
+            </DeleteBtn>
+          </EditDeleteBtn>
+        ) : null} */}
+        {authService.currentUser === null ? (
+          <ReviewBtn onClick={onAlertLogin}> 리뷰작성</ReviewBtn>
+        ) : (
+          <>
+            {toggle ? (
+              <ReviewBtn
+                onClick={() => {
+                  setToggle(!toggle);
+                }}
+              >
+                {" "}
+                리뷰 작성
+              </ReviewBtn>
+            ) : null}
+          </>
+        )}
       </ReviewTitles>
       {toggle ? null : (
         <ReviewContents>
