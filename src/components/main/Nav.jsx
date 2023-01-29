@@ -1,22 +1,27 @@
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import Login from '../Auth/Login';
-import Join from '../Auth/Join';
-import { authService } from '../../firebase';
-import { signOut } from 'firebase/auth';
+import styled from "styled-components";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Login from "../Auth/Login";
+import Join from "../Auth/Join";
+import { authService } from "../../firebase";
+import { signOut } from "firebase/auth";
+import { currentUserUid, searchStoreData } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export const Nav = () => {
   const [loginModal, setLoginModal] = useState(false);
   const [joinModal, setJoinModal] = useState(false);
   const [isLoginIn, setIsLoginIn] = useState(false);
   const [userObj, setUserObj] = useState(null);
+  const setNamesState = useSetRecoilState(currentUserUid);
+  const setCurrentSearchData = useSetRecoilState(searchStoreData);
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoginIn(true);
         setUserObj(user);
+        setNamesState(user.uid);
       } else {
         setIsLoginIn(false);
       }
@@ -32,8 +37,14 @@ export const Nav = () => {
 
   const onLogOutClick = () => {
     signOut(authService);
-    window.location('/');
+    setCurrentSearchData("스타벅스 강남");
+    setNamesState(null);
+    window.location.reload();
   };
+
+  // window.addEventListener("beforeunload", () => {
+  //   setCurrentSearchData("스타벅스 강남");
+  // });
 
   return (
     <NavWrap>
@@ -42,7 +53,9 @@ export const Nav = () => {
       </Logo>
       {isLoginIn ? (
         <Auth>
-          <Link onClick={onLogOutClick}>Log out</Link>
+          <Link to="/" onClick={onLogOutClick}>
+            Log out
+          </Link>
           <Link to="/mypage">마이페이지</Link>
         </Auth>
       ) : (
