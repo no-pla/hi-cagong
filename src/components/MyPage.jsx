@@ -31,6 +31,7 @@ const UserProfileImg = styled.img`
   width: 120px;
   border-radius: 100%;
   margin-top: 50px;
+  object-fit: cover;
 `;
 
 const UserNickname = styled.div`
