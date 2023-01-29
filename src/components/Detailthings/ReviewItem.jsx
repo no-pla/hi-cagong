@@ -60,7 +60,7 @@ export const ReviewItem = (reviews) => {
                     )}
                   </ReviewDate>
                   {/* createAt */}
-                  <UserNickName>{reviewData?.userNickname} ,</UserNickName>
+                  <UserNickName>{reviewData?.userNickname}</UserNickName>
                   {/* userNickname */}
                 </div>
               </UserID>

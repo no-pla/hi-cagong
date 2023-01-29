@@ -200,7 +200,7 @@ export const AddReview = (reviews) => {
                 {/* createAt,userNickname */}
                 <ReviewDate></ReviewDate>
                 {/* createAt */}
-                <UserNickName>{userNickName || "닉네임 없음"} ,</UserNickName>
+                <UserNickName>{userNickName || "닉네임 없음"}</UserNickName>
                 {/* userNickname */}
               </div>
             </UserID>
