@@ -8,6 +8,7 @@ export const useGetReviews = (target, targetId) => {
   const q = query(
     collection(dbService, "review"),
     where(target, "==", targetId)
+    // where(cafeId, "==", cafeId)
     // orderBy("createAt", "desc")
   );
 

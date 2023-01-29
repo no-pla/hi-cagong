@@ -1,142 +1,122 @@
-import { addDoc, collection, query } from "firebase/firestore";
-import React, { useRef, useState } from "react";
+// import { addDoc, collection, query } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+import { FaStar } from "react-icons/fa";
+
 import {
-  Mutation,
-  QueryClient,
-  useMutation,
+  // Mutation,
+  // QueryClient,
+  // useMutation,
   useQuery,
   useQueryClient,
-  useEffect,
+  // useEffect,
 } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { dbService, storageService } from "../../firebase";
+// import { uuid } from "uuidv4";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  // ref,
+  // uploadBytes,
+  // getDownloadURL,
+  uploadString,
+} from "firebase/storage";
+import { addDoc, collection, getCountFromServer } from "firebase/firestore";
+import { getAuth, reload } from "firebase/auth";
+import { useParams } from "react-router-dom";
+import { uid } from "uid";
+import { click } from "@testing-library/user-event/dist/click";
+// import { readBuilderProgram } from "typescript";
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-export default function AddReview() {
-  const queryClient = useQueryClient();
-
-  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-
-  // createMutate(data, {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries("data");
-  //   },
+export const AddReview = (reviews) => {
+  // useEffect(async () => {
+  //   const coll = collection(dbService, "review");
+  //   const snapshot = await getCountFromServer(coll);
+  //   const count = snapshot.data().count;
+  //   console.log("count: ", count);
   // });
-
-  // review 작성 value 감지
-  // 완료 버튼 클릭 시 value 값 저장 및 newreview로 표시
-  // 실시간 review DB 감지
-
+  let id = crypto.randomUUID();
+  // console.log("id", id);
+  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
   // add 관련
-
+  const reviewCount = reviews.reviews.length;
   // review 관련
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
   const [reason, setReason] = useState("");
   const [location, setLocation] = useState("");
   const [good, setGood] = useState("");
   const [bad, setBad] = useState("");
-  const [rate, setRate] = useState(null);
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
-  const [userNickname, setUserNickname] = useState("");
+  // const [userNickname, setUserNickname] = useState("");
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
   const [url, setUrl] = useState(null);
+  const [attachment, setAttachment] = useState();
 
+  // console.log(setUrl);
+  // console.log(rate);
+
+  const cafeId = useParams().cafeId;
+  // console.log("cafeId", cafeId);
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // 이미지 업로드 부분
   const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImageUpload(e.target.files[0]);
-    }
+    const {
+      target: { files },
+    } = e;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      // console.log(finishedEvent);
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
   };
 
-  // const reader = new FileReader();
-  // reader.readAsDataURL(imageUpload);
-  // console.log(imageUpload);
+  // const uid = reviws.uid;
+  // console.log(reviws);
 
-  // const numberreader = Number(reader);
+  const onClearAttachment = () => {
+    setAttachment(null);
+    fileInput.current.value = null;
+    console.log("first");
+  };
 
-  // localStorage.setItem("contentimgDataUrl", contentimgDataUrl);
-  console.log(imageUpload);
-
-  // const [reviews, setReviews] = useState(reviewData);
-
-  // createAt 현재 시간
-  const date = new Date();
-
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const day = ("0" + date.getDate()).slice(-2);
-  const seconds = ("0" + date.getSeconds()).slice(-2);
-  const dateStr = Number(year + month + day + seconds);
-
-  // Read 부분
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "reviws"))
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     let reviewsArr = []
-  //     querySnapshot.forEach((doc) => {
-  //       reviewsArr.push({...doc.data(), id: doc.id})
-  //     })
-  //     setReviews(reviewsArr)
-  //   })
-  // }, []);
-
-  // const addReview = async () => {
-  //   await addDoc(collection(dbService, "review"), {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: UserID,
-  //     // id: reviewData?.id,
-  //     //image:image
-  //     userNickname: userNickname,
-  //   });
-  // };
-
-  // const { isLoading: createLoading, mutate: createMutate } =
-  //   useMutation(addReview);
-  // const data = {
-  //   bad: bad,
-  //   createAt: myDate,
-  //   good: good,
-  //   location: location,
-  //   menu: menu,
-  //   rate: rate,
-  //   reason: reason,
-  //   reviewTitle: reviewTitle,
-  //   uid: UserID,
-  //   // id: reviewData?.id,
-  //   //image:image
-  //   userNickname: userNickname,
-  // };
-
-  // const images = imageUpload.name();
-
+  //review 등록 부분
   const onAddSubmit = async () => {
+    const fileRef = ref(storageService, `${reviews.uid}/${id}`);
+    const response = await uploadString(fileRef, attachment, "data_url");
+    const attachmentUrl = await getDownloadURL(response.ref);
+    const auth = getAuth();
+    const user = auth.currentUser;
+    // if (user !== null) {
+    const userUid = user.uid;
+
+    // }
+    console.log("Adduseruid 참고", userUid);
     await addDoc(collection(dbService, "review"), {
+      reviewTitle: reviewTitle,
       bad: bad,
-      createAt: dateStr,
+      createAt: Date.now(),
       good: good,
       location: location,
       menu: menu,
-      rate: rate,
+      rate: rated,
       reason: reason,
-      reviewTitle: reviewTitle,
-      uid: "임재영",
+      uid: userUid,
       // id: reviewData?.id,
-      image: "imageUpload",
+      image: attachmentUrl,
       userNickname: "코쟁이",
+      cafeId: cafeId,
     });
+    // console.log(id);
     alert("입력되었습니다 !");
     // const fileInput = useRef()
     const imageRef = ref(storageService, "image");
@@ -155,40 +135,62 @@ export default function AddReview() {
         console.log(error.message);
       });
 
-    if (isLoading) return;
     console.log("isloading");
+    console.log("uid", userUid);
+
+    {
+      return window.location.reload();
+      //임시로..
+    }
   };
 
-  // const onAddSubmit = () => {
-  //   const reviewData = {
-  //     bad: bad,
-  //     createAt: myDate,
-  //     good: good,
-  //     location: location,
-  //     menu: menu,
-  //     rate: rate,
-  //     reason: reason,
-  //     reviewTitle: reviewTitle,
-  //     uid: "임재영",
-  //     // id: reviewData?.id,
-  //     image:
-  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-  //     userNickname: "코쟁이",
-  //   };
-  //   console.log(reviewData);
-  // };
+  // start rating 관련 test
+  const ARRAY = [0, 1, 2, 3, 4];
+  const [clicked, setClicked] = useState([false, false, false, false, false]);
 
-  //input창에 입력 된 value값들을 data로 표시 중
+  const handleStarClick = (index) => {
+    let clickStates = [...clicked];
+    for (let i = 0; i < 5; i++) {
+      clickStates[i] = i <= index ? true : false;
+    }
+    // const rateNum = clickStates.toString(true);
 
-  // data를 가져오면 화면에 query로 바로 표시하는 것
-  // createMutate(reviewData, {
-  //   onSuccess: () => {
-  //     // queryClient.invalidateQueries("reviewdata");
-  //   },
+    setClicked(clickStates);
+  };
+
+  useEffect(() => {
+    sendReview();
+  }, [clicked]); //컨디마 컨디업
+  // useEffect(async () => {
+  // const coll = collection(dbService, "review");
+  //   const snapshot = await getCountFromServer(coll);
+  //   const count = snapshot.data().count;
+  //   console.log("count: ", count);
   // });
+  const sendReview = () => {
+    let score = clicked.filter(Boolean).length;
+    console.log("score", score);
+    // console.log(score);
+    // fetch('http://52.78.63.175:8000/movie', {
+    //   method: 'POST',
+    //   Headers: {
+    //     Authroization: 'e7f59ef4b4900fe5aa839fcbe7c5ceb7',
+    //   },
+    //   body: JSON.stringify({
+    //     movie_id:1
+    //     star: score,
+    //   }),
+    // });
+  };
+  //별점을 rate라는 함수에 숫자로 표시
+  const rated = clicked.filter(Boolean).length;
+  // 숫자를 별로 변환
+  // const str1 = String(rated);
 
-  // if (isLoading) return;
+  // console.log(str1 + "⭐️" + typeof str1);
 
+  // console.log(clicked.filter(Boolean).length);
+  const fileInput = useRef();
   return (
     <ReviewItems>
       {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
@@ -198,141 +200,173 @@ export default function AddReview() {
           {/* 리뷰 라는 글 */}
           리뷰
           <ReviewCountNum>
-            {/* 리뷰 갯수 */}
-            (5)
+            ({reviewCount}){/* 리뷰 갯수 */}
+            {/* {reviewData.length} */}
           </ReviewCountNum>
         </ReviewCount>
-        <ReviewBtn
-          onClick={() => {
-            setToggle(!toggle);
-          }}
-        >
-          {" "}
-          리뷰 작성
-        </ReviewBtn>
+        {toggle ? (
+          <ReviewBtn
+            onClick={() => {
+              setToggle(!toggle);
+            }}
+          >
+            {" "}
+            리뷰 작성
+          </ReviewBtn>
+        ) : null}
       </ReviewTitles>
-      <ReviewContents>
-        {/* crud 될 리뷰들 */}
-        <UserIdTitleBtn>
-          {/* profile, createAt, userId, title, edit, delete btn */}
-          <UserID>
-            {/* profileImg, createAt, userNickname */}
-            <UserImg>{/*{reviewData?.image}*/}</UserImg>
-            {/* profileImg */}
-            <div
-              style={{
-                display: "grid",
-                marginLeft: 10,
+      {toggle ? null : (
+        <ReviewContents>
+          {/* crud 될 리뷰들 */}
+          <UserIdTitleBtn>
+            {/* profile, createAt, userId, title, edit, delete btn */}
+            <UserID>
+              {/* profileImg, createAt, userNickname */}
+              <UserImg>{/*{reviewData?.image}*/}</UserImg>
+              {/* profileImg */}
+              <div
+                style={{
+                  display: "grid",
+                  marginLeft: 10,
+                  alignContent: "flex-end",
+                }}
+              >
+                {/* createAt,userNickname */}
+                <ReviewDate></ReviewDate>
+                {/* createAt */}
+                <UserNickName>
+                  {reviewData?.userNickname || "닉네임"} ,
+                </UserNickName>
+                {/* userNickname */}
+              </div>
+            </UserID>
+
+            <RevieTitleinput
+              value={reviewTitle}
+              placeholder="제목을 입력해 주세요."
+              type="text"
+              onChange={(event) => setReviewTitle(event.target.value)}
+            />
+          </UserIdTitleBtn>
+          <GoodBad>
+            {/* good,bad,rate,menu */}
+            <Good>
+              <GoodTitle>장점</GoodTitle>
+              <GoodInput
+                value={good}
+                onChange={(event) => setGood(event.target.value)}
+                placeholder="장점을 입력해주세요. 30글자 이내"
+              />
+            </Good>
+            <Bad>
+              <BadTitle>단점</BadTitle>
+              <BadInput
+                value={bad}
+                type="text"
+                onChange={(event) => setBad(event.target.value)}
+                placeholder="단점을 입력해주세요. 30글자 이내"
+              />
+            </Bad>
+            <RateMenu>
+              {/* rate, menu */}
+              <Wrap>
+                <RatingText>평점</RatingText>
+                <Stars>
+                  {ARRAY.map((el, idx) => {
+                    return (
+                      <FaStar
+                        key={idx}
+                        size="25"
+                        onClick={() => handleStarClick(el)}
+                        className={clicked[el] && "yellowStar"}
+                      />
+                    );
+                  })}
+                </Stars>
+              </Wrap>
+              <Menu>
+                <MenuTitle>추천메뉴</MenuTitle>
+                <MenuInput
+                  value={menu}
+                  placeholder="추천메뉴를 작성해주세요."
+                  type="text"
+                  onChange={(event) => setMenu(event.target.value)}
+                />
+              </Menu>
+            </RateMenu>
+          </GoodBad>
+          <div
+            style={{
+              display: "inline-flex",
+            }}
+          >
+            <Recommend>추천 명당</Recommend>
+            <RecommendContents>
+              추천하는 이 카페의 나만의 명당은!?
+            </RecommendContents>
+          </div>
+          <NiceSpot>
+            {/* spotImaage, reason, location\ */}
+            <SpotImg>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                // id="new-review-image"
+                className="new-review-image"
+                accept="images/*"
+                src={url}
+                ref={fileInput}
+                // ref={imageRef}
+                style={{
+                  height: "201px",
+                  width: "246px",
+                  display: "flex",
+                  // visibility: "hidden",
+                }}
+              />
+              {attachment && <SpotImgs src={attachment} />}
+            </SpotImg>
+            <ImgCancleBtn onClick={onClearAttachment}> X </ImgCancleBtn>
+            <ReasonLocation>
+              {/* reason,location */}
+              <ReasonMap>
+                {/* 명당추천 */}
+                <Reason>명당 추천 이유</Reason>
+                <ReasonInput
+                  value={reason}
+                  placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
+                  onChange={(event) => setReason(event.target.value)}
+                  type="text"
+                />
+              </ReasonMap>
+              <LocationMap>
+                {/* 명당위치 */}
+                <Location>명당위치</Location>
+                <LocationInput
+                  value={location}
+                  placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
+                  onChange={(event) => setLocation(event.target.value)}
+                  type="text"
+                />
+              </LocationMap>
+            </ReasonLocation>
+          </NiceSpot>
+          {/* 완료 취소 버튼 */}
+          <AddCancleBtn>
+            <AddBtn onClick={onAddSubmit}>완료</AddBtn>
+            <CancleBtn
+              onClick={() => {
+                setToggle(!toggle);
               }}
             >
-              {/* createAt,userNickname */}
-              <ReviewDate>{dateStr}</ReviewDate>
-              {/* createAt */}
-              <UserNickName>{reviewData?.userNickname} ,</UserNickName>
-              {/* userNickname */}
-            </div>
-          </UserID>
-
-          <RevieTitleinput
-            value={reviewTitle}
-            placeholder="제목을 입력해 주세요."
-            type="text"
-            onChange={(event) => setReviewTitle(event.target.value)}
-          />
-        </UserIdTitleBtn>
-        <GoodBad>
-          {/* good,bad,rate,menu */}
-          <Good>
-            <GoodTitle>장점</GoodTitle>
-            <GoodInput
-              value={good}
-              onChange={(event) => setGood(event.target.value)}
-              placeholder="장점을 입력해주세요. 30글자 이내"
-            />
-          </Good>
-          <Bad>
-            <BadTitle>단점</BadTitle>
-            <BadInput
-              value={bad}
-              type="text"
-              onChange={(event) => setBad(event.target.value)}
-              placeholder="단점을 입력해주세요. 30글자 이내"
-            />
-          </Bad>
-          <RateMenu>
-            {/* rate, menu */}
-            {toggle ? (
-              <div>
-                평점
-                <input
-                  type="text"
-                  onChange={(event) => setRate(event.target.value)}
-                />
-              </div>
-            ) : (
-              <Rate>평점 {reviewData?.rate}</Rate>
-            )}
-            <Menu>
-              <MenuTitle>추천메뉴</MenuTitle>
-              <MenuInput
-                value={menu}
-                placeholder="추천메뉴를 작성해주세요."
-                type="text"
-                onChange={(event) => setMenu(event.target.value)}
-              />
-            </Menu>
-          </RateMenu>
-        </GoodBad>
-        <NiceSpot>
-          {/* spotImaage, reason, location\ */}
-          <SpotImg>
-            {/* <img
-              // value={image}
-              src={`${reviewData?.image}`}
-              style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
-            /> */}
-            <input
-              type="file"
-              onChange={handleImageChange}
-              // id="new-review-image"
-              className="new-review-image"
-              accept="images/*"
-              // ref={imageRef}
-            />
-          </SpotImg>
-          <ReasonLocation>
-            {/* reason,location */}
-            <ReasonMap>
-              {/* 명당추천 */}
-              <Reason>명당 추천 이유</Reason>
-              <ReasonInput
-                value={reason}
-                placeholder="명당 추천 이유를 입력해 주세요. 100글자 이내"
-                onChange={(event) => setReason(event.target.value)}
-                type="text"
-              />
-            </ReasonMap>
-            <LocationMap>
-              {/* 명당위치 */}
-              <Location>명당위치</Location>
-              <LocationInput
-                value={location}
-                placeholder="명당 위치를 자세히 작성해주세요. 100글자 이내"
-                onChange={(event) => setLocation(event.target.value)}
-                type="text"
-              />
-            </LocationMap>
-          </ReasonLocation>
-        </NiceSpot>
-        {/* 완료 취소 버튼 */}
-        <AddCancleBtn>
-          <AddBtn onClick={onAddSubmit}>완료</AddBtn>
-          <CancleBtn>취소</CancleBtn>
-        </AddCancleBtn>
-      </ReviewContents>
+              취소
+            </CancleBtn>
+          </AddCancleBtn>
+        </ReviewContents>
+      )}
     </ReviewItems>
   );
-}
+};
 
 const ReviewItems = styled.div`
   width: 100%;
@@ -376,8 +410,9 @@ const ReviewContents = styled.section`
   border: 1px solid #aeb0af;
   border-radius: 10px;
   display: grid;
-  margin-top: 10px;
+  margin: 10px 0px 30px 0px;
   padding: 25px;
+  gap: 20px;
 `;
 
 const UserIdTitleBtn = styled.div`
@@ -447,19 +482,45 @@ const RevieTitleinput = styled.input`
 //   font-weight: 200;
 //   align-items: flex-end;
 // `;
+const Recommend = styled.div`
+  display: inline-flex;
+  flex-direction: row;
+  font-size: 25px;
+  font-weight: 700;
+  align-items: flex-end;
+`;
+
+const RecommendContents = styled.div`
+  display: inline-flex;
+  font-size: 15px;
+  margin-left: 10px;
+  font-weight: 200;
+  align-items: flex-end;
+`;
 
 const NiceSpot = styled.section`
   width: 100%;
   height: 200px;
   display: inline-flex;
   flex-direction: row;
-  margin: 13px 0px;
 `;
 
 const SpotImg = styled.div`
   height: 201px;
   width: 246px;
   background-color: tomato;
+  display: flex;
+`;
+
+const SpotImgs = styled.img`
+  height: 201px;
+  width: 246px;
+`;
+
+const ImgCancleBtn = styled.button`
+  display: flex;
+  color: tomato;
+  font-size: 15px;
 `;
 
 const ReasonLocation = styled.div`
@@ -665,4 +726,42 @@ const CancleBtn = styled.button`
   width: 90px;
   height: 30px;
   border-width: none;
+`;
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+`;
+
+const RatingText = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  flex-direction: column-reverse;
+`;
+
+const Stars = styled.div`
+  display: flex;
+  padding-left: 10px;
+  align-items: flex-start;
+  vertical-align: middle;
+
+  & svg {
+    color: gray;
+    cursor: pointer;
+  }
+
+  :hover svg {
+    color: #fcc419;
+  }
+
+  & svg:hover ~ svg {
+    color: gray;
+  }
+
+  .yellowStar {
+    color: #fcc419;
+  }
 `;
