@@ -90,6 +90,7 @@ export const AddReview = (reviews) => {
       image: attachmentUrl,
       userNickname: userNickName,
       cafeId: cafeId,
+      profileImg: profileImg,
     });
     // console.log(id);
     alert("입력되었습니다 !");
@@ -144,7 +145,7 @@ export const AddReview = (reviews) => {
     const uid = userddd?.uid;
   }
   const userNickName = userddd?.displayName;
-  const userProfile = userddd?.photoURL;
+  const profileImg = userddd?.photoURL;
 
   useEffect(() => {
     sendReview();
@@ -190,7 +191,7 @@ export const AddReview = (reviews) => {
             {/* profile, createAt, userId, title, edit, delete btn */}
             <UserID>
               {/* profileImg, createAt, userNickname */}
-              <UserImg> </UserImg>
+              <UserImg src={profileImg}></UserImg>
               {/* profileImg */}
               <div
                 style={{
@@ -203,9 +204,7 @@ export const AddReview = (reviews) => {
                 {/* createAt,userNickname */}
                 <ReviewDate></ReviewDate>
                 {/* createAt */}
-                <UserNickName>
-                  {reviewData?.userNickname || "닉네임 없음"} ,
-                </UserNickName>
+                <UserNickName>{userNickName || "닉네임 없음"} ,</UserNickName>
                 {/* userNickname */}
               </div>
             </UserID>
@@ -398,7 +397,7 @@ const UserID = styled.div`
   gap: 10px;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 48px;
   height: 48px;
   display: inline-block;

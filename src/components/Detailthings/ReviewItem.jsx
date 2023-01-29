@@ -55,7 +55,7 @@ export const ReviewItem = (reviews) => {
               {/* profile, createAt, userId, title, edit, delete btn */}
               <UserID>
                 {/* profileImg, createAt, userNickname */}
-                <UserImg>{/*{reviewData?.image}*/}</UserImg>
+                <UserImg src={reviewData?.profileImg}></UserImg>
                 {/* profileImg */}
                 <div
                   style={{
@@ -192,7 +192,7 @@ const UserID = styled.div`
   display: inline-flex;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 48px;
   height: 48px;
   display: inline-block;
