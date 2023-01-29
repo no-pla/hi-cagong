@@ -54,8 +54,8 @@ function LandingPage() {
           });
           bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
         }
-        setePlaceItem(placeItem);
         map.setBounds(bounds);
+        setePlaceItem(placeItem);
       }
     }
 

@@ -1,15 +1,16 @@
-import styled from "styled-components";
-import { deleteReview } from "../../api";
-import { useMutation, useQueryClient } from "react-query";
-import { useState } from "react";
-import { dbService } from "../../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import styled from 'styled-components';
+import { deleteReview } from '../../api';
+import { useMutation, useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { dbService } from '../../firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { AverageRate, StoreRate } from '../DetailContent';
 
 export const ReviewItem = (reviews) => {
   const onDeleteClick = async () => {
     // const uid = reviews.reviews[0].uid;
-    const ok = window.confirm("정말로 삭제하시겠습니까?");
+    const ok = window.confirm('정말로 삭제하시겠습니까?');
     // console.log(ok);
     if (ok) {
       const userUid = reviews.reviews[0].uid;
@@ -17,7 +18,7 @@ export const ReviewItem = (reviews) => {
       // console.log(`${uid}`);
       // await dbService.doc(`review/${reviews.reviews[0].uid}`).delete();
       // await deleteDoc(doc(dbService, `review/%{reviews.reviews[0].uid}`));
-      await deleteDoc(doc(dbService, "review", reviews.reviews[0].uid));
+      await deleteDoc(doc(dbService, 'review', reviews.reviews[0].uid));
       // v9에 설명하는 대로 형식을 (데베, 컬렉션, 문서) 로 바꿔보자
       // await deleteDoc(doc(dbService, "sweets", sweetObj.id));
       // const data = deleteDoc(doc(dbService, `sweets/%{sweetOnj.id}`));
@@ -73,7 +74,7 @@ export const ReviewItem = (reviews) => {
                 {/* profileImg */}
                 <div
                   style={{
-                    display: "grid",
+                    display: 'grid',
                     marginLeft: 10,
                   }}
                 >
@@ -93,7 +94,7 @@ export const ReviewItem = (reviews) => {
             </UserIdTitleBtn>
             <div
               style={{
-                display: "inline-flex",
+                display: 'inline-flex',
                 marginLeft: 25,
               }}
             >
@@ -105,7 +106,12 @@ export const ReviewItem = (reviews) => {
             <NiceSpot>
               {/* spotImaage, reason, location\ */}
               <SpotImg>
-                <img src={`${reviewData?.image}`} width="100%" height="100%" />
+                <img
+                  src={`${reviewData?.image}`}
+                  width="100%"
+                  height="100%"
+                  alt="명당사진"
+                />
               </SpotImg>
               <ReasonLocation>
                 {/* reason,location */}
@@ -133,7 +139,25 @@ export const ReviewItem = (reviews) => {
               </Bad>
               <RateMenu>
                 {/* rate, menu */}
-                <Rate>평점 {reviewData?.rate}</Rate>
+                <Rate>
+                  평점
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <StoreRate>
+                      <AverageRate
+                        style={{
+                          width: reviewData?.rate * 20 + '%',
+                        }}
+                        className="rating"
+                      />
+                    </StoreRate>
+                  </div>
+                </Rate>
+
                 <Menu>
                   <MenuTitle>추천메뉴</MenuTitle>
                   <MenuContents>{reviewData?.menu}</MenuContents>
@@ -360,6 +384,8 @@ const RateMenu = styled.div`
 
 const Rate = styled.div`
   display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 35px;

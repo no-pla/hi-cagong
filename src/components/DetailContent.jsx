@@ -45,7 +45,7 @@ const StoreContent = styled.div`
   }
 `;
 
-const StoreRate = styled.span`
+export const StoreRate = styled.span`
   font-size: 20px;
   position: relative;
   display: inline-block;
@@ -56,7 +56,7 @@ const StoreRate = styled.span`
   }
 `;
 
-const AverageRate = styled.span`
+export const AverageRate = styled.span`
   position: absolute;
   display: flex;
   top: 0;
