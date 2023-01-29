@@ -5,7 +5,9 @@ import { useState } from "react";
 import { useGetReviews } from "./Hooks/useGetReviews";
 import { useRecoilValue } from "recoil";
 import { currentUserUid } from "./atom";
-import { authService } from "../firebase";
+import { authService, dbService } from "../firebase";
+import { ChangeProfileModal } from "./ChangeProfile";
+import { deleteDoc, doc } from "firebase/firestore";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -168,57 +170,84 @@ const SectionContainer = styled.div`
 
 export const MyPage = () => {
   const [profileSetting, setProfileSetting] = useState(false);
-
+  const [openModal, setOpenModal] = useState(false);
   const userUid = useRecoilValue(currentUserUid);
   const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
 
+  const delete_comment = async (event) => {
+    event.preventDefault();
+    const id = event.target.id;
+    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
+    if (ok) {
+      try {
+        await deleteDoc(doc(dbService, "review", id));
+      } catch (error) {
+        alert(error);
+      }
+    }
+  };
+
   return (
-    <SecitonWrap>
-      <SectionContainer>
-        <Title>내프로필</Title>
-        <UserProfileContainer>
-          <UserProfileChangeButton
-            onClick={() => setProfileSetting((prev) => !prev)}
-          >
-            <FontAwesomeIcon icon={faEllipsis} size="1x" color="#C3CAD9" />
-          </UserProfileChangeButton>
-          {profileSetting && (
-            <UserProfilChangeMenu>
-              <div>프로필 변경</div>
-            </UserProfilChangeMenu>
-          )}
-          <UserProfileImg
-            src={
-              auth.currentUser?.photoURL ||
-              "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
-            } // 임시값
-            alt=""
-          />
-          <UserNickname>
-            {auth.currentUser?.displayName || "닉네임없음"}
-          </UserNickname>
-          <UserEmail>{auth.currentUser?.email}</UserEmail>
-        </UserProfileContainer>
-      </SectionContainer>
-      <SectionContainer>
-        <Title>내가쓴리뷰</Title>
-        <ReviewList>
-          {reviews &&
-            reviews.map((review) => {
-              return (
-                <Review>
-                  <ReviewImg ImgSrc={review.image} alt="" />
-                  <ReviewDesc>
-                    <ReviewTitle>{review.reviewTitle}</ReviewTitle>
-                    <StoreGoodPoint>{review.good}</StoreGoodPoint>
-                    <DeleteButton>삭제하기</DeleteButton>
-                  </ReviewDesc>
-                </Review>
-              );
-            })}
-        </ReviewList>
-      </SectionContainer>
-    </SecitonWrap>
+    <>
+      {openModal && (
+        <ChangeProfileModal
+          setProfileSetting={setProfileSetting}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />
+      )}
+      <SecitonWrap>
+        <SectionContainer>
+          <Title>내프로필</Title>
+          <UserProfileContainer>
+            <UserProfileChangeButton
+              onClick={() => setProfileSetting((prev) => !prev)}
+            >
+              <FontAwesomeIcon icon={faEllipsis} size="1x" color="#C3CAD9" />
+            </UserProfileChangeButton>
+            {profileSetting && (
+              <UserProfilChangeMenu>
+                <div onClick={() => setOpenModal(true)}>프로필 변경</div>
+              </UserProfilChangeMenu>
+            )}
+            <UserProfileImg
+              src={
+                auth.currentUser?.photoURL ||
+                "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
+              } // 임시값
+              alt=""
+            />
+            <UserNickname>
+              {auth.currentUser?.displayName || "닉네임없음"}
+            </UserNickname>
+            <UserEmail>{auth.currentUser?.email}</UserEmail>
+          </UserProfileContainer>
+        </SectionContainer>
+        <SectionContainer style={{ width: "100%" }}>
+          <Title>내가쓴리뷰</Title>
+          <ReviewList>
+            {reviews &&
+              reviews.map((review) => {
+                return (
+                  <Review key={review.createAt}>
+                    <ReviewImg ImgSrc={review.image} alt="" />
+                    <ReviewDesc>
+                      <ReviewTitle>{review.reviewTitle}</ReviewTitle>
+                      <StoreGoodPoint>{review.good}</StoreGoodPoint>
+                      <DeleteButton
+                        id={review.docId}
+                        onClick={(event) => delete_comment(event)}
+                      >
+                        삭제하기
+                      </DeleteButton>
+                    </ReviewDesc>
+                  </Review>
+                );
+              })}
+          </ReviewList>
+        </SectionContainer>
+      </SecitonWrap>
+    </>
   );
 };

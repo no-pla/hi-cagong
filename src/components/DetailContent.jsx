@@ -1,11 +1,8 @@
-import { faStar } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect } from 'react';
-import { Roadview } from 'react-kakao-maps-sdk';
-import styled from 'styled-components';
-import { GetCafeAverageRate } from './GetCafeAverageRate';
-import { useGetReviews } from './Hooks/useGetReviews';
-import { useGetStoreData } from './Hooks/useGetStoreData';
+import { Roadview } from "react-kakao-maps-sdk";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { GetCafeAverageRate } from "./GetCafeAverageRate";
+import { useGetStoreData } from "./Hooks/useGetStoreData";
 
 const StoreInfo = styled.div`
   margin-left: 30px;
@@ -53,7 +50,7 @@ const StoreRate = styled.span`
   position: relative;
   display: inline-block;
   &::before {
-    content: '★★★★★';
+    content: "★★★★★";
     color: #e5e5e5;
     filter: drop-shadow(0 0.6rem 0.3rem rgba(0, 0, 0, 0.05));
   }
@@ -66,7 +63,7 @@ const AverageRate = styled.span`
   left: 0;
   overflow: hidden;
   &::before {
-    content: '★★★★★';
+    content: "★★★★★";
     color: #fcd939;
   }
 `;
@@ -77,6 +74,7 @@ const RateCount = styled.span`
 `;
 
 export const DetailContent = () => {
+  const { cafeId } = useParams();
   const { stores, isLoading, x, y } = useGetStoreData();
   const { totalRate, averageRate } = GetCafeAverageRate();
 
@@ -91,9 +89,9 @@ export const DetailContent = () => {
         }}
         style={{
           // 지도의 크기
-          width: '360px',
-          height: '300px',
-          borderRadius: '5px 5px 0px 0px',
+          width: "360px",
+          height: "300px",
+          borderRadius: "5px 5px 0px 0px",
         }}
       />
       {isLoading ? (
@@ -110,21 +108,24 @@ export const DetailContent = () => {
             <div>{stores?.data.documents[0].phone}</div>
           </StoreInfoDesc>
           <StoreInfoDesc>
-            {totalRate && (
+            {totalRate ? (
               <>
-                <div>
-                  평균 별점 ({(totalRate / averageRate).toFixed(2) * 20})
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div>평균 별점 ({(totalRate / averageRate).toFixed(2)})</div>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <StoreRate>
                     <AverageRate
                       style={{
-                        width: (totalRate / averageRate).toFixed(2) * 20 + '%',
+                        width: (totalRate / averageRate).toFixed(2) * 20 + "%",
                       }}
                     />
                   </StoreRate>
                   <RateCount>({averageRate}개)</RateCount>
                 </div>
+              </>
+            ) : (
+              <>
+                <div>평균 별점</div>
+                <div>아직 평가가 없습니다.</div>
               </>
             )}
           </StoreInfoDesc>

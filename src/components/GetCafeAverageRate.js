@@ -1,7 +1,7 @@
 import { useGetReviews } from "./Hooks/useGetReviews";
 
-export const GetCafeAverageRate = () => {
-  const { reviews } = useGetReviews("cafeId", "카페이름"); //임시값
+export const GetCafeAverageRate = (cafeId) => {
+  const { reviews } = useGetReviews("cafeId", cafeId);
   function groupBy(objectArray) {
     return objectArray.reduce((acc, obj) => {
       return acc + obj.rate.length / 2;
