@@ -1,46 +1,25 @@
-// import { addDoc, collection, query } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 
-import {
-  // Mutation,
-  // QueryClient,
-  // useMutation,
-  useQuery,
-  useQueryClient,
-  // useEffect,
-} from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { dbService, storageService } from "../../firebase";
-// import { uuid } from "uuidv4";
+
 import {
   getDownloadURL,
   ref,
   uploadBytes,
-  // ref,
-  // uploadBytes,
-  // getDownloadURL,
   uploadString,
 } from "firebase/storage";
 import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { getAuth, reload } from "firebase/auth";
 import { useParams } from "react-router-dom";
-import { uid } from "uid";
-import { click } from "@testing-library/user-event/dist/click";
-// import { readBuilderProgram } from "typescript";
+// import { uid } from "uid";
+// import { click } from "@testing-library/user-event/dist/click";
 
 export const AddReview = (reviews) => {
-  // useEffect(async () => {
-  //   const coll = collection(dbService, "review");
-  //   const snapshot = await getCountFromServer(coll);
-  //   const count = snapshot.data().count;
-  //   console.log("count: ", count);
-  // });
   let id = crypto.randomUUID();
-  // console.log("id", id);
-  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
-  // add 관련
   const reviewCount = reviews.reviews.length;
   // review 관련
   const [toggle, setToggle] = useState(true);
@@ -50,17 +29,17 @@ export const AddReview = (reviews) => {
   const [bad, setBad] = useState("");
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
-  // const [userNickname, setUserNickname] = useState("");
+  // const [userNickname, setUserNickname] = useState("")
+
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
   const [url, setUrl] = useState(null);
   const [attachment, setAttachment] = useState();
 
-  // console.log(setUrl);
-  // console.log(rate);
-
+  // 카페 id 불러오는 부분
   const cafeId = useParams().cafeId;
-  // console.log("cafeId", cafeId);
+
+  // reviewdata 가져오는 부분
   const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
 
   // 이미지 업로드 부분
@@ -80,9 +59,7 @@ export const AddReview = (reviews) => {
     reader.readAsDataURL(theFile);
   };
 
-  // const uid = reviws.uid;
-  // console.log(reviws);
-
+  // 이미지 버튼 취소 클릭
   const onClearAttachment = () => {
     setAttachment(null);
     fileInput.current.value = null;
@@ -98,7 +75,6 @@ export const AddReview = (reviews) => {
     const user = auth.currentUser;
     // if (user !== null) {
     const userUid = user.uid;
-
     // }
     console.log("Adduseruid 참고", userUid);
     await addDoc(collection(dbService, "review"), {
@@ -111,9 +87,8 @@ export const AddReview = (reviews) => {
       rate: rated,
       reason: reason,
       uid: userUid,
-      // id: reviewData?.id,
       image: attachmentUrl,
-      userNickname: "코쟁이",
+      userNickname: userNickName,
       cafeId: cafeId,
     });
     // console.log(id);
@@ -158,38 +133,31 @@ export const AddReview = (reviews) => {
     setClicked(clickStates);
   };
 
+  // Auth 자료 가져오는 것
+  const auth = getAuth();
+  const userddd = auth?.currentUser;
+  if (userddd !== null) {
+    const displayName = userddd?.displayName;
+    const email = userddd?.email;
+    const photoURL = userddd?.photoURL;
+    const emailVerified = userddd?.emailVerified;
+    const uid = userddd?.uid;
+  }
+  const userNickName = userddd?.displayName;
+  const userProfile = userddd?.photoURL;
+
   useEffect(() => {
     sendReview();
   }, [clicked]); //컨디마 컨디업
-  // useEffect(async () => {
-  // const coll = collection(dbService, "review");
-  //   const snapshot = await getCountFromServer(coll);
-  //   const count = snapshot.data().count;
-  //   console.log("count: ", count);
-  // });
+
   const sendReview = () => {
-    let score = clicked.filter(Boolean).length;
-    console.log("score", score);
-    // console.log(score);
-    // fetch('http://52.78.63.175:8000/movie', {
-    //   method: 'POST',
-    //   Headers: {
-    //     Authroization: 'e7f59ef4b4900fe5aa839fcbe7c5ceb7',
-    //   },
-    //   body: JSON.stringify({
-    //     movie_id:1
-    //     star: score,
-    //   }),
-    // });
+    // let score = clicked.filter(Boolean).length;
+    // console.log("score", score);
   };
   //별점을 rate라는 함수에 숫자로 표시
   const rated = clicked.filter(Boolean).length;
-  // 숫자를 별로 변환
-  // const str1 = String(rated);
+  // console.log("rate", rated);
 
-  // console.log(str1 + "⭐️" + typeof str1);
-
-  // console.log(clicked.filter(Boolean).length);
   const fileInput = useRef();
   return (
     <ReviewItems>
@@ -222,20 +190,21 @@ export const AddReview = (reviews) => {
             {/* profile, createAt, userId, title, edit, delete btn */}
             <UserID>
               {/* profileImg, createAt, userNickname */}
-              <UserImg>{/*{reviewData?.image}*/}</UserImg>
+              <UserImg> </UserImg>
               {/* profileImg */}
               <div
                 style={{
-                  display: "grid",
-                  marginLeft: 10,
+                  display: "flex",
+                  // marginLeft: 10,
                   alignContent: "flex-end",
+                  textAlign: "left",
                 }}
               >
                 {/* createAt,userNickname */}
                 <ReviewDate></ReviewDate>
                 {/* createAt */}
                 <UserNickName>
-                  {reviewData?.userNickname || "닉네임"} ,
+                  {reviewData?.userNickname || userNickName} ,
                 </UserNickName>
                 {/* userNickname */}
               </div>
@@ -426,6 +395,7 @@ const UserID = styled.div`
   width: 20%;
   height: 100%;
   display: inline-flex;
+  gap: 10px;
 `;
 
 const UserImg = styled.div`
@@ -447,6 +417,7 @@ const UserNickName = styled.div`
   font-size: 18px;
   font-weight: 600;
   display: contents;
+  align-items: flex-start;
 `;
 //
 
@@ -467,21 +438,6 @@ const RevieTitleinput = styled.input`
   }
 `;
 
-// const Recommend = styled.div`
-//   display: inline-flex;
-//   flex-direction: row;
-//   font-size: 25px;
-//   font-weight: 700;
-//   align-items: flex-end;
-// `;
-
-// const RecommendContents = styled.div`
-//   display: inline-flex;
-//   font-size: 15px;
-//   margin-left: 10px;
-//   font-weight: 200;
-//   align-items: flex-end;
-// `;
 const Recommend = styled.div`
   display: inline-flex;
   flex-direction: row;
