@@ -1,13 +1,13 @@
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
-import { useGetReviews } from './Hooks/useGetReviews';
-import { useRecoilValue } from 'recoil';
-import { currentUserUid } from './atom';
-import { authService, dbService } from '../firebase';
-import { ChangeProfileModal } from './ChangeProfile';
-import { deleteDoc, doc } from 'firebase/firestore';
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { useGetReviews } from "./Hooks/useGetReviews";
+import { useRecoilValue } from "recoil";
+import { currentUserUid } from "./atom";
+import { authService, dbService } from "../firebase";
+import { ChangeProfileModal } from "./ChangeProfile";
+import { deleteDoc, doc } from "firebase/firestore";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -31,6 +31,7 @@ const UserProfileImg = styled.img`
   width: 120px;
   border-radius: 100%;
   margin-top: 50px;
+  object-fit: cover;
 `;
 
 const UserNickname = styled.div`
@@ -172,7 +173,7 @@ export const MyPage = () => {
   const [profileSetting, setProfileSetting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const userUid = useRecoilValue(currentUserUid);
-  const { reviews } = useGetReviews('uid', userUid);
+  const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
   const [isLoginIn, setIsLoginIn] = useState(false);
 
@@ -187,10 +188,10 @@ export const MyPage = () => {
   const delete_comment = async (event) => {
     event.preventDefault();
     const id = event.target.id;
-    const ok = window.confirm('해당 리뷰를 정말 삭제하시겠습니까?');
+    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
     if (ok) {
       try {
-        await deleteDoc(doc(dbService, 'review', id));
+        await deleteDoc(doc(dbService, "review", id));
         window.location.reload();
       } catch (error) {
         alert(error);
@@ -223,23 +224,22 @@ export const MyPage = () => {
             )}
             {isLoginIn && (
               <>
-                {' '}
                 <UserProfileImg
                   src={
                     auth.currentUser?.photoURL ??
-                    'https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751'
+                    "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
                   } // 임시값
                   alt=""
                 />
                 <UserNickname>
-                  {auth.currentUser?.displayName ?? '닉네임없음'}
+                  {auth.currentUser?.displayName ?? "닉네임없음"}
                 </UserNickname>
               </>
             )}
             <UserEmail>{auth.currentUser?.email}</UserEmail>
           </UserProfileContainer>
         </SectionContainer>
-        <SectionContainer style={{ width: '100%' }}>
+        <SectionContainer style={{ width: "100%" }}>
           <Title>내가쓴리뷰</Title>
           <ReviewList>
             {reviews &&
