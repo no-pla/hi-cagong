@@ -1,68 +1,72 @@
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import styled from 'styled-components';
-import { getReviews } from '../../api';
-import { useGetReviews } from '../Hooks/useGetReviews';
-import AddReview from './AddReview';
+import { getAuth } from "firebase/auth";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { getReviews } from "../../api";
+import { useGetReviews } from "../Hooks/useGetReviews";
+import { AddReview } from "./AddReview";
 
-import { ReviewItem } from './ReviewItem';
+import { ReviewItem } from "./ReviewItem";
 
 function Review() {
-  const { reviews } = useGetReviews('uid', '임재영'); //임시값
+  //currentuser.uid 값
+  // const auth = getAuth().currentUser;
+  // const authuid = auth.uid;
+  // console.log(authuid);
+  // const uid = reviews.reviews[0].uid;
+  // console.log(uid);
+  // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
+  const cafeId = useParams().cafeId;
+  // console.log("auth", getAuth().currentUser.uid);
+  const { reviews } = useGetReviews("cafeId", cafeId); //임시값
+  // const auth = getAuth();
+  // const user = auth.currentUser;
+  // const userUid = user.uid;
+  // console.log(userUid);
+  // console.log("맞나", reviews);
+  // const useruser = firebase.auth().onAuthStateChanged((user) => {
+  //   if (user) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/firebase.User
+  //     var uid = user.uid;
+  //     // ...
+  //   } else {
+  //     // User is signed out
+  //     // ...
+  //   }
+  // });
 
-  // const { data: reviewData, isLoading } = useQuery("reviewdata", getReviews);
+  const auth = getAuth();
+  const user = auth.currentUser;
+  // const uidddd = user.uid;
+  // console.log(uidddd);
 
-  // useQueryClient 사용
-  // const queryClient = useQueryClient();
+  // console.log(user.uid);
 
-  // // mutation 사용해서 addReview만들기 -> add 버튼 -> 나중에 revieitem에 넣어줘야됨
-  // const { isLoading: createLoading, mutate: createMutate } =
-  //   useMutation(addReview);
+  // console.log("dddd", useruser);
+  // const userUid = reviews.reviews[0].uid;
+  // const currentUserId = getAuth().currentUser.uid;
 
-  // const addCreateReview = () => {
-  //   const reviewData = {
-  //     bad: "냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요 냄새가 많이나요",
-  //     createAt: Date.now(),
-  //     good: "집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다 집중이 잘되는 분위기입니다 mutate test입니다",
-  //     location:
-  //       "화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다 화장실 바로앞에 있는 자리입니다",
-  //     menu: "아메리카노 디카페인",
-  //     rate: "⭐️⭐️⭐️",
-  //     reason:
-  //       "조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요 조용하고 콘센트가있는데 분위기도 좋고 책상도 좋아요",
-  //     reviewTitle: "제목이에요 여긴",
-  //     uid: "임재영",
-  //     image:
-  //       "https://i.pinimg.com/564x/14/4d/d5/144dd55b7a21917ce042fc7f8cda19f8.jpg",
-  //     userNickname: "코쟁이",
-  //   };
-  // };
-
+  // console.log("dd", currentUserId);
   return (
     <div
       style={{
-        display: 'grid',
+        display: "grid",
       }}
     >
-      {/* <button
-        // onClick={addCreateReview}
-        style={{
-          display: "inline-flex",
-        }}
-      >
-        create 버튼
-      </button> */}
       <AllReview
         style={{
-          display: 'grid',
+          display: "grid",
         }}
       >
         <AddReview reviews={reviews} />
+        {/* const uid = reviews.reviews[0].uid;
+  console.log(uid); */}
         <ReviewItem reviews={reviews} />
       </AllReview>
     </div>
   );
 }
-
 export default Review;
 
 const AllReview = styled.section`

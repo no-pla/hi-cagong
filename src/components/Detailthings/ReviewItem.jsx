@@ -1,8 +1,13 @@
-import styled from 'styled-components';
-import { deleteReview } from '../../api';
-import { useMutation, useQueryClient } from 'react-query';
+import styled from "styled-components";
+import { deleteReview } from "../../api";
+import { useMutation, useQueryClient } from "react-query";
+import { useState } from "react";
+import { dbService } from "../../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-export const ReviewItem = (reviews) => {
+export const ReviewItem = (reviews, Owner) => {
+  // const [review, setReview] = useState("");
   // const queryClient = useQueryClient();
   // const { isLoading: deleteLoading, mutate: deleteMutate } =
   //   useMutation(deleteReview);
@@ -14,14 +19,44 @@ export const ReviewItem = (reviews) => {
   //     },
   //   });
   // };
+  // reviews.reviews.map((reviewData) => {
+  // console.log("image주소", reviewData.image);
+  // });
+  const onDeleteClick = async () => {
+    // const uid = reviews.reviews[0].uid;
+    const ok = window.confirm("정말로 삭제하시겠습니까?");
+    // console.log(ok);
+    if (ok) {
+      const userUid = reviews.reviews[0].uid;
+      console.log(userUid);
+      // console.log(`${uid}`);
+      // await dbService.doc(`review/${reviews.reviews[0].uid}`).delete();
+      // await deleteDoc(doc(dbService, `review/%{reviews.reviews[0].uid}`));
+      await deleteDoc(doc(dbService, "review", reviews.reviews[0].uid));
+      // v9에 설명하는 대로 형식을 (데베, 컬렉션, 문서) 로 바꿔보자
+      // await deleteDoc(doc(dbService, "sweets", sweetObj.id));
+      // const data = deleteDoc(doc(dbService, `sweets/%{sweetOnj.id}`));
+      // console.log(reviews);
+      // console.log(reviews.reviews[0].uid);
+    }
+  };
+
+  // const [userUidCheck, SetUserUidCheck] = useState(false)
+  console.log(reviews);
+  // console.log("auth", getAuth().currentUser.uid);
+  // const Owner = () => {
+  //   const userUid = reviews.reviews[0].uid;
+  //   const currentUserId = getAuth().currentUser.uid;
+  //   // console.log("userUid", userUid);
+  //   if (currentUserId === userUid) {
+  //   }
+  //   return false;
+  // };
 
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
         <ReviewItems>
-          {/* <button onClick={onDeleteReview}> delete 버튼</button> */}
-          {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
-
           <ReviewContents>
             {/* crud 될 리뷰들 */}
             <UserIdTitleBtn>
@@ -32,7 +67,7 @@ export const ReviewItem = (reviews) => {
                 {/* profileImg */}
                 <div
                   style={{
-                    display: 'grid',
+                    display: "grid",
                     marginLeft: 10,
                   }}
                 >
@@ -44,13 +79,15 @@ export const ReviewItem = (reviews) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              <EditDeleteBtn>
-                <DeleteBtn>삭제</DeleteBtn>
-              </EditDeleteBtn>
+              {Owner ? null : (
+                <EditDeleteBtn>
+                  <DeleteBtn onClick={onDeleteClick}>삭제</DeleteBtn>
+                </EditDeleteBtn>
+              )}
             </UserIdTitleBtn>
             <div
               style={{
-                display: 'inline-flex',
+                display: "inline-flex",
                 marginLeft: 25,
               }}
             >
