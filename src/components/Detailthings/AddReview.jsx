@@ -78,12 +78,6 @@ export const AddReview = (reviews) => {
     reader.readAsDataURL(theFile);
   };
 
-  // 이미지 버튼 취소 클릭
-  const onClearAttachment = () => {
-    setAttachment(null);
-    fileInput.current.value = null;
-  };
-
   //review 등록 부분
   const onAddSubmit = async () => {
     if (
@@ -161,8 +155,8 @@ export const AddReview = (reviews) => {
   // Auth 자료 가져오는 것
   const auth = getAuth();
   const userddd = auth?.currentUser;
-  const userNickName = userddd?.displayName;
-  const profileImg = userddd?.photoURL;
+  const userNickName = userddd?.displayName ?? "닉네임 없음";
+  const profileImg = userddd?.photoURL ?? noImageUrl;
 
   useEffect(() => {
     sendReview();
