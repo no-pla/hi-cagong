@@ -1,11 +1,11 @@
 import {
-  createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import React, { useState } from "react";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { authService } from "../../firebase";
@@ -21,8 +21,33 @@ const Login = ({ onClickLogin, onClickJoin }) => {
   const [notMember, setNotMember] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [signUp, setSignUp] = useState(false);
-  const [checkedUser, setCheckedUser] = useState("");
   const matchCheckEmail = email.match(emailRegex);
+  const [githubUrl, setGithubUrl] = useState("");
+  const [googleUrl, setGoogleUrl] = useState("");
+
+  useEffect(() => {
+    const githubFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/github.png`);
+      await getDownloadURL(reference).then((url) => {
+        setGithubUrl(url);
+      });
+    };
+
+    const googleFunc = async () => {
+      const storage = getStorage();
+      const reference = ref(storage, `asset/google.png`);
+      await getDownloadURL(reference).then((url) => {
+        setGoogleUrl(url);
+      });
+    };
+
+    if (githubUrl === "") {
+      githubFunc();
+    } else if (googleUrl === "") {
+      googleFunc();
+    }
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +59,6 @@ const Login = ({ onClickLogin, onClickJoin }) => {
         navigate("/");
       })
       .catch((err) => {
-        // errorMessage = err.message;
         if (err.message.includes("user-not-found")) {
           setNotMember(!notMember);
         }
@@ -105,10 +129,10 @@ const Login = ({ onClickLogin, onClickJoin }) => {
 
         <ButtonWrap>
           <span onClick={onGoogleSignIn}>
-            <img src="/img/google.png" alt="구글" />
+            <img src={googleUrl} alt="구글" />
           </span>
           <span onClick={onGitHubSignIn}>
-            <img src="/img/github.png" alt="구글" />
+            <img src={githubUrl} alt="깃허브" />
           </span>
         </ButtonWrap>
         {/* 회원가입 */}
@@ -184,7 +208,6 @@ export const Title = styled.h2`
 export const FormWrap = styled.form`
   display: flex;
   flex-direction: column;
-  /* gap: 8px; */
   width: 320px;
   margin: 1em 0;
 `;
