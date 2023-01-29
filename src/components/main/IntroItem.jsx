@@ -1,8 +1,8 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { dbService } from '../../firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect, memo } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { dbService } from "../../firebase";
 
 const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -17,14 +17,14 @@ const IntroItem = ({ placeItem }) => {
 
   const getImage = async (cafeId) => {
     const q = query(
-      collection(dbService, 'review'),
-      where('cafeId', '==', cafeId)
+      collection(dbService, "review"),
+      where("cafeId", "==", cafeId)
     );
 
     const getMyReviewList = async () => {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.docs[0]) {
-        return 'https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg';
+        return "https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg";
       }
       return querySnapshot.docs[0].data().image;
     };
@@ -54,7 +54,7 @@ const IntroItem = ({ placeItem }) => {
         {placeItem?.map(
           (item) =>
             //카테고리가 카페 인것만 나올 수 있도록
-            item.content.category_group_code === 'CE7' && (
+            item.content.category_group_code === "CE7" && (
               <Item
                 key={item.content.id}
                 id={item.content.id}
