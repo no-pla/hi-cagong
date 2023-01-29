@@ -6,6 +6,7 @@ import { authService, dbService, storageService } from "../../firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { deleteObject, ref } from "@firebase/storage";
+import { AverageRate, StoreRate } from "../DetailContent";
 
 export const ReviewItem = (reviews) => {
   const onDeleteClick = async (event) => {
@@ -95,7 +96,12 @@ export const ReviewItem = (reviews) => {
             <NiceSpot>
               {/* spotImaage, reason, location\ */}
               <SpotImg>
-                <img src={`${reviewData?.image}`} width="100%" height="100%" />
+                <img
+                  src={`${reviewData?.image}`}
+                  width="100%"
+                  height="100%"
+                  alt="명당사진"
+                />
               </SpotImg>
               <ReasonLocation>
                 {/* reason,location */}
@@ -123,7 +129,25 @@ export const ReviewItem = (reviews) => {
               </Bad>
               <RateMenu>
                 {/* rate, menu */}
-                <Rate>평점 {reviewData?.rate}</Rate>
+                <Rate>
+                  평점
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <StoreRate>
+                      <AverageRate
+                        style={{
+                          width: reviewData?.rate * 20 + "%",
+                        }}
+                        className="rating"
+                      />
+                    </StoreRate>
+                  </div>
+                </Rate>
+
                 <Menu>
                   <MenuTitle>추천메뉴</MenuTitle>
                   <MenuContents>{reviewData?.menu}</MenuContents>
@@ -350,6 +374,8 @@ const RateMenu = styled.div`
 
 const Rate = styled.div`
   display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 35px;
