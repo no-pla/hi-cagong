@@ -3,17 +3,17 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useState } from "react";
 import styled from "styled-components";
 import AuthModal, { AuthTitle } from "./Auth/AuthModal";
-
 import {
   ButtonWrap,
   FormWrap,
   Input,
   ModalBackground,
   ModalWrap,
-  Title,
 } from "./Auth/Login";
 import CustomButton from "./common/CustomButton";
 import { authService, storageService } from "../firebase";
+import { useRecoilValue } from "recoil";
+import { currentUserUid } from "./atom";
 
 const ImgWrap = styled.label`
   border-radius: 100%;
@@ -38,14 +38,16 @@ export const ChangeProfileModal = ({
   const [newNickName, setNewNickName] = useState("");
   const [noChange, setNoChange] = useState(false);
   const [longNickName, setLongNickName] = useState(false);
+  const [success, setSucess] = useState(false);
+  const [error, setError] = useState(false);
+  const userUid = useRecoilValue(currentUserUid);
   const auth = getAuth();
 
   const uploadPhoto = async (event) => {
     event.preventDefault();
-    const theFile = event.target.files[0]; //
+    const theFile = event.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(theFile); // file 객체를 브라우저가 읽을 수 있는 data URL로 읽음.
-    console.log(reader);
 
     reader.onloadend = (finishedEvent) => {
       // 파일리더가 파일객체를 data URL로 변환 작업을 끝났을 때
@@ -88,20 +90,51 @@ export const ChangeProfileModal = ({
       })
         .then(() => {
           setNewNickName("");
+          setOpenModal((prev) => !prev);
           setProfileSetting((prev) => !prev);
-          setOpenModal(false);
-          localStorage.removeItem("newProfilePhoto");
-          alert("프로필 변경 성공!");
         })
         .catch((error) => {
           alert("에러가 발생했습니다. 다시 시도해 주세요.");
           console.log(error);
+          setError((prev) => !prev);
         });
     }
   };
 
   return (
     <>
+      {error && (
+        <>
+          <AuthModal>
+            <AuthTitle>에러가 발생했습니다.</AuthTitle>
+            <p>에러가 발생했습니다. 다시 시도해 주세요.</p>
+            <CustomButton
+              bgColor="#444444"
+              height={8}
+              width={16}
+              onClick={() => setError((prev) => !prev)}
+            >
+              닫기
+            </CustomButton>
+          </AuthModal>
+        </>
+      )}
+      {success && (
+        <>
+          <AuthModal>
+            <AuthTitle>프로필이 수정되었습니다.</AuthTitle>
+            <p>프로필이 성공적으로 수정되었습니다.</p>
+            <CustomButton
+              bgColor="#444444"
+              height={8}
+              width={16}
+              onClick={() => setSucess((prev) => !prev)}
+            >
+              닫기
+            </CustomButton>
+          </AuthModal>
+        </>
+      )}
       {noChange && (
         <>
           <AuthModal>
@@ -140,7 +173,11 @@ export const ChangeProfileModal = ({
             <AuthTitle style={{ color: "black" }}>프로필 변경</AuthTitle>
             <FormWrap onSubmit={ChangeProfile}>
               <ImgWrap htmlFor="file">
-                <img src={auth.currentUser.photoURL} alt="프로필사진" />
+                <img
+                  id="preview-photo"
+                  src={auth.currentUser.photoURL}
+                  alt="프로필사진"
+                />
               </ImgWrap>
               <input
                 id="file"

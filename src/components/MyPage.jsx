@@ -8,6 +8,9 @@ import { currentUserUid } from "./atom";
 import { authService, dbService } from "../firebase";
 import { ChangeProfileModal } from "./ChangeProfile";
 import { deleteDoc, doc } from "firebase/firestore";
+import { ButtonWrap } from "./Auth/Login";
+import CustomButton from "./common/CustomButton";
+import AuthModal, { AuthTitle } from "./Auth/AuthModal";
 
 const SecitonWrap = styled.div`
   display: flex;
@@ -141,7 +144,7 @@ const StoreGoodPoint = styled.div`
   overflow: hidden;
 `;
 
-const Title = styled.h2`
+const MyTitle = styled.h2`
   font-weight: 600;
   font-size: 18px;
   line-height: 22px;
@@ -176,6 +179,8 @@ export const MyPage = () => {
   const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
   const [isLoginIn, setIsLoginIn] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [targetId, setTargetId] = useState("");
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
@@ -185,14 +190,17 @@ export const MyPage = () => {
     });
   }, []);
 
-  const delete_comment = async (event) => {
-    event.preventDefault();
-    const id = event.target.id;
-    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
-    if (ok) {
+  const openConfirmModal = (event) => {
+    setTargetId(event.target.id);
+    setConfirmModal((prev) => !prev);
+  };
+
+  const delete_comment = async () => {
+    if (targetId) {
       try {
-        await deleteDoc(doc(dbService, "review", id));
+        await deleteDoc(doc(dbService, "review", targetId));
         window.location.reload();
+        setConfirmModal((prev) => !prev);
       } catch (error) {
         alert(error);
       }
@@ -201,6 +209,29 @@ export const MyPage = () => {
 
   return (
     <>
+      {confirmModal && (
+        <AuthModal>
+          <AuthTitle>정말로 삭제할까요?</AuthTitle>
+          <p>삭제하면 되돌릴 수 없습니다.</p>
+          <ButtonWrap>
+            <CustomButton
+              bgColor="#000"
+              height={12}
+              onClick={() => setConfirmModal((prev) => !prev)}
+            >
+              취소
+            </CustomButton>
+            <CustomButton
+              onClick={() => delete_comment()}
+              bgColor="#a23333"
+              height={12}
+              type="submit"
+            >
+              삭제
+            </CustomButton>
+          </ButtonWrap>
+        </AuthModal>
+      )}
       {openModal && (
         <ChangeProfileModal
           setProfileSetting={setProfileSetting}
@@ -210,7 +241,7 @@ export const MyPage = () => {
       )}
       <SecitonWrap>
         <SectionContainer>
-          <Title>내프로필</Title>
+          <MyTitle>내프로필</MyTitle>
           <UserProfileContainer>
             <UserProfileChangeButton
               onClick={() => setProfileSetting((prev) => !prev)}
@@ -240,7 +271,7 @@ export const MyPage = () => {
           </UserProfileContainer>
         </SectionContainer>
         <SectionContainer style={{ width: "100%" }}>
-          <Title>내가쓴리뷰</Title>
+          <MyTitle>내가쓴리뷰</MyTitle>
           <ReviewList>
             {reviews &&
               reviews.map((review) => {
@@ -252,7 +283,7 @@ export const MyPage = () => {
                       <StoreGoodPoint>{review.good}</StoreGoodPoint>
                       <DeleteButton
                         id={review.docId}
-                        onClick={(event) => delete_comment(event)}
+                        onClick={(event) => openConfirmModal(event)}
                       >
                         삭제하기
                       </DeleteButton>
