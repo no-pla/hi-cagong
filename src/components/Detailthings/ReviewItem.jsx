@@ -284,7 +284,7 @@ const ReasonMap = styled.div`
   display: inline-block;
   margin-bottom: 20px;
   padding-top: 5px;
-  width: 90%;
+  width: 150%;
 `;
 
 const Reason = styled.div`
@@ -302,7 +302,7 @@ const ReasonContents = styled.div`
 
 const LocationMap = styled.div`
   display: inline-block;
-  width: 90%;
+  width: 150%;
 `;
 
 const Location = styled.div`
