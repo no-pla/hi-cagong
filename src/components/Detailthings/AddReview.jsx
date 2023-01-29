@@ -86,6 +86,7 @@ export const AddReview = (reviews) => {
   const onClearAttachment = () => {
     setAttachment(null);
     fileInput.current.value = null;
+    console.log("first");
   };
 
   //review 등록 부분
@@ -294,14 +295,19 @@ export const AddReview = (reviews) => {
               </Menu>
             </RateMenu>
           </GoodBad>
+          <div
+            style={{
+              display: "inline-flex",
+            }}
+          >
+            <Recommend>추천 명당</Recommend>
+            <RecommendContents>
+              추천하는 이 카페의 나만의 명당은!?
+            </RecommendContents>
+          </div>
           <NiceSpot>
             {/* spotImaage, reason, location\ */}
             <SpotImg>
-              {/* <img
-            // value={image}
-            src={`${reviewData?.image}`}
-            style={{ objectFit: "fill", width: "inherit", height: "inherit" }}
-          /> */}
               <input
                 type="file"
                 onChange={handleImageChange}
@@ -311,10 +317,16 @@ export const AddReview = (reviews) => {
                 src={url}
                 ref={fileInput}
                 // ref={imageRef}
+                style={{
+                  height: "201px",
+                  width: "246px",
+                  display: "flex",
+                  // visibility: "hidden",
+                }}
               />
               {attachment && <SpotImgs src={attachment} />}
             </SpotImg>
-            <button onClick={onClearAttachment}>취소</button>
+            <ImgCancleBtn onClick={onClearAttachment}> X </ImgCancleBtn>
             <ReasonLocation>
               {/* reason,location */}
               <ReasonMap>
@@ -470,24 +482,45 @@ const RevieTitleinput = styled.input`
 //   font-weight: 200;
 //   align-items: flex-end;
 // `;
+const Recommend = styled.div`
+  display: inline-flex;
+  flex-direction: row;
+  font-size: 25px;
+  font-weight: 700;
+  align-items: flex-end;
+`;
+
+const RecommendContents = styled.div`
+  display: inline-flex;
+  font-size: 15px;
+  margin-left: 10px;
+  font-weight: 200;
+  align-items: flex-end;
+`;
 
 const NiceSpot = styled.section`
   width: 100%;
   height: 200px;
   display: inline-flex;
   flex-direction: row;
-  margin: 13px 0px;
 `;
 
 const SpotImg = styled.div`
   height: 201px;
   width: 246px;
   background-color: tomato;
+  display: flex;
 `;
 
 const SpotImgs = styled.img`
   height: 201px;
   width: 246px;
+`;
+
+const ImgCancleBtn = styled.button`
+  display: flex;
+  color: tomato;
+  font-size: 15px;
 `;
 
 const ReasonLocation = styled.div`
