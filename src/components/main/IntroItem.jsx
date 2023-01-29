@@ -32,14 +32,6 @@ const IntroItem = ({ placeItem }) => {
     document.getElementById(`imageId-${cafeId}`).src = url;
   };
 
-  useEffect(() => {}, []);
-
-  // const { reviews } = useGetReviews("cafeId", String(2140311573));
-  // console.log(reviews[0].image);
-  // 배열에 현재 메인에 띄워진 아이디 넣기
-  //
-  // 맵 돌면서 이미지가 존재하면 각 배열의 객체에 넣기
-
   return (
     <IntronItemWrap>
       <IntronItemTitle>
@@ -94,7 +86,6 @@ const IntronItemWrap = styled.div`
     width: calc(100% - 16px);
     box-sizing: border-box;
     margin: 0 auto;
-    /* overflow-y: auto; */
   }
 `;
 
