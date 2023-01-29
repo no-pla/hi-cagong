@@ -174,8 +174,8 @@ const SectionContainer = styled.div`
 `;
 
 export const MyPage = () => {
-  const { reviews } = useGetReviews("uid", userUid);
   const userUid = useRecoilValue(currentUserUid);
+  const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
   const [profileSetting, setProfileSetting] = useState(false);
   const [openModal, setOpenModal] = useState(false);

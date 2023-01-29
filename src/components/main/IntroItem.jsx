@@ -41,7 +41,6 @@ const IntroItem = ({ placeItem }) => {
           <br /> 소개해 주세요 !
         </span>
       </IntronItemTitle>
-      <ItemTitle> 평점 높은 순</ItemTitle>
       <ItemWrap>
         {placeItem?.map(
           (item) =>
@@ -95,6 +94,7 @@ const IntronItemTitle = styled.h2`
   font-size: 24px;
   font-weight: 800;
   line-height: 1.3;
+  margin-bottom: 16px;
 `;
 
 const ItemTitle = styled.h3`
