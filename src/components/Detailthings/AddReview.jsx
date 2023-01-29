@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getReviews } from "../../api";
 import { dbService, storageService } from "../../firebase";
@@ -12,11 +12,9 @@ import {
   uploadBytes,
   uploadString,
 } from "firebase/storage";
-import { addDoc, collection, getCountFromServer } from "firebase/firestore";
-import { getAuth, reload } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { useParams } from "react-router-dom";
-// import { uid } from "uid";
-// import { click } from "@testing-library/user-event/dist/click";
 
 export const AddReview = (reviews) => {
   let id = crypto.randomUUID();
@@ -29,7 +27,6 @@ export const AddReview = (reviews) => {
   const [bad, setBad] = useState("");
   const [menu, setMenu] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
-  // const [userNickname, setUserNickname] = useState("")
 
   // image 관련 state
   const [imageUpload, setImageUpload] = useState(null);
@@ -50,7 +47,6 @@ export const AddReview = (reviews) => {
     const theFile = files[0];
     const reader = new FileReader();
     reader.onloadend = (finishedEvent) => {
-      // console.log(finishedEvent);
       const {
         currentTarget: { result },
       } = finishedEvent;
@@ -73,9 +69,8 @@ export const AddReview = (reviews) => {
     const attachmentUrl = await getDownloadURL(response.ref);
     const auth = getAuth();
     const user = auth.currentUser;
-    // if (user !== null) {
     const userUid = user.uid;
-    // }
+
     console.log("Adduseruid 참고", userUid);
     await addDoc(collection(dbService, "review"), {
       reviewTitle: reviewTitle,
@@ -92,9 +87,7 @@ export const AddReview = (reviews) => {
       cafeId: cafeId,
       profileImg: profileImg,
     });
-    // console.log(id);
     alert("입력되었습니다 !");
-    // const fileInput = useRef()
     const imageRef = ref(storageService, "image");
     uploadBytes(imageRef, imageUpload)
       .then(() => {
@@ -116,7 +109,6 @@ export const AddReview = (reviews) => {
 
     {
       return window.location.reload();
-      //임시로..
     }
   };
 
@@ -151,18 +143,13 @@ export const AddReview = (reviews) => {
     sendReview();
   }, [clicked]); //컨디마 컨디업
 
-  const sendReview = () => {
-    // let score = clicked.filter(Boolean).length;
-    // console.log("score", score);
-  };
+  const sendReview = () => {};
   //별점을 rate라는 함수에 숫자로 표시
   const rated = clicked.filter(Boolean).length;
-  // console.log("rate", rated);
 
   const fileInput = useRef();
   return (
     <ReviewItems>
-      {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
       <ReviewTitles>
         {/* 리뷰와 리뷰등록 버튼 */}
         <ReviewCount>
@@ -170,7 +157,6 @@ export const AddReview = (reviews) => {
           리뷰
           <ReviewCountNum>
             ({reviewCount}){/* 리뷰 갯수 */}
-            {/* {reviewData.length} */}
           </ReviewCountNum>
         </ReviewCount>
         {toggle ? (
@@ -279,17 +265,14 @@ export const AddReview = (reviews) => {
               <input
                 type="file"
                 onChange={handleImageChange}
-                // id="new-review-image"
                 className="new-review-image"
                 accept="images/*"
                 src={url}
                 ref={fileInput}
-                // ref={imageRef}
                 style={{
                   height: "201px",
                   width: "246px",
                   display: "flex",
-                  // visibility: "hidden",
                 }}
               />
               {attachment && <SpotImgs src={attachment} />}
