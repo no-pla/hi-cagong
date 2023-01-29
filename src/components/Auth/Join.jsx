@@ -1,9 +1,8 @@
-import { useState } from 'react';
-
-import styled from 'styled-components';
-import { authService } from '../../firebase';
-import CustomButton from '../common/CustomButton';
-import { emailRegex, pwRegex } from '../../until';
+import { useState } from "react";
+import styled from "styled-components";
+import { authService } from "../../firebase";
+import CustomButton from "../common/CustomButton";
+import { emailRegex, pwRegex } from "../../utils";
 import {
   ButtonWrap,
   ErrorMessage,
@@ -13,14 +12,14 @@ import {
   ModalWrap,
   OkMessage,
   Title,
-} from './Login';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import AuthModal, { AuthTitle } from './AuthModal';
+} from "./Login";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import AuthModal, { AuthTitle } from "./AuthModal";
 
 const Join = ({ onClickJoin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmpassword, setConfirmpassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmpassword] = useState("");
   const matchCheckEmail = email.match(emailRegex);
   const matchCheckPassword = password.match(pwRegex);
   const [joinFail, setJoinFail] = useState(false);
@@ -36,8 +35,8 @@ const Join = ({ onClickJoin }) => {
       })
       .catch((error) => {
         const errorMessage = error.message;
-        console.log('errorMessage:', errorMessage);
-        if (errorMessage.includes('email-already-in-use')) {
+        console.log("errorMessage:", errorMessage);
+        if (errorMessage.includes("email-already-in-use")) {
           setJoinAready(true);
         }
         if (!email || !password) {
@@ -45,9 +44,9 @@ const Join = ({ onClickJoin }) => {
         }
       });
 
-    setEmail('');
-    setPassword('');
-    setConfirmpassword('');
+    setEmail("");
+    setPassword("");
+    setConfirmpassword("");
   };
 
   const completeJoin = () => {
@@ -72,7 +71,7 @@ const Join = ({ onClickJoin }) => {
                 setEmail(value);
               }}
               onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
+                e.key === "Enter" && e.preventDefault();
               }}
             />
             {!matchCheckEmail ? (

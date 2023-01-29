@@ -40,7 +40,6 @@ export const ChangeProfileModal = ({
   const [longNickName, setLongNickName] = useState(false);
   const [success, setSucess] = useState(false);
   const [error, setError] = useState(false);
-  const userUid = useRecoilValue(currentUserUid);
   const auth = getAuth();
 
   const uploadPhoto = async (event) => {
@@ -76,7 +75,6 @@ export const ChangeProfileModal = ({
     if (newNickName === "" && downloadUrl === undefined) {
       // 새로운 닉네임과 프로필 사진이 없으면 리턴
       setNoChange((prev) => !prev);
-      // alert("프로필 사진과 닉네임 중 하나는 수정해야 합니다.");
       return;
     } else if (newNickName.length > 15) {
       setLongNickName((prev) => !prev);

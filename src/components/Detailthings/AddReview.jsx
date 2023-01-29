@@ -1,34 +1,32 @@
-import { useEffect, useRef, useState } from 'react';
-import { FaStar } from 'react-icons/fa';
+import { useEffect, useRef, useState } from "react";
+import { FaStar } from "react-icons/fa";
 
-import { useQuery } from 'react-query';
-import styled from 'styled-components';
-import { getReviews } from '../../api';
-import { authService, dbService, storageService } from '../../firebase';
+import styled from "styled-components";
+import { authService, dbService, storageService } from "../../firebase";
 
 import {
   getDownloadURL,
   ref,
   uploadBytes,
   uploadString,
-} from 'firebase/storage';
-import { addDoc, collection } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { useParams } from 'react-router-dom';
-import AuthModal, { AuthTitle } from '../Auth/AuthModal';
-import CustomButton from '../common/CustomButton';
+} from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { useParams } from "react-router-dom";
+import AuthModal, { AuthTitle } from "../Auth/AuthModal";
+import CustomButton from "../common/CustomButton";
 
 export const AddReview = (reviews) => {
   let id = crypto.randomUUID();
   const reviewCount = reviews.reviews.length;
   // review 관련
   const [toggle, setToggle] = useState(true);
-  const [reason, setReason] = useState('');
-  const [location, setLocation] = useState('');
-  const [good, setGood] = useState('');
-  const [bad, setBad] = useState('');
-  const [menu, setMenu] = useState('');
-  const [reviewTitle, setReviewTitle] = useState('');
+  const [reason, setReason] = useState("");
+  const [location, setLocation] = useState("");
+  const [good, setGood] = useState("");
+  const [bad, setBad] = useState("");
+  const [menu, setMenu] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
   const [validationModal, setValidationModal] = useState(false);
   const [complete, setComplete] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
@@ -41,14 +39,12 @@ export const AddReview = (reviews) => {
   // 카페 id 불러오는 부분
   const cafeId = useParams().cafeId;
 
-  // reviewdata 가져오는 부분
-  const { data: reviewData, isLoading } = useQuery('reviewdata', getReviews);
   // 날짜 추가
   const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
   // 이미지 업로드 부분
   const handleImageChange = (e) => {
@@ -70,7 +66,6 @@ export const AddReview = (reviews) => {
   const onClearAttachment = () => {
     setAttachment(null);
     fileInput.current.value = null;
-    console.log('first');
   };
 
   //review 등록 부분
@@ -89,12 +84,12 @@ export const AddReview = (reviews) => {
     }
 
     const fileRef = ref(storageService, `${reviews.uid}/${id}`);
-    const response = await uploadString(fileRef, attachment, 'data_url');
+    const response = await uploadString(fileRef, attachment, "data_url");
     const attachmentUrl = await getDownloadURL(response.ref);
     const auth = getAuth();
     const user = auth.currentUser;
     const userUid = user.uid;
-    const imageRef = ref(storageService, 'image');
+    const imageRef = ref(storageService, "image");
 
     uploadBytes(imageRef, imageUpload)
       .then(() => {
@@ -103,7 +98,7 @@ export const AddReview = (reviews) => {
             setUrl(url);
           })
           .catch((error) => {
-            console.log(error.message, '사진을 가져오는데 문제가 생겼습니다. ');
+            console.log(error.message, "사진을 가져오는데 문제가 생겼습니다. ");
           });
         setImageUpload(null);
       })
@@ -111,7 +106,7 @@ export const AddReview = (reviews) => {
         console.log(error.message);
       });
 
-    await addDoc(collection(dbService, 'review'), {
+    await addDoc(collection(dbService, "review"), {
       reviewTitle,
       bad,
       createAt: Date.now(),
@@ -143,7 +138,6 @@ export const AddReview = (reviews) => {
     for (let i = 0; i < 5; i++) {
       clickStates[i] = i <= index ? true : false;
     }
-    // const rateNum = clickStates.toString(true);
 
     setClicked(clickStates);
   };
@@ -151,13 +145,6 @@ export const AddReview = (reviews) => {
   // Auth 자료 가져오는 것
   const auth = getAuth();
   const userddd = auth?.currentUser;
-  if (userddd !== null) {
-    const displayName = userddd?.displayName;
-    const email = userddd?.email;
-    const photoURL = userddd?.photoURL;
-    const emailVerified = userddd?.emailVerified;
-    const uid = userddd?.uid;
-  }
   const userNickName = userddd?.displayName;
   const profileImg = userddd?.photoURL;
 
@@ -243,7 +230,6 @@ export const AddReview = (reviews) => {
                     setToggle(!toggle);
                   }}
                 >
-                  {' '}
                   리뷰 작성
                 </ReviewBtn>
               ) : null}
@@ -261,17 +247,17 @@ export const AddReview = (reviews) => {
                 {/* profileImg */}
                 <div
                   style={{
-                    display: 'grid',
-                    alignContent: 'flex-end',
-                    textAlign: 'left',
+                    display: "grid",
+                    alignContent: "flex-end",
+                    textAlign: "left",
                   }}
                 >
                   {/* createAt,userNickname */}
                   <ReviewDate>
-                    {new Date().toLocaleDateString('kr-KO', options)}
+                    {new Date().toLocaleDateString("kr-KO", options)}
                   </ReviewDate>
                   {/* createAt */}
-                  <UserNickName>{userNickName || '닉네임 없음'}</UserNickName>
+                  <UserNickName>{userNickName || "닉네임 없음"}</UserNickName>
                   {/* userNickname */}
                 </div>
               </UserID>
@@ -314,7 +300,7 @@ export const AddReview = (reviews) => {
                           key={idx}
                           size="20"
                           onClick={() => handleStarClick(el)}
-                          className={clicked[el] && 'yellowStar'}
+                          className={clicked[el] && "yellowStar"}
                         />
                       );
                     })}
@@ -333,7 +319,7 @@ export const AddReview = (reviews) => {
             </GoodBad>
             <div
               style={{
-                display: 'inline-flex',
+                display: "inline-flex",
               }}
             >
               <Recommend>추천 명당</Recommend>
@@ -353,9 +339,9 @@ export const AddReview = (reviews) => {
                   src={url}
                   ref={fileInput}
                   style={{
-                    height: '100%',
-                    width: '280px',
-                    display: 'none',
+                    height: "100%",
+                    width: "280px",
+                    display: "none",
                   }}
                 />
                 {attachment && <SpotImgs src={attachment} />}
@@ -435,14 +421,11 @@ const ReviewBtn = styled.button`
   font-size: 18px;
   width: 100px;
   height: 100%;
-  /* border: none; */
   cursor: pointer;
   text-align: center;
 `;
 
 const ReviewContents = styled.section`
-  /* width: 932px;
-  height: 529px; */
   border: 1px solid #d9d9d9;
   border-radius: 16px;
   display: grid;
@@ -478,6 +461,7 @@ const ReviewDate = styled.div`
   font-weight: 200;
   color: gray;
   display: inline-flex;
+  margin-bottom: 11px;
 `;
 const UserNickName = styled.div`
   font-size: 20px;
@@ -485,7 +469,6 @@ const UserNickName = styled.div`
   display: contents;
   align-items: flex-start;
 `;
-//
 
 const RevieTitleinput = styled.input`
   font-size: 22px;
@@ -693,13 +676,6 @@ const RateMenu = styled.div`
   justify-content: space-between;
 `;
 
-const Rate = styled.div`
-  display: flex;
-  font-size: 18px;
-  font-weight: 400;
-  text-align: left;
-  height: 35%;
-`;
 const Menu = styled.div`
   display: flex;
   flex-direction: column;

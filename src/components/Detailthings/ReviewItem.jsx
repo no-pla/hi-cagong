@@ -1,43 +1,27 @@
-import styled from 'styled-components';
-import { authService, dbService } from '../../firebase';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { AverageRate, StoreRate } from '../DetailContent';
-import { useState } from 'react';
-import CustomButton from '../common/CustomButton';
-import { ButtonWrap } from '../Auth/Login';
-import AuthModal, { AuthTitle } from '../Auth/AuthModal';
+import styled from "styled-components";
+import { authService, dbService } from "../../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { AverageRate, StoreRate } from "../DetailContent";
+import { useState } from "react";
+import CustomButton from "../common/CustomButton";
+import { ButtonWrap } from "../Auth/Login";
+import AuthModal, { AuthTitle } from "../Auth/AuthModal";
 
 export const ReviewItem = (reviews) => {
   const [confirmModal, setConfirmModal] = useState(false);
-  const [targetId, setTargetId] = useState('');
-  // const onDeleteClick = async (event) => {
-  //   event.preventDefault();
-  //   const id = event.target.id;
-  //   const ok = window.confirm('해당 리뷰를 정말 삭제하시겠습니까?');
-  //   if (ok) {
-  //     try {
-  //       await deleteDoc(doc(dbService, 'review', id));
-  //     } catch (error) {
-  //       alert(error);
-  //     }
-  //   }
-  //   return window.location.reload();
-  // };
+  const [targetId, setTargetId] = useState("");
+
   const openConfirmModal = (event) => {
     setTargetId(event.target.id);
     setConfirmModal((prev) => !prev);
   };
   //Auth
-  const auth = getAuth();
-  const userddd = auth?.currentUser;
-  if (userddd !== null) {
-    const uid = userddd?.uid;
-  }
+
   const delete_comment = async () => {
     if (targetId) {
       try {
-        await deleteDoc(doc(dbService, 'review', targetId));
+        await deleteDoc(doc(dbService, "review", targetId));
         window.location.reload();
         setConfirmModal((prev) => !prev);
       } catch (error) {
@@ -47,10 +31,10 @@ export const ReviewItem = (reviews) => {
   };
   // data 날짜
   const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
   return (
     <>
@@ -80,7 +64,7 @@ export const ReviewItem = (reviews) => {
 
       <ReviewItemContainer>
         {reviews.reviews.map((reviewData) => (
-          <ReviewItems>
+          <ReviewItems key={reviewData.docId}>
             <ReviewContents>
               {/* crud 될 리뷰들 */}
               <UserIdTitleBtn>
@@ -91,15 +75,15 @@ export const ReviewItem = (reviews) => {
                   {/* profileImg */}
                   <div
                     style={{
-                      display: 'grid',
-                      alignContent: 'space-around',
-                      textAlign: 'left',
+                      display: "grid",
+                      alignContent: "space-around",
+                      textAlign: "left",
                     }}
                   >
                     {/* createAt,userNickname */}
                     <ReviewDate>
                       {new Date(reviewData?.createAt).toLocaleDateString(
-                        'kr-KO',
+                        "kr-KO",
                         options
                       )}
                     </ReviewDate>
@@ -122,7 +106,7 @@ export const ReviewItem = (reviews) => {
               </UserIdTitleBtn>
               <div
                 style={{
-                  display: 'inline-flex',
+                  display: "inline-flex",
                   marginLeft: 25,
                 }}
               >
@@ -138,14 +122,7 @@ export const ReviewItem = (reviews) => {
                   width="246px"
                   height="201px"
                   alt="명당사진"
-                >
-                  {/* <img
-                 
-                  style={{
-                    backgroundSize: "cover",
-                  }} */}
-                  {/* /> */}
-                </SpotImg>
+                ></SpotImg>
                 <ReasonLocation>
                   {/* reason,location */}
                   <ReasonMap>
@@ -176,14 +153,14 @@ export const ReviewItem = (reviews) => {
                     평점
                     <div
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
                       <StoreRate>
                         <AverageRate
                           style={{
-                            width: reviewData?.rate * 20 + '%',
+                            width: reviewData?.rate * 20 + "%",
                           }}
                           className="rating"
                         />

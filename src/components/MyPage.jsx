@@ -174,11 +174,11 @@ const SectionContainer = styled.div`
 `;
 
 export const MyPage = () => {
+  const { reviews } = useGetReviews("uid", userUid);
+  const userUid = useRecoilValue(currentUserUid);
+  const auth = authService;
   const [profileSetting, setProfileSetting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const userUid = useRecoilValue(currentUserUid);
-  const { reviews } = useGetReviews("uid", userUid);
-  const auth = authService;
   const [isLoginIn, setIsLoginIn] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [targetId, setTargetId] = useState("");
@@ -191,7 +191,7 @@ export const MyPage = () => {
       }
     });
 
-    const func = async () => {
+    const noimageFunc = async () => {
       const storage = getStorage();
       const reference = ref(storage, `asset/noimage.png`);
       await getDownloadURL(reference).then((url) => {
@@ -200,7 +200,7 @@ export const MyPage = () => {
     };
 
     if (url === undefined) {
-      func();
+      noimageFunc();
     }
   }, []);
 

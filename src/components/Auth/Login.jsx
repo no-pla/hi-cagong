@@ -1,3 +1,5 @@
+import { faEllipsis, faG } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -5,11 +7,19 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  FaCat,
+  FaCode,
+  FaGit,
+  FaGithub,
+  FaGoogle,
+  FaGoogleDrive,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { authService } from "../../firebase";
-import { emailRegex } from "../../until";
+import { emailRegex } from "../../utils";
 import CustomButton from "../common/CustomButton";
 import AuthModal, { AuthTitle } from "./AuthModal";
 import Join from "./Join";
@@ -23,7 +33,6 @@ const Login = ({ onClickLogin, onClickJoin }) => {
   const [signUp, setSignUp] = useState(false);
   const matchCheckEmail = email.match(emailRegex);
   const [githubUrl, setGithubUrl] = useState("");
-  const [googleUrl, setGoogleUrl] = useState("");
 
   useEffect(() => {
     const githubFunc = async () => {
@@ -34,18 +43,8 @@ const Login = ({ onClickLogin, onClickJoin }) => {
       });
     };
 
-    const googleFunc = async () => {
-      const storage = getStorage();
-      const reference = ref(storage, `asset/google.png`);
-      await getDownloadURL(reference).then((url) => {
-        setGoogleUrl(url);
-      });
-    };
-
     if (githubUrl === "") {
       githubFunc();
-    } else if (googleUrl === "") {
-      googleFunc();
     }
   }, []);
 
@@ -129,10 +128,14 @@ const Login = ({ onClickLogin, onClickJoin }) => {
 
         <ButtonWrap>
           <span onClick={onGoogleSignIn}>
-            <img src={googleUrl} alt="구글" />
+            <FontAwesomeIcon icon={faG} size="2x" color="#C3CAD9" />
           </span>
           <span onClick={onGitHubSignIn}>
-            <img src={githubUrl} alt="깃허브" />
+            <img
+              style={{ width: "35px", height: "35px" }}
+              src={githubUrl}
+              alt="깃허브"
+            />
           </span>
         </ButtonWrap>
         {/* 회원가입 */}
