@@ -1,22 +1,22 @@
-import styled from "styled-components";
-import { deleteReview } from "../../api";
-import { useMutation, useQueryClient } from "react-query";
-import { useState } from "react";
-import { authService, dbService, storageService } from "../../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { deleteObject, ref } from "@firebase/storage";
-import { AverageRate, StoreRate } from "../DetailContent";
+import styled from 'styled-components';
+import { deleteReview } from '../../api';
+import { useMutation, useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { authService, dbService, storageService } from '../../firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { deleteObject, ref } from '@firebase/storage';
+import { AverageRate, StoreRate } from '../DetailContent';
 
 export const ReviewItem = (reviews) => {
   const onDeleteClick = async (event) => {
     // const uid = reviews.reviews[0].uid;
     event.preventDefault();
     const id = event.target.id;
-    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
+    const ok = window.confirm('해당 리뷰를 정말 삭제하시겠습니까?');
     if (ok) {
       try {
-        await deleteDoc(doc(dbService, "review", id));
+        await deleteDoc(doc(dbService, 'review', id));
       } catch (error) {
         alert(error);
       }
@@ -59,7 +59,7 @@ export const ReviewItem = (reviews) => {
                 {/* profileImg */}
                 <div
                   style={{
-                    display: "grid",
+                    display: 'grid',
                     marginLeft: 10,
                   }}
                 >
@@ -71,7 +71,7 @@ export const ReviewItem = (reviews) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {reviewData.uid === authService.currentUser.uid ? (
+              {reviewData.uid === authService.currentUser?.uid ? (
                 <EditDeleteBtn>
                   <DeleteBtn
                     id={reviewData?.docId}
@@ -84,7 +84,7 @@ export const ReviewItem = (reviews) => {
             </UserIdTitleBtn>
             <div
               style={{
-                display: "inline-flex",
+                display: 'inline-flex',
                 marginLeft: 25,
               }}
             >
@@ -133,14 +133,14 @@ export const ReviewItem = (reviews) => {
                   평점
                   <div
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                   >
                     <StoreRate>
                       <AverageRate
                         style={{
-                          width: reviewData?.rate * 20 + "%",
+                          width: reviewData?.rate * 20 + '%',
                         }}
                         className="rating"
                       />
