@@ -174,6 +174,15 @@ export const MyPage = () => {
   const userUid = useRecoilValue(currentUserUid);
   const { reviews } = useGetReviews("uid", userUid);
   const auth = authService;
+  const [isLoginIn, setIsLoginIn] = useState(false);
+
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLoginIn(true);
+      }
+    });
+  }, []);
 
   const delete_comment = async (event) => {
     event.preventDefault();
@@ -212,16 +221,20 @@ export const MyPage = () => {
                 <div onClick={() => setOpenModal(true)}>프로필 변경</div>
               </UserProfilChangeMenu>
             )}
-            <UserProfileImg
-              src={
-                auth.currentUser?.photoURL ??
-                "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
-              } // 임시값
-              alt=""
-            />
-            <UserNickname>
-              {auth.currentUser?.displayName ?? "닉네임없음"}
-            </UserNickname>
+            {isLoginIn && (
+              <>
+                <UserProfileImg
+                  src={
+                    auth.currentUser?.photoURL ??
+                    "https://i0.wp.com/www.rachelenroute.com/wp-content/uploads/2019/05/cafe-35.jpg?fit=4127%2C2751"
+                  } // 임시값
+                  alt=""
+                />
+                <UserNickname>
+                  {auth.currentUser?.displayName ?? "닉네임없음"}
+                </UserNickname>
+              </>
+            )}
             <UserEmail>{auth.currentUser?.email}</UserEmail>
           </UserProfileContainer>
         </SectionContainer>

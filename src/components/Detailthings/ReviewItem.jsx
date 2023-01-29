@@ -1,56 +1,83 @@
-import styled from 'styled-components';
-import { deleteReview } from '../../api';
-import { useMutation, useQueryClient } from 'react-query';
+import styled from "styled-components";
+import { authService, dbService } from "../../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { AverageRate, StoreRate } from "../DetailContent";
 
 export const ReviewItem = (reviews) => {
-  // const queryClient = useQueryClient();
-  // const { isLoading: deleteLoading, mutate: deleteMutate } =
-  //   useMutation(deleteReview);
+  const onDeleteClick = async (event) => {
+    event.preventDefault();
+    const id = event.target.id;
+    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
+    if (ok) {
+      try {
+        await deleteDoc(doc(dbService, "review", id));
+      } catch (error) {
+        alert(error);
+      }
+    }
+    return window.location.reload();
+  };
 
-  // const onDeleteReview = () => {
-  //   deleteMutate(reviews.id, {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries("reviewdata");
-  //     },
-  //   });
-  // };
+  //Auth
+  const auth = getAuth();
+  const userddd = auth?.currentUser;
+  if (userddd !== null) {
+    const uid = userddd?.uid;
+  }
 
+  // data 날짜
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
         <ReviewItems>
-          {/* <button onClick={onDeleteReview}> delete 버튼</button> */}
-          {/* <button onClick={onEditReview}> edit 완료 버튼</button> */}
-
           <ReviewContents>
             {/* crud 될 리뷰들 */}
             <UserIdTitleBtn>
               {/* profile, createAt, userId, title, edit, delete btn */}
               <UserID>
                 {/* profileImg, createAt, userNickname */}
-                <UserImg>{/*{reviewData?.image}*/}</UserImg>
+                <UserImg src={reviewData?.profileImg}></UserImg>
                 {/* profileImg */}
                 <div
                   style={{
-                    display: 'grid',
+                    display: "grid",
                     marginLeft: 10,
                   }}
                 >
                   {/* createAt,userNickname */}
-                  <ReviewDate>{reviewData?.createAt}</ReviewDate>
+                  <ReviewDate>
+                    {new Date(reviewData?.createAt).toLocaleDateString(
+                      "kr-KO",
+                      options
+                    )}
+                  </ReviewDate>
                   {/* createAt */}
                   <UserNickName>{reviewData?.userNickname} ,</UserNickName>
                   {/* userNickname */}
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              <EditDeleteBtn>
-                <DeleteBtn>삭제</DeleteBtn>
-              </EditDeleteBtn>
+              {reviewData.uid === authService.currentUser?.uid ? (
+                <EditDeleteBtn>
+                  <DeleteBtn
+                    id={reviewData?.docId}
+                    onClick={(event) => onDeleteClick(event)}
+                  >
+                    삭제
+                  </DeleteBtn>
+                </EditDeleteBtn>
+              ) : null}
             </UserIdTitleBtn>
             <div
               style={{
-                display: 'inline-flex',
+                display: "inline-flex",
                 marginLeft: 25,
               }}
             >
@@ -62,7 +89,12 @@ export const ReviewItem = (reviews) => {
             <NiceSpot>
               {/* spotImaage, reason, location\ */}
               <SpotImg>
-                <img src={`${reviewData?.image}`} width="100%" height="100%" />
+                <img
+                  src={`${reviewData?.image}`}
+                  width="100%"
+                  height="100%"
+                  alt="명당사진"
+                />
               </SpotImg>
               <ReasonLocation>
                 {/* reason,location */}
@@ -90,7 +122,25 @@ export const ReviewItem = (reviews) => {
               </Bad>
               <RateMenu>
                 {/* rate, menu */}
-                <Rate>평점 {reviewData?.rate}</Rate>
+                <Rate>
+                  평점
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <StoreRate>
+                      <AverageRate
+                        style={{
+                          width: reviewData?.rate * 20 + "%",
+                        }}
+                        className="rating"
+                      />
+                    </StoreRate>
+                  </div>
+                </Rate>
+
                 <Menu>
                   <MenuTitle>추천메뉴</MenuTitle>
                   <MenuContents>{reviewData?.menu}</MenuContents>
@@ -111,38 +161,6 @@ const ReviewItemContainer = styled.div`
 const ReviewItems = styled.div`
   width: 100%;
 `;
-
-// const ReviewTitles = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   width: 100%;
-//   height: 30px;
-// `;
-
-// // const ReviewCount = styled.div`
-// //   display: flex;
-// //   font-size: 18px;
-// //   text-align: left;
-// //   font-weight: 900;
-// // `;
-
-// // const ReviewCountNum = styled.div`
-// //   margin-left: 4px;
-// //   font-size: 18px;
-// //   font-weight: 300;
-// // `;
-
-// // const ReviewBtn = styled.button`
-// //   border-radius: 30px;
-// //   background-color: #33a264;
-// //   color: white;
-// //   font-weight: 300;
-// //   font-size: 18px;
-// //   width: 100px;
-// //   height: 100%;
-// //   /* border: none; */
-// //   text-align: center;
-// // `;
 
 const ReviewContents = styled.section`
   width: 932px;
@@ -167,7 +185,7 @@ const UserID = styled.div`
   display: inline-flex;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 48px;
   height: 48px;
   display: inline-block;
@@ -246,7 +264,7 @@ const SpotImg = styled.div`
   width: 280px;
   height: 100%;
   background-color: tomato;
-  border: 1px solid black;
+
   margin-right: 20px;
 `;
 
@@ -259,7 +277,7 @@ const ReasonMap = styled.div`
   display: inline-block;
   margin-bottom: 20px;
   padding-top: 5px;
-  width: 90%;
+  width: 150%;
 `;
 
 const Reason = styled.div`
@@ -277,7 +295,7 @@ const ReasonContents = styled.div`
 
 const LocationMap = styled.div`
   display: inline-block;
-  width: 90%;
+  width: 150%;
 `;
 
 const Location = styled.div`
@@ -349,6 +367,8 @@ const RateMenu = styled.div`
 
 const Rate = styled.div`
   display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 35px;
