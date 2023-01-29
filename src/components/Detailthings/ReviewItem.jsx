@@ -48,7 +48,8 @@ export const ReviewItem = (reviews) => {
                 <div
                   style={{
                     display: "grid",
-                    marginLeft: 10,
+                    alignContent: "space-around",
+                    textAlign: "left",
                   }}
                 >
                   {/* createAt,userNickname */}
@@ -59,7 +60,7 @@ export const ReviewItem = (reviews) => {
                     )}
                   </ReviewDate>
                   {/* createAt */}
-                  <UserNickName>{reviewData?.userNickname} ,</UserNickName>
+                  <UserNickName>{reviewData?.userNickname}</UserNickName>
                   {/* userNickname */}
                 </div>
               </UserID>
@@ -88,13 +89,18 @@ export const ReviewItem = (reviews) => {
             </div>
             <NiceSpot>
               {/* spotImaage, reason, location\ */}
-              <SpotImg>
-                <img
-                  src={`${reviewData?.image}`}
-                  width="100%"
-                  height="100%"
-                  alt="명당사진"
-                />
+              <SpotImg
+                src={`${reviewData?.image}`}
+                width="246px"
+                height="201px"
+                alt="명당사진"
+              >
+                {/* <img
+                 
+                  style={{
+                    backgroundSize: "cover",
+                  }} */}
+                {/* /> */}
               </SpotImg>
               <ReasonLocation>
                 {/* reason,location */}
@@ -155,34 +161,34 @@ export const ReviewItem = (reviews) => {
 };
 
 const ReviewItemContainer = styled.div`
-  /* overflow-y: scroll; */
+  width: 932px;
 `;
 
 const ReviewItems = styled.div`
-  width: 100%;
+  width: 932px;
 `;
 
 const ReviewContents = styled.section`
-  width: 932px;
-  height: 529px;
-  border: 1px solid #aeb0af;
-  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 16px;
   display: grid;
-  margin-top: 10px;
+  margin: 10px 0px 25px 0px;
 `;
 
 const UserIdTitleBtn = styled.div`
   display: inline-flex;
-  justify-content: space-between;
+  justify-content: left;
   width: auto;
   height: auto;
   margin: 25px;
+  gap: 35px;
 `;
 
 const UserID = styled.div`
-  width: 20%;
+  width: 30%;
   height: 100%;
   display: inline-flex;
+  gap: 15px;
 `;
 
 const UserImg = styled.img`
@@ -201,9 +207,10 @@ const ReviewDate = styled.div`
   display: inline-flex;
 `;
 const UserNickName = styled.div`
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   display: contents;
+  align-items: flex-start;
 `;
 //
 
@@ -214,7 +221,7 @@ const ReviewTitle = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 30%;
+  width: 60%;
 `;
 
 const EditDeleteBtn = styled.div`
@@ -253,18 +260,18 @@ const RecommendContents = styled.div`
 `;
 
 const NiceSpot = styled.section`
-  width: 100%;
+  width: auto;
   height: 200px;
   display: inline-flex;
   flex-direction: row;
   margin: 13px 25px;
 `;
 
-const SpotImg = styled.div`
+const SpotImg = styled.img`
   width: 280px;
   height: 100%;
   background-color: tomato;
-
+  background-size: cover;
   margin-right: 20px;
 `;
 
@@ -277,7 +284,7 @@ const ReasonMap = styled.div`
   display: inline-block;
   margin-bottom: 20px;
   padding-top: 5px;
-  width: 150%;
+  width: 80%;
 `;
 
 const Reason = styled.div`
@@ -287,15 +294,15 @@ const Reason = styled.div`
   font-weight: 400;
 `;
 const ReasonContents = styled.div`
-  font-size: 12px;
-  font-weight: 200;
+  font-size: 15px;
+  font-weight: 300;
   display: flex;
   text-align: left;
 `;
 
 const LocationMap = styled.div`
   display: inline-block;
-  width: 150%;
+  width: 80%;
 `;
 
 const Location = styled.div`
@@ -306,8 +313,8 @@ const Location = styled.div`
 `;
 
 const LocationContents = styled.div`
-  font-size: 12px;
-  font-weight: 200;
+  font-size: 15px;
+  font-weight: 300;
   display: flex;
   text-align: left;
 `;
@@ -332,10 +339,11 @@ const GoodTitle = styled.div`
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 10px;
+  text-align: left;
 `;
 
 const GoodContents = styled.div`
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 300;
   text-align: left;
 `;
@@ -352,10 +360,11 @@ const BadTitle = styled.div`
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 10px;
+  text-align: left;
 `;
 
 const BadContents = styled.div`
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 300;
   text-align: left;
 `;
@@ -385,6 +394,7 @@ const MenuTitle = styled.div`
   margin-bottom: 10px;
 `;
 const MenuContents = styled.div`
-  font-size: 12px;
-  font-weight: 200;
+  font-size: 15px;
+  font-weight: 300;
+  text-align: left;
 `;
