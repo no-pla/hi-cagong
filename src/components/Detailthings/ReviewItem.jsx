@@ -1,162 +1,207 @@
-import styled from "styled-components";
-import { authService, dbService } from "../../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { AverageRate, StoreRate } from "../DetailContent";
+import styled from 'styled-components';
+import { authService, dbService } from '../../firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { AverageRate, StoreRate } from '../DetailContent';
+import { useState } from 'react';
+import CustomButton from '../common/CustomButton';
+import { ButtonWrap } from '../Auth/Login';
+import AuthModal, { AuthTitle } from '../Auth/AuthModal';
 
 export const ReviewItem = (reviews) => {
-  const onDeleteClick = async (event) => {
-    event.preventDefault();
-    const id = event.target.id;
-    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
-    if (ok) {
-      try {
-        await deleteDoc(doc(dbService, "review", id));
-      } catch (error) {
-        alert(error);
-      }
-    }
-    return window.location.reload();
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [targetId, setTargetId] = useState('');
+  // const onDeleteClick = async (event) => {
+  //   event.preventDefault();
+  //   const id = event.target.id;
+  //   const ok = window.confirm('해당 리뷰를 정말 삭제하시겠습니까?');
+  //   if (ok) {
+  //     try {
+  //       await deleteDoc(doc(dbService, 'review', id));
+  //     } catch (error) {
+  //       alert(error);
+  //     }
+  //   }
+  //   return window.location.reload();
+  // };
+  const openConfirmModal = (event) => {
+    setTargetId(event.target.id);
+    setConfirmModal((prev) => !prev);
   };
-
   //Auth
   const auth = getAuth();
   const userddd = auth?.currentUser;
   if (userddd !== null) {
     const uid = userddd?.uid;
   }
-
+  const delete_comment = async () => {
+    if (targetId) {
+      try {
+        await deleteDoc(doc(dbService, 'review', targetId));
+        window.location.reload();
+        setConfirmModal((prev) => !prev);
+      } catch (error) {
+        alert(error);
+      }
+    }
+  };
   // data 날짜
   const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   };
   return (
-    <ReviewItemContainer>
-      {reviews.reviews.map((reviewData) => (
-        <ReviewItems>
-          <ReviewContents>
-            {/* crud 될 리뷰들 */}
-            <UserIdTitleBtn>
-              {/* profile, createAt, userId, title, edit, delete btn */}
-              <UserID>
-                {/* profileImg, createAt, userNickname */}
-                <UserImg src={reviewData?.profileImg}></UserImg>
-                {/* profileImg */}
-                <div
-                  style={{
-                    display: "grid",
-                    alignContent: "space-around",
-                    textAlign: "left",
-                  }}
-                >
-                  {/* createAt,userNickname */}
-                  <ReviewDate>
-                    {new Date(reviewData?.createAt).toLocaleDateString(
-                      "kr-KO",
-                      options
-                    )}
-                  </ReviewDate>
-                  {/* createAt */}
-                  <UserNickName>{reviewData?.userNickname}</UserNickName>
-                  {/* userNickname */}
-                </div>
-              </UserID>
-              <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {reviewData.uid === authService.currentUser?.uid ? (
-                <EditDeleteBtn>
-                  <DeleteBtn
-                    id={reviewData?.docId}
-                    onClick={(event) => onDeleteClick(event)}
-                  >
-                    삭제
-                  </DeleteBtn>
-                </EditDeleteBtn>
-              ) : null}
-            </UserIdTitleBtn>
-            <div
-              style={{
-                display: "inline-flex",
-                marginLeft: 25,
-              }}
+    <>
+      {confirmModal && (
+        <AuthModal>
+          <AuthTitle>정말로 삭제할까요?</AuthTitle>
+          <p>삭제하면 되돌릴 수 없습니다.</p>
+          <ButtonWrap>
+            <CustomButton
+              bgColor="#000"
+              height={12}
+              onClick={() => setConfirmModal((prev) => !prev)}
             >
-              <Recommend>추천 명당</Recommend>
-              <RecommendContents>
-                추천하는 이 카페의 나만의 명당은!?
-              </RecommendContents>
-            </div>
-            <NiceSpot>
-              {/* spotImaage, reason, location\ */}
-              <SpotImg
-                src={`${reviewData?.image}`}
-                width="246px"
-                height="201px"
-                alt="명당사진"
+              취소
+            </CustomButton>
+            <CustomButton
+              onClick={() => delete_comment()}
+              bgColor="#a23333"
+              height={12}
+              type="submit"
+            >
+              삭제
+            </CustomButton>
+          </ButtonWrap>
+        </AuthModal>
+      )}
+
+      <ReviewItemContainer>
+        {reviews.reviews.map((reviewData) => (
+          <ReviewItems>
+            <ReviewContents>
+              {/* crud 될 리뷰들 */}
+              <UserIdTitleBtn>
+                {/* profile, createAt, userId, title, edit, delete btn */}
+                <UserID>
+                  {/* profileImg, createAt, userNickname */}
+                  <UserImg src={reviewData?.profileImg}></UserImg>
+                  {/* profileImg */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      alignContent: 'space-around',
+                      textAlign: 'left',
+                    }}
+                  >
+                    {/* createAt,userNickname */}
+                    <ReviewDate>
+                      {new Date(reviewData?.createAt).toLocaleDateString(
+                        'kr-KO',
+                        options
+                      )}
+                    </ReviewDate>
+                    {/* createAt */}
+                    <UserNickName>{reviewData?.userNickname}</UserNickName>
+                    {/* userNickname */}
+                  </div>
+                </UserID>
+                <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
+                {reviewData.uid === authService.currentUser?.uid ? (
+                  <EditDeleteBtn>
+                    <DeleteBtn
+                      id={reviewData?.docId}
+                      onClick={(event) => openConfirmModal(event)}
+                    >
+                      삭제
+                    </DeleteBtn>
+                  </EditDeleteBtn>
+                ) : null}
+              </UserIdTitleBtn>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  marginLeft: 25,
+                }}
               >
-                {/* <img
+                <Recommend>추천 명당</Recommend>
+                <RecommendContents>
+                  추천하는 이 카페의 나만의 명당은!?
+                </RecommendContents>
+              </div>
+              <NiceSpot>
+                {/* spotImaage, reason, location\ */}
+                <SpotImg
+                  src={`${reviewData?.image}`}
+                  width="246px"
+                  height="201px"
+                  alt="명당사진"
+                >
+                  {/* <img
                  
                   style={{
                     backgroundSize: "cover",
                   }} */}
-                {/* /> */}
-              </SpotImg>
-              <ReasonLocation>
-                {/* reason,location */}
-                <ReasonMap>
-                  {/* 명당추천 */}
-                  <Reason>명당 추천 이유</Reason>
-                  <ReasonContents>{reviewData?.reason}</ReasonContents>
-                </ReasonMap>
-                <LocationMap>
-                  {/* 명당위치 */}
-                  <Location>명당위치</Location>
-                  <LocationContents>{reviewData?.location}</LocationContents>
-                </LocationMap>
-              </ReasonLocation>
-            </NiceSpot>
-            <GoodBad>
-              {/* good,bad,rate,menu */}
-              <Good>
-                <GoodTitle>장점</GoodTitle>
-                <GoodContents>{reviewData?.good}</GoodContents>
-              </Good>
-              <Bad>
-                <BadTitle>단점</BadTitle>
-                <BadContents>{reviewData?.bad}</BadContents>
-              </Bad>
-              <RateMenu>
-                {/* rate, menu */}
-                <Rate>
-                  평점
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <StoreRate>
-                      <AverageRate
-                        style={{
-                          width: reviewData?.rate * 20 + "%",
-                        }}
-                        className="rating"
-                      />
-                    </StoreRate>
-                  </div>
-                </Rate>
+                  {/* /> */}
+                </SpotImg>
+                <ReasonLocation>
+                  {/* reason,location */}
+                  <ReasonMap>
+                    {/* 명당추천 */}
+                    <Reason>명당 추천 이유</Reason>
+                    <ReasonContents>{reviewData?.reason}</ReasonContents>
+                  </ReasonMap>
+                  <LocationMap>
+                    {/* 명당위치 */}
+                    <Location>명당위치</Location>
+                    <LocationContents>{reviewData?.location}</LocationContents>
+                  </LocationMap>
+                </ReasonLocation>
+              </NiceSpot>
+              <GoodBad>
+                {/* good,bad,rate,menu */}
+                <Good>
+                  <GoodTitle>장점</GoodTitle>
+                  <GoodContents>{reviewData?.good}</GoodContents>
+                </Good>
+                <Bad>
+                  <BadTitle>단점</BadTitle>
+                  <BadContents>{reviewData?.bad}</BadContents>
+                </Bad>
+                <RateMenu>
+                  {/* rate, menu */}
+                  <Rate>
+                    평점
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <StoreRate>
+                        <AverageRate
+                          style={{
+                            width: reviewData?.rate * 20 + '%',
+                          }}
+                          className="rating"
+                        />
+                      </StoreRate>
+                    </div>
+                  </Rate>
 
-                <Menu>
-                  <MenuTitle>추천메뉴</MenuTitle>
-                  <MenuContents>{reviewData?.menu}</MenuContents>
-                </Menu>
-              </RateMenu>
-            </GoodBad>
-          </ReviewContents>
-        </ReviewItems>
-      ))}
-    </ReviewItemContainer>
+                  <Menu>
+                    <MenuTitle>추천메뉴</MenuTitle>
+                    <MenuContents>{reviewData?.menu}</MenuContents>
+                  </Menu>
+                </RateMenu>
+              </GoodBad>
+            </ReviewContents>
+          </ReviewItems>
+        ))}
+      </ReviewItemContainer>
+    </>
   );
 };
 
@@ -241,6 +286,7 @@ const DeleteBtn = styled.button`
   font-size: 15px;
   border-style: none;
   background-color: #ffffff;
+  cursor: pointer;
 `;
 
 const Recommend = styled.div`
