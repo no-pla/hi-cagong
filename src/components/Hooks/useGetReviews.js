@@ -8,13 +8,12 @@ export const useGetReviews = (target, targetId) => {
   const q = query(
     collection(dbService, "review"),
     where(target, "==", targetId)
-    // orderBy("createAt", "desc")
   );
 
   const getMyReviewList = async () => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      setReviews((prev) => [...prev, doc.data()]);
+      setReviews((prev) => [...prev, { ...doc.data(), docId: doc.id }]);
     });
   };
 

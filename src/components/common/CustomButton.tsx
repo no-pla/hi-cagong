@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 type CustomButtonProps = {
   bgColor?: string;
@@ -7,6 +7,7 @@ type CustomButtonProps = {
   onClick?: () => void;
   height?: number;
   width?: number;
+  type?: any;
 };
 
 const CustomButton = ({
@@ -15,9 +16,16 @@ const CustomButton = ({
   bgColor,
   children,
   onClick,
+  type = "button",
 }: CustomButtonProps) => {
   return (
-    <Button bgColor={bgColor} height={height} width={width} onClick={onClick}>
+    <Button
+      type={type}
+      bgColor={bgColor}
+      height={height}
+      width={width}
+      onClick={onClick}
+    >
       {children}
     </Button>
   );

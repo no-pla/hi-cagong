@@ -1,8 +1,8 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { dbService } from '../../firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect, memo } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { dbService } from "../../firebase";
 
 const IntroItem = ({ placeItem }) => {
   const navigate = useNavigate();
@@ -17,28 +17,20 @@ const IntroItem = ({ placeItem }) => {
 
   const getImage = async (cafeId) => {
     const q = query(
-      collection(dbService, 'review'),
-      where('cafeId', '==', cafeId)
+      collection(dbService, "review"),
+      where("cafeId", "==", cafeId)
     );
 
     const getMyReviewList = async () => {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.docs[0]) {
-        return 'https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg';
+        return "https://assets.traveltriangle.com/blog/wp-content/uploads/2019/07/Jacksonville-Cafes.jpg";
       }
       return querySnapshot.docs[0].data().image;
     };
     let url = await getMyReviewList();
     document.getElementById(`imageId-${cafeId}`).src = url;
   };
-
-  useEffect(() => {}, []);
-
-  // const { reviews } = useGetReviews("cafeId", String(2140311573));
-  // console.log(reviews[0].image);
-  // 배열에 현재 메인에 띄워진 아이디 넣기
-  //
-  // 맵 돌면서 이미지가 존재하면 각 배열의 객체에 넣기
 
   return (
     <IntronItemWrap>
@@ -54,7 +46,7 @@ const IntroItem = ({ placeItem }) => {
         {placeItem?.map(
           (item) =>
             //카테고리가 카페 인것만 나올 수 있도록
-            item.content.category_group_code === 'CE7' && (
+            item.content.category_group_code === "CE7" && (
               <Item
                 key={item.content.id}
                 id={item.content.id}
@@ -94,7 +86,6 @@ const IntronItemWrap = styled.div`
     width: calc(100% - 16px);
     box-sizing: border-box;
     margin: 0 auto;
-    /* overflow-y: auto; */
   }
 `;
 
