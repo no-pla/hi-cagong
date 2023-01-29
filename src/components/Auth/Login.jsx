@@ -4,24 +4,24 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-} from 'firebase/auth';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { authService } from '../../firebase';
-import { emailRegex } from '../../until';
-import CustomButton from '../common/CustomButton';
-import AuthModal, { AuthTitle } from './AuthModal';
-import Join from './Join';
+} from "firebase/auth";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { authService } from "../../firebase";
+import { emailRegex } from "../../until";
+import CustomButton from "../common/CustomButton";
+import AuthModal, { AuthTitle } from "./AuthModal";
+import Join from "./Join";
 
 const Login = ({ onClickLogin, onClickJoin }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [notMember, setNotMember] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [signUp, setSignUp] = useState(false);
-  const [checkedUser, setCheckedUser] = useState('');
+  const [checkedUser, setCheckedUser] = useState("");
   const matchCheckEmail = email.match(emailRegex);
 
   const onSubmit = async (e) => {
@@ -29,16 +29,16 @@ const Login = ({ onClickLogin, onClickJoin }) => {
 
     await signInWithEmailAndPassword(authService, email, password)
       .then(() => {
-        setEmail('');
-        setPassword('');
-        navigate('/');
+        setEmail("");
+        setPassword("");
+        navigate("/");
       })
       .catch((err) => {
         // errorMessage = err.message;
-        if (err.message.includes('user-not-found')) {
+        if (err.message.includes("user-not-found")) {
           setNotMember(!notMember);
         }
-        if (err.message.includes('wrong-password')) {
+        if (err.message.includes("wrong-password")) {
           setWrongPassword(!wrongPassword);
         }
       });
@@ -69,7 +69,7 @@ const Login = ({ onClickLogin, onClickJoin }) => {
               setEmail(value);
             }}
             onKeyPress={(e) => {
-              e.key === 'Enter' && e.preventDefault();
+              e.key === "Enter" && e.preventDefault();
             }}
           />
 
@@ -94,7 +94,7 @@ const Login = ({ onClickLogin, onClickJoin }) => {
           />
 
           <ButtonWrap>
-            <CustomButton bgColor="#33a264" height={12}>
+            <CustomButton type="submit" bgColor="#33a264" height={12}>
               로그인
             </CustomButton>
             <CustomButton height={12} bgColor="#000" onClick={onClickLogin}>
