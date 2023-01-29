@@ -2,37 +2,34 @@ import styled from "styled-components";
 import { deleteReview } from "../../api";
 import { useMutation, useQueryClient } from "react-query";
 import { useState } from "react";
-import { dbService } from "../../firebase";
+import { authService, dbService, storageService } from "../../firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { deleteObject, ref } from "@firebase/storage";
 
 export const ReviewItem = (reviews) => {
-  const onDeleteClick = async () => {
+  const onDeleteClick = async (event) => {
     // const uid = reviews.reviews[0].uid;
-    const ok = window.confirm("정말로 삭제하시겠습니까?");
-    // console.log(ok);
+    event.preventDefault();
+    const id = event.target.id;
+    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
     if (ok) {
-      const userUid = reviews.reviews[0].uid;
-      console.log(userUid);
-      // console.log(`${uid}`);
-      // await dbService.doc(`review/${reviews.reviews[0].uid}`).delete();
-      // await deleteDoc(doc(dbService, `review/%{reviews.reviews[0].uid}`));
-      await deleteDoc(doc(dbService, "review", reviews.reviews[0].uid));
-      // v9에 설명하는 대로 형식을 (데베, 컬렉션, 문서) 로 바꿔보자
-      // await deleteDoc(doc(dbService, "sweets", sweetObj.id));
-      // const data = deleteDoc(doc(dbService, `sweets/%{sweetOnj.id}`));
-      // console.log(reviews);
-      // console.log(reviews.reviews[0].uid);
+      try {
+        await deleteDoc(doc(dbService, "review", id));
+      } catch (error) {
+        alert(error);
+      }
     }
+    return window.location.reload();
   };
-  // const onDeleteClick = async () => {
-  //   const ok = window.confirm("정말 삭제하시겠습니끼?");
+
+  // const delete_comment = async (event) => {
+  //   event.preventDefault();
+  //   const id = event.target.id;
+  //   const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
   //   if (ok) {
   //     try {
-  //       if (postObj.attachmentUrl) {
-  //         await deleteObject(ref(storageService, postObj.attachmentUrl));
-  //       }
-  //       await deleteDoc(doc(dbService, `post/${postObj.id}`));
+  //       await deleteDoc(doc(dbService, "review", id));
   //     } catch (error) {
   //       alert(error);
   //     }
@@ -43,21 +40,9 @@ export const ReviewItem = (reviews) => {
   const auth = getAuth();
   const userddd = auth?.currentUser;
   if (userddd !== null) {
-    const displayName = userddd?.displayName;
-    const email = userddd?.email;
-    const photoURL = userddd?.photoURL;
-    const emailVerified = userddd?.emailVerified;
     const uid = userddd?.uid;
   }
-  const userNickName = userddd?.displayName;
-  const userProfile = userddd?.photoURL;
   const userUid = userddd?.uid;
-  console.log(userUid);
-
-  const Owner = () => {
-    if (userUid === "이상한 값") return;
-  };
-  console.log(reviews);
 
   return (
     <ReviewItemContainer>
@@ -85,11 +70,16 @@ export const ReviewItem = (reviews) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {Owner && (
+              {reviewData.uid === authService.currentUser.uid ? (
                 <EditDeleteBtn>
-                  <DeleteBtn onClick={onDeleteClick}>삭제</DeleteBtn>
+                  <DeleteBtn
+                    id={reviewData?.docId}
+                    onClick={(event) => onDeleteClick(event)}
+                  >
+                    삭제
+                  </DeleteBtn>
                 </EditDeleteBtn>
-              )}
+              ) : null}
             </UserIdTitleBtn>
             <div
               style={{
