@@ -71,7 +71,7 @@ export const ReviewItem = (reviews) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {reviewData.uid === authService.currentUser.uid ? (
+              {reviewData.uid === authService.currentUser?.uid ? (
                 <EditDeleteBtn>
                   <DeleteBtn
                     id={reviewData?.docId}
