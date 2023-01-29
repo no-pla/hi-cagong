@@ -9,13 +9,6 @@ import { AddReview } from "./AddReview";
 import { ReviewItem } from "./ReviewItem";
 
 function Review() {
-  //currentuser.uid 값
-  // const auth = getAuth().currentUser;
-  // const authuid = auth.uid;
-  // console.log(authuid);
-  // const uid = reviews.reviews[0].uid;
-  // console.log(uid);
-  // console.log("id", id); // "12c0d24a-ff4z-1e51-a571-accd11a5779a"
   const cafeId = useParams().cafeId;
   // console.log("auth", getAuth().currentUser.uid);
   const { reviews } = useGetReviews("cafeId", cafeId); //임시값
@@ -35,19 +28,21 @@ function Review() {
   //     // ...
   //   }
   // });
-
-  const auth = getAuth();
-  const user = auth.currentUser;
-  // const uidddd = user.uid;
-  // console.log(uidddd);
-
-  // console.log(user.uid);
-
-  // console.log("dddd", useruser);
-  // const userUid = reviews.reviews[0].uid;
-  // const currentUserId = getAuth().currentUser.uid;
-
-  // console.log("dd", currentUserId);
+  // //Auth
+  // const auth = getAuth();
+  // const userddd = auth.currentUser;
+  // if (userddd !== null) {
+  //   const displayName = userddd.displayName;
+  //   const email = userddd.email;
+  //   const photoURL = userddd.photoURL;
+  //   const emailVerified = userddd.emailVerified;
+  //   const uid = userddd.uid;
+  // }
+  // const userNickName = userddd?.displayName;
+  // const userProfile = userddd?.photoURL;
+  // const userUid = userddd?.uid;
+  // console.log(userUid);
+  console.log(reviews);
   return (
     <div
       style={{

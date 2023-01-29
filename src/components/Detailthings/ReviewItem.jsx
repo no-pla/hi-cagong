@@ -7,22 +7,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { AverageRate, StoreRate } from '../DetailContent';
 
-export const ReviewItem = (reviews, Owner) => {
-  // const [review, setReview] = useState("");
-  // const queryClient = useQueryClient();
-  // const { isLoading: deleteLoading, mutate: deleteMutate } =
-  //   useMutation(deleteReview);
-
-  // const onDeleteReview = () => {
-  //   deleteMutate(reviews.id, {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries("reviewdata");
-  //     },
-  //   });
-  // };
-  // reviews.reviews.map((reviewData) => {
-  // console.log("image주소", reviewData.image);
-  // });
+export const ReviewItem = (reviews) => {
   const onDeleteClick = async () => {
     // const uid = reviews.reviews[0].uid;
     const ok = window.confirm('정말로 삭제하시겠습니까?');
@@ -41,18 +26,39 @@ export const ReviewItem = (reviews, Owner) => {
       // console.log(reviews.reviews[0].uid);
     }
   };
-
-  // const [userUidCheck, SetUserUidCheck] = useState(false)
-  console.log(reviews);
-  // console.log("auth", getAuth().currentUser.uid);
-  // const Owner = () => {
-  //   const userUid = reviews.reviews[0].uid;
-  //   const currentUserId = getAuth().currentUser.uid;
-  //   // console.log("userUid", userUid);
-  //   if (currentUserId === userUid) {
+  // const onDeleteClick = async () => {
+  //   const ok = window.confirm("정말 삭제하시겠습니끼?");
+  //   if (ok) {
+  //     try {
+  //       if (postObj.attachmentUrl) {
+  //         await deleteObject(ref(storageService, postObj.attachmentUrl));
+  //       }
+  //       await deleteDoc(doc(dbService, `post/${postObj.id}`));
+  //     } catch (error) {
+  //       alert(error);
+  //     }
   //   }
-  //   return false;
   // };
+
+  //Auth
+  const auth = getAuth();
+  const userddd = auth?.currentUser;
+  if (userddd !== null) {
+    const displayName = userddd?.displayName;
+    const email = userddd?.email;
+    const photoURL = userddd?.photoURL;
+    const emailVerified = userddd?.emailVerified;
+    const uid = userddd?.uid;
+  }
+  const userNickName = userddd?.displayName;
+  const userProfile = userddd?.photoURL;
+  const userUid = userddd?.uid;
+  console.log(userUid);
+
+  const Owner = () => {
+    if (userUid === "이상한 값") return;
+  };
+  console.log(reviews);
 
   return (
     <ReviewItemContainer>
@@ -80,7 +86,7 @@ export const ReviewItem = (reviews, Owner) => {
                 </div>
               </UserID>
               <ReviewTitle>{reviewData?.reviewTitle}</ReviewTitle>
-              {Owner ? null : (
+              {Owner && (
                 <EditDeleteBtn>
                   <DeleteBtn onClick={onDeleteClick}>삭제</DeleteBtn>
                 </EditDeleteBtn>
@@ -172,38 +178,6 @@ const ReviewItemContainer = styled.div`
 const ReviewItems = styled.div`
   width: 100%;
 `;
-
-// const ReviewTitles = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   width: 100%;
-//   height: 30px;
-// `;
-
-// // const ReviewCount = styled.div`
-// //   display: flex;
-// //   font-size: 18px;
-// //   text-align: left;
-// //   font-weight: 900;
-// // `;
-
-// // const ReviewCountNum = styled.div`
-// //   margin-left: 4px;
-// //   font-size: 18px;
-// //   font-weight: 300;
-// // `;
-
-// // const ReviewBtn = styled.button`
-// //   border-radius: 30px;
-// //   background-color: #33a264;
-// //   color: white;
-// //   font-weight: 300;
-// //   font-size: 18px;
-// //   width: 100px;
-// //   height: 100%;
-// //   /* border: none; */
-// //   text-align: center;
-// // `;
 
 const ReviewContents = styled.section`
   width: 932px;
@@ -307,7 +281,7 @@ const SpotImg = styled.div`
   width: 280px;
   height: 100%;
   background-color: tomato;
-  border: 1px solid black;
+
   margin-right: 20px;
 `;
 
