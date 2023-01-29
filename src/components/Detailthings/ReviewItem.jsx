@@ -1,22 +1,17 @@
-import styled from 'styled-components';
-import { deleteReview } from '../../api';
-import { useMutation, useQueryClient } from 'react-query';
-import { useState } from 'react';
-import { authService, dbService, storageService } from '../../firebase';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { deleteObject, ref } from '@firebase/storage';
-import { AverageRate, StoreRate } from '../DetailContent';
+import styled from "styled-components";
+import { authService, dbService } from "../../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { AverageRate, StoreRate } from "../DetailContent";
 
 export const ReviewItem = (reviews) => {
   const onDeleteClick = async (event) => {
-    // const uid = reviews.reviews[0].uid;
     event.preventDefault();
     const id = event.target.id;
-    const ok = window.confirm('해당 리뷰를 정말 삭제하시겠습니까?');
+    const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
     if (ok) {
       try {
-        await deleteDoc(doc(dbService, 'review', id));
+        await deleteDoc(doc(dbService, "review", id));
       } catch (error) {
         alert(error);
       }
@@ -24,27 +19,20 @@ export const ReviewItem = (reviews) => {
     return window.location.reload();
   };
 
-  // const delete_comment = async (event) => {
-  //   event.preventDefault();
-  //   const id = event.target.id;
-  //   const ok = window.confirm("해당 리뷰를 정말 삭제하시겠습니까?");
-  //   if (ok) {
-  //     try {
-  //       await deleteDoc(doc(dbService, "review", id));
-  //     } catch (error) {
-  //       alert(error);
-  //     }
-  //   }
-  // };
-
   //Auth
   const auth = getAuth();
   const userddd = auth?.currentUser;
   if (userddd !== null) {
     const uid = userddd?.uid;
   }
-  const userUid = userddd?.uid;
 
+  // data 날짜
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
   return (
     <ReviewItemContainer>
       {reviews.reviews.map((reviewData) => (
@@ -55,16 +43,21 @@ export const ReviewItem = (reviews) => {
               {/* profile, createAt, userId, title, edit, delete btn */}
               <UserID>
                 {/* profileImg, createAt, userNickname */}
-                <UserImg>{/*{reviewData?.image}*/}</UserImg>
+                <UserImg src={reviewData?.profileImg}></UserImg>
                 {/* profileImg */}
                 <div
                   style={{
-                    display: 'grid',
+                    display: "grid",
                     marginLeft: 10,
                   }}
                 >
                   {/* createAt,userNickname */}
-                  <ReviewDate>{reviewData?.createAt}</ReviewDate>
+                  <ReviewDate>
+                    {new Date(reviewData?.createAt).toLocaleDateString(
+                      "kr-KO",
+                      options
+                    )}
+                  </ReviewDate>
                   {/* createAt */}
                   <UserNickName>{reviewData?.userNickname} ,</UserNickName>
                   {/* userNickname */}
@@ -84,7 +77,7 @@ export const ReviewItem = (reviews) => {
             </UserIdTitleBtn>
             <div
               style={{
-                display: 'inline-flex',
+                display: "inline-flex",
                 marginLeft: 25,
               }}
             >
@@ -133,14 +126,14 @@ export const ReviewItem = (reviews) => {
                   평점
                   <div
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
                     <StoreRate>
                       <AverageRate
                         style={{
-                          width: reviewData?.rate * 20 + '%',
+                          width: reviewData?.rate * 20 + "%",
                         }}
                         className="rating"
                       />
@@ -192,7 +185,7 @@ const UserID = styled.div`
   display: inline-flex;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 48px;
   height: 48px;
   display: inline-block;
@@ -284,7 +277,7 @@ const ReasonMap = styled.div`
   display: inline-block;
   margin-bottom: 20px;
   padding-top: 5px;
-  width: 90%;
+  width: 150%;
 `;
 
 const Reason = styled.div`
@@ -302,7 +295,7 @@ const ReasonContents = styled.div`
 
 const LocationMap = styled.div`
   display: inline-block;
-  width: 90%;
+  width: 150%;
 `;
 
 const Location = styled.div`
