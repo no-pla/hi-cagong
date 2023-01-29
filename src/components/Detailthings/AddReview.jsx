@@ -164,17 +164,6 @@ export const AddReview = (reviews) => {
             ({reviewCount}){/* 리뷰 갯수 */}
           </ReviewCountNum>
         </ReviewCount>
-
-        {/* {reviewData.uid === authService.currentUser?.uid ? (
-          <EditDeleteBtn>
-            <DeleteBtn
-              id={reviewData?.docId}
-              onClick={(event) => onDeleteClick(event)}
-            >
-              삭제
-            </DeleteBtn>
-          </EditDeleteBtn>
-        ) : null} */}
         {authService.currentUser === null ? (
           <ReviewBtn onClick={onAlertLogin}> 리뷰작성</ReviewBtn>
         ) : (
@@ -252,7 +241,7 @@ export const AddReview = (reviews) => {
                     return (
                       <FaStar
                         key={idx}
-                        size="25"
+                        size="20"
                         onClick={() => handleStarClick(el)}
                         className={clicked[el] && "yellowStar"}
                       />
@@ -283,18 +272,19 @@ export const AddReview = (reviews) => {
           </div>
           <NiceSpot>
             {/* spotImaage, reason, location\ */}
-            <SpotImg>
+            <SpotImg htmlFor="file">
               <input
                 type="file"
                 onChange={handleImageChange}
                 className="new-review-image"
                 accept="images/*"
+                id="file"
                 src={url}
                 ref={fileInput}
                 style={{
-                  height: "201px",
-                  width: "246px",
-                  display: "flex",
+                  height: "100%",
+                  width: "280px",
+                  display: "none",
                 }}
               />
               {attachment && <SpotImgs src={attachment} />}
@@ -396,7 +386,7 @@ const UserIdTitleBtn = styled.div`
 `;
 
 const UserID = styled.div`
-  width: 20%;
+  width: 30%;
   height: 100%;
   display: inline-flex;
   gap: 15px;
@@ -407,7 +397,6 @@ const UserImg = styled.img`
   height: 48px;
   display: inline-block;
   justify-content: left;
-  background-color: tomato;
   border-radius: 100px;
 `;
 
@@ -465,22 +454,25 @@ const NiceSpot = styled.section`
   flex-direction: row;
 `;
 
-const SpotImg = styled.div`
-  height: 201px;
-  width: 246px;
-  background-color: tomato;
+const SpotImg = styled.label`
+  height: 100%;
+  width: 280px;
+  background-image: url(/img/plusimage.png);
+  background-position: center;
   display: flex;
+  cursor: pointer;
 `;
 
 const SpotImgs = styled.img`
-  height: 201px;
-  width: 246px;
+  height: 100%;
+  width: 280px;
 `;
 
 const ImgCancleBtn = styled.button`
   display: flex;
-  color: tomato;
-  font-size: 15px;
+  color: black;
+  font-size: 18px;
+  cursor: pointer;
 `;
 
 const ReasonLocation = styled.div`
@@ -691,7 +683,7 @@ const CancleBtn = styled.button`
 const Wrap = styled.div`
   display: flex;
   flex-direction: row;
-  padding-bottom: 10px;
+  padding-bottom: 18px;
 `;
 
 const RatingText = styled.div`

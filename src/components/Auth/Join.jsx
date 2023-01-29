@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { v4 as uuid } from 'uuidv4';
-import styled from 'styled-components';
-import { authService, storageService } from '../../firebase';
-import CustomButton from '../common/CustomButton';
-import { emailRegex, pwRegex } from '../../until';
+import React, { useState } from "react";
+import { v4 as uuid } from "uuidv4";
+import styled from "styled-components";
+import { authService, storageService } from "../../firebase";
+import CustomButton from "../common/CustomButton";
+import { emailRegex, pwRegex } from "../../until";
 import {
   ButtonWrap,
   ErrorMessage,
@@ -13,17 +13,17 @@ import {
   ModalWrap,
   OkMessage,
   Title,
-} from './Login';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDownloadURL, ref, uploadString } from 'firebase/storage';
-import { uuidv4 } from '@firebase/util';
+} from "./Login";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { uuidv4 } from "@firebase/util";
 
 const Join = ({ onClickJoin }) => {
   const [attachment, setAttachment] = useState();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmpassword, setConfirmpassword] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmpassword] = useState("");
+  const [nickName, setNickName] = useState("");
   const matchCheckEmail = email.match(emailRegex);
   const matchCheckPassword = password.match(pwRegex);
 
@@ -50,7 +50,7 @@ const Join = ({ onClickJoin }) => {
     event.preventDefault();
     // console.log(userObj.uid);
     const fileRef = ref(storageService, `profileImg/${uuidv4()}`);
-    const response = await uploadString(fileRef, attachment, 'data_url');
+    const response = await uploadString(fileRef, attachment, "data_url");
     const attachmentUrl = await getDownloadURL(response.ref);
 
     await createUserWithEmailAndPassword(
@@ -61,19 +61,19 @@ const Join = ({ onClickJoin }) => {
       nickName
     )
       .then((userCredential) => {
-        console.log('회원가입 성공!');
-        alert('Sign Up', '회원가입 성공!');
+        console.log("회원가입 성공!");
+        alert("Sign Up", "회원가입 성공!");
       })
       .catch((error) => {
         const errorMessage = error.message;
-        console.log('errorMessage:', errorMessage);
-        if (errorMessage.includes('email-already-in-use')) {
-          alert('', '이미 가입된 이메일입니다.');
+        console.log("errorMessage:", errorMessage);
+        if (errorMessage.includes("email-already-in-use")) {
+          alert("", "이미 가입된 이메일입니다.");
         }
       });
 
-    setEmail('');
-    setPassword('');
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -93,7 +93,7 @@ const Join = ({ onClickJoin }) => {
                 setEmail(value);
               }}
               onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
+                e.key === "Enter" && e.preventDefault();
               }}
             />
             {!matchCheckEmail ? (
@@ -170,7 +170,7 @@ const Join = ({ onClickJoin }) => {
               )}
 
               <input
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
                 type="file"
                 accept="image/*"
                 name="file"
