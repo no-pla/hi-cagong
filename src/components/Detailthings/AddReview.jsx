@@ -277,6 +277,7 @@ export const AddReview = (reviews) => {
                 placeholder="제목을 입력해 주세요."
                 type="text"
                 onChange={(event) => setReviewTitle(event.target.value)}
+                maxLength="20"
               />
             </UserIdTitleBtn>
             <GoodBad>
@@ -288,6 +289,7 @@ export const AddReview = (reviews) => {
                   value={good}
                   onChange={(event) => setGood(event.target.value)}
                   placeholder="장점을 입력해주세요. 30글자 이내"
+                  maxLength="30"
                 />
               </Good>
               <Bad>
@@ -297,6 +299,7 @@ export const AddReview = (reviews) => {
                   type="text"
                   onChange={(event) => setBad(event.target.value)}
                   placeholder="단점을 입력해주세요. 30글자 이내"
+                  maxLength="30"
                 />
               </Bad>
               <RateMenu>
@@ -323,6 +326,7 @@ export const AddReview = (reviews) => {
                     placeholder="추천메뉴를 작성해주세요."
                     type="text"
                     onChange={(event) => setMenu(event.target.value)}
+                    maxLength="28"
                   />
                 </Menu>
               </RateMenu>

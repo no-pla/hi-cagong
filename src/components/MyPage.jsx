@@ -140,7 +140,7 @@ const StoreGoodPoint = styled.div`
   margin-bottom: 40px;
   line-height: 20px;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
