@@ -1,46 +1,73 @@
-# Getting Started with Create React App
+# Hi, Cagong
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+💻 혹시 카페에서 공부해 보신 적 있으신가요?
 
-## Available Scripts
+아니면 나도 카페에서 공부하고 싶은데, 어디로 가야할 지 고민하신 적 있으신가요?
 
-In the project directory, you can run:
+작은 카페는 눈치 보이기도 하고, 카페 분위기도 궁금하고, 좋은 자리가 있는지 콘센트는 얼마나 있는지 한번쯤은 궁금하셨을 거라고 생각합니다.
 
-### `npm start`
+**Hi, 카공은 카공 리뷰 사이트로 이 카페의 장단점, 평점, 나만의 명당 등을 공유할 수 있는 사이트입니다.**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 팀원 (6 can do it)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [@songjihyun-dev](https://www.github.com/songjihyun-dev)
+- [@young-02](https://www.github.com/young-02)
+- [@hyeongkyu88](https://www.github.com/hyeongkyu88)
+- [@Imjaae](https://www.github.com/Imjaae)
 
-### `npm test`
+## API Reference
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Get cafe reviews
 
-### `npm run build`
+| 화면          | HTTP Verbs | Endpoints                    | Action                        |
+| ------------- | ---------- | ---------------------------- | ----------------------------- |
+| 회원가입      | POST       | /api/user/signup             | 회원가입                      |
+| 로그인        | POST       | /api/user/login              | 가입된 유저가 로그인          |
+| 디테일 페이지 | POST       | /api/${cafeId}/review        | 카페에 리뷰 작성              |
+| 디테일 페이지 | GET        | /api/${cafeId}/review        | 카페 별 리뷰 출력             |
+| 디테일 페이지 | DELETE     | /api/${cafeId}/review        | 작성한 리뷰를 삭제            |
+| 마이 페이지   | PATCH      | /api/${userId}               | 프로필 사진, 닉네임 수정      |
+| 메인 페이지   | GET        | /api/link/map/${keyword}     | 키워드에 맞는 지도, 카페 출력 |
+| 디테일 페이지 | GET        | /api/link/roadview/${cafeId} | cafeId에 맞는 로드뷰 출력     |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 기술 스택
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Client:** React, Recoil, Typescript, Javascript
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Server:** Firebase
 
-### `npm run eject`
+## 스크린샷
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 메인 화면
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![hi-cagong-main](https://user-images.githubusercontent.com/88391843/215370003-98f9311e-c13e-4cfc-9d8a-455c5bc81803.gif)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 로그인 화면
 
-## Learn More
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369886-98329980-f39b-4c9f-84fd-00a1fafeee23.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 회원가입 화면
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369882-5b779662-1207-41c9-9a37-faebf9c4f6a0.png)
+
+### 디테일 화면
+
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369894-a7432a22-f071-4b41-ab44-3e4e637a7399.png)
+
+### 마이 페이지 화면
+
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369870-bf7ce229-4a3a-4144-a0e4-139d84f62445.png)
+
+## Features
+
+- 카카오맵 검색
+- 카카오맵 로드뷰
+- 리뷰 CRUD
+- 카페 평점 기능
+- 로그인/회원가입
+- 깃허브/구글 로그인
+
+## 배포
+
+[Hi, Cagong](hi-cagong.vercel.app)
