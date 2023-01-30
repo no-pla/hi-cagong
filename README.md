@@ -40,23 +40,24 @@
 
 ### 메인 화면
 
-![App Screenshot]('/public/img/hi-cagong-main.gif)
+![hi-cagong-main](https://user-images.githubusercontent.com/88391843/215370003-98f9311e-c13e-4cfc-9d8a-455c5bc81803.gif)
+
 
 ### 로그인 화면
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369886-98329980-f39b-4c9f-84fd-00a1fafeee23.png)
 
 ### 회원가입 화면
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369882-5b779662-1207-41c9-9a37-faebf9c4f6a0.png)
 
 ### 디테일 화면
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369894-a7432a22-f071-4b41-ab44-3e4e637a7399.png)
 
 ### 마이 페이지 화면
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://user-images.githubusercontent.com/88391843/215369870-bf7ce229-4a3a-4144-a0e4-139d84f62445.png)
 
 ## Features
 
