@@ -70,4 +70,4 @@
 
 ## 배포
 
-[Hi, Cagong](hi-cagong.vercel.app)
+[Hi, Cagong](https://hi-cagong.vercel.app/)
