@@ -10,7 +10,7 @@
 
 ## 팀원 (6 can do it)
 
-- [@songjihyun-dev](https://www.github.com/songjihyun-dev)
+- [@no-pla](https://www.github.com/no-pla)
 - [@young-02](https://www.github.com/young-02)
 - [@hyeongkyu88](https://www.github.com/hyeongkyu88)
 - [@Imjaae](https://www.github.com/Imjaae)
